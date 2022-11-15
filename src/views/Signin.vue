@@ -24,15 +24,16 @@
                 <div class="card-body">
                   <form role="form">
                     <div class="mb-3">
-                      <argon-input type="email" placeholder="Email" name="email" size="lg" />
+                      <input class="form-control form-control-lg invalid" type="email" placeholder="이메일" name="email" size="lg" v-model="email" />
                     </div>
                     <div class="mb-3">
-                      <argon-input type="password" placeholder="Password" name="password" size="lg" />
+                      <input type="password" class="form-control form-control-lg invalid" placeholder="비밀번호" name="password" size="lg" v-model="password" />
                     </div>
                     <argon-switch id="rememberMe">Remember me</argon-switch>
 
                     <div class="text-center">
-                      <argon-button
+                      <argon-button @click="postData()"
+                      type="button"
                         class="mt-4"
                         variant="gradient"
                         color="success"
@@ -66,16 +67,50 @@
 
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
-import ArgonInput from "@/components/ArgonInput.vue";
 import ArgonSwitch from "@/components/ArgonSwitch.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
 const body = document.getElementsByTagName("body")[0];
-
+const axiosConfig = {
+        headers:{
+            "Content-Type": "application/json"
+        }
+    }
 export default {
   name: "signin",
+  data() {
+        return {
+            email: null,
+            password: null,
+        }
+    },
+  methods: {
+    postData() {
+      console.log(this.email)
+      console.log(this.password)
+        let saveData = {};
+        saveData.email = this.email;
+        saveData.password = this.password;
+
+        if (this.email == null || this.password == null) {
+            alert("이메일 또는 비밀번호를 입력해주세요.")
+            return
+        }
+
+      this.$axios
+      .post("/api/login", JSON.stringify(saveData), axiosConfig)
+      .then((res) => {
+          console.log(res)
+          // this.$cookie.set("accessToken", res.data), 1;
+          // axios.defaults.headers.common["X-AUTH-TOKEN"] = res.data;
+          this.$router.push("/");
+      })
+      .catch((error) => {  // eslint-disable-line no-unused-vars
+        alert("이메일 또는 비밀번호를 맞지 않습니다.")
+      })
+    }
+  },
   components: {
     Navbar,
-    ArgonInput,
     ArgonSwitch,
     ArgonButton,
   },
@@ -93,5 +128,7 @@ export default {
     this.$store.state.showFooter = true;
     body.classList.add("bg-gray-100");
   },
+  
+
 };
 </script>

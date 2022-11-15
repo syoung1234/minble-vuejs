@@ -10,7 +10,7 @@
       </div>
     </div>
   </div>
-  <main class="main-content mt-0">
+  <main class="main-content mt-6">
     <section>
       <div class="page-header min-vh-100">
     <div class="container">
@@ -88,9 +88,10 @@
             <div class="card-body">
               <form role="form">
                 <argon-input type="email" placeholder="이메일" aria-label="Email" v-model="email" />
-                <argon-input type="password" placeholder="비밀번호" aria-label="Password" />
-                <argon-input type="password_confirmation" placeholder="비밀번호 확인" aria-label="Password" />
-                <argon-input type="text" placeholder="닉네임" aria-label="Name" />
+                <argon-input type="password" placeholder="비밀번호" aria-label="Password" v-model="password" />
+                <argon-input type="password_confirmation" placeholder="비밀번호 확인" aria-label="PasswordConfirmation" v-model="password_confirmation" />
+                <argon-input type="text" placeholder="닉네임" aria-label="Nickname" v-model="nickname" />
+                <argon-input type="text" placeholder="휴대폰 번호" aria-label="Nickname" v-model="phone" />
                 <argon-checkbox checked>
                   <label class="form-check-label" for="flexCheckDefault">
                     I agree the
