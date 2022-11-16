@@ -1,4 +1,6 @@
 import { createStore } from "vuex";
+import jwt from "../commont/jwt";
+import axios from "axios"
 
 export default createStore({
   state: {
@@ -16,7 +18,12 @@ export default createStore({
     showNavbar: true,
     showFooter: true,
     showMain: true,
-    layout: "default"
+    layout: "default",
+    count: 0,
+      token: {
+        accessToken: jwt.getToken(),
+      },
+      isAuthenticated: !!jwt.getToken(),
   },
   mutations: {
     toggleConfigurator(state) {
@@ -44,12 +51,49 @@ export default createStore({
       } else {
         state.isNavFixed = false;
       }
-    }
+    },
+    login: function (state, payload = {}) {
+      state.token.accessToken = payload.accessToken
+      state.isAuthenticated = true
+      jwt.saveToken(payload.accessToken)
+    },
   },
   actions: {
     toggleSidebarColor({ commit }, payload) {
       commit("sidebarType", payload);
+    },
+    login: function (context, payload) {
+      const axiosConfig = {
+        headers:{
+            "Content-Type": "application/json"
+        }
     }
+      let params = {
+          email: payload.email,
+          password: payload.password
+      }
+      return new Promise((resolve, reject) => {
+          axios
+              .post("/api/login", JSON.stringify(params), axiosConfig)
+              .then(response => {
+                  const { data } = response
+                  context.commit("login", {
+                      accessToken: data,
+                  })
+                  resolve(response)
+              })
+              .catch(error => {
+                  reject(error)
+              })
+      })
+  }
   },
-  getters: {}
+  getters: {
+    getAccessToken: function (state) {
+      return state.token.accessToken
+    },
+    isAuthenticated: function (state) {
+      return state.isAuthenticated
+    },
+  }
 });

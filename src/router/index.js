@@ -7,6 +7,16 @@ import RTL from "../views/Rtl.vue";
 import Profile from "../views/Profile.vue";
 import Signup from "../views/Signup.vue";
 import Signin from "../views/Signin.vue";
+import store from "../store";
+
+const beforeAuth = isAuth => (from, to , next) => {
+  const isAuthenticated = store.getters["isAuthenticated"]
+  if ((isAuthenticated && isAuth) || (!isAuthenticated && !isAuth)) {
+    return next()
+  } else {
+    next("/")
+  }
+}
 
 const routes = [
   {
@@ -43,6 +53,7 @@ const routes = [
     path: "/profile",
     name: "Profile",
     component: Profile,
+    beforeEnter: beforeAuth(true)
   },
   {
     path: "/signin",

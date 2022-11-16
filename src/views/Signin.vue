@@ -70,11 +70,7 @@ import Navbar from "@/examples/PageLayout/Navbar.vue";
 import ArgonSwitch from "@/components/ArgonSwitch.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
 const body = document.getElementsByTagName("body")[0];
-const axiosConfig = {
-        headers:{
-            "Content-Type": "application/json"
-        }
-    }
+
 export default {
   name: "signin",
   data() {
@@ -87,26 +83,40 @@ export default {
     postData() {
       console.log(this.email)
       console.log(this.password)
-        let saveData = {};
-        saveData.email = this.email;
-        saveData.password = this.password;
+      let saveData = {};
+      saveData.email = this.email;
+      saveData.password = this.password;
 
-        if (this.email == null || this.password == null) {
-            alert("이메일 또는 비밀번호를 입력해주세요.")
-            return
-        }
+      if (this.email == null || this.password == null) {
+          alert("이메일 또는 비밀번호를 입력해주세요.")
+          return
+      }
 
-      this.$axios
-      .post("/api/login", JSON.stringify(saveData), axiosConfig)
-      .then((res) => {
-          console.log(res)
-          // this.$cookie.set("accessToken", res.data), 1;
-          // axios.defaults.headers.common["X-AUTH-TOKEN"] = res.data;
+      this.$store
+        .dispatch("login", {
+          email: this.email,
+          password: this.password,
+        })
+        .then(response => {
+          console.log(response)
           this.$router.push("/");
-      })
-      .catch((error) => {  // eslint-disable-line no-unused-vars
-        alert("이메일 또는 비밀번호를 맞지 않습니다.")
-      })
+
+        })
+        .catch(( {message }) => {
+          alert(message)
+        })
+
+      // this.$axios
+      // .post("/api/login", JSON.stringify(saveData), axiosConfig)
+      // .then((res) => {
+      //     console.log(res)
+      //     // this.$cookie.set("accessToken", res.data), 1;
+      //     // axios.defaults.headers.common["X-AUTH-TOKEN"] = res.data;
+      //     this.$router.push("/");
+      // })
+      // .catch((error) => {  // eslint-disable-line no-unused-vars
+      //   alert("이메일 또는 비밀번호를 맞지 않습니다.")
+      // })
     }
   },
   components: {
