@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import jwt from "../commont/jwt";
+import jwt from "../common/jwt";
 import axios from "axios"
 
 export default createStore({
