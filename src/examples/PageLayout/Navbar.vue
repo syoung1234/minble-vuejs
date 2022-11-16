@@ -9,7 +9,7 @@
         class="navbar-brand font-weight-bolder ms-lg-0 ms-3"
         :class="darkMode ? 'text-black' : 'text-white'"
         to="/"
-        >Argon Dashboard 2</router-link
+        >Minble</router-link
       >
       <button
         class="shadow-none navbar-toggler ms-2"
@@ -40,6 +40,16 @@
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
               Dashboard
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link me-2" to="/post">
+              <i
+                class="fas fa-key opacity-6 me-1"
+                aria-hidden="true"
+                :class="isBlur ? 'text-dark' : 'text-white'"
+              ></i>
+              Post
             </router-link>
           </li>
           <li class="nav-item">

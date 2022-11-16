@@ -7,6 +7,9 @@ import RTL from "../views/Rtl.vue";
 import Profile from "../views/Profile.vue";
 import Signup from "../views/Signup.vue";
 import Signin from "../views/Signin.vue";
+import Post from "../views/post/Post.vue";
+import PostCreate from "../views/post/Create.vue";
+import PostDetail from "../views/post/Detail.vue";
 import store from "../store";
 
 const beforeAuth = isAuth => (from, to , next) => {
@@ -43,6 +46,7 @@ const routes = [
     path: "/virtual-reality",
     name: "Virtual Reality",
     component: VirtualReality,
+    beforeEnter: beforeAuth(true)
   },
   {
     path: "/rtl-page",
@@ -53,7 +57,21 @@ const routes = [
     path: "/profile",
     name: "Profile",
     component: Profile,
-    beforeEnter: beforeAuth(true)
+  },
+  {
+    path: "/post",
+    name: "Post",
+    component: Post,
+  },
+  {
+    path: "/post/create",
+    name: "PostCreate",
+    component: PostCreate,
+  },
+  {
+    path: "/post/detail",
+    name: "PostDetail",
+    component: PostDetail,
   },
   {
     path: "/signin",
