@@ -10,7 +10,7 @@
       </div>
     </div>
   </div>
-  <main class="main-content mt-6">
+  <main class="main-content mt-8">
     <section>
       <div class="page-header min-vh-100">
     <div class="container">
