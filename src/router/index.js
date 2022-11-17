@@ -8,7 +8,7 @@ import Profile from "../views/Profile.vue";
 import Signup from "../views/Signup.vue";
 import Signin from "../views/Signin.vue";
 import Post from "../views/post/Post.vue";
-import PostCreate from "../views/post/Create.vue";
+import PostCreateUpdate from "../views/post/CreateUpdate.vue";
 import PostDetail from "../views/post/Detail.vue";
 import store from "../store";
 
@@ -65,8 +65,8 @@ const routes = [
   },
   {
     path: "/post/create",
-    name: "PostCreate",
-    component: PostCreate,
+    name: "PostCreateUpdate",
+    component: PostCreateUpdate,
   },
   {
     path: "/post/detail",
