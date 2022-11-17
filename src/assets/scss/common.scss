@@ -15,6 +15,12 @@
     height: auto;
 }
 
+.profile-size {
+    max-width: 100%;
+    height: auto;
+    width: 20%;
+}
+
 .text-ellipsis {
 	display: table;
 	table-layout: fixed;
@@ -34,6 +40,11 @@
 
 .align-right {
     float: right;
+}
+
+.scroll {
+    overflow: auto;
+    width: 100%;
 }
 
 textarea {
