@@ -52,8 +52,8 @@
                         </a>
                       </tr>
                       <tr>
-                        <td><i class="ni ni-favourite-28"></i>000</td>
-                        <td><i class="ni ni-chat-round"></i>000</td>
+                        <td><img class="w-8 me-1 mb-0" src="/icon/hearts--v1.png" alt="logo">{{ post.favoriteCount }}
+                        <img class="w-7 me-1 mb-0" src="/icon/speech-bubble--v2.png" alt="logo">{{ post.commentCount }}</td>
                       </tr>
                   </table>
               </form>
