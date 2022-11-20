@@ -99,7 +99,7 @@ export default {
         })
         .then(response => {
           console.log(response)
-          this.$router.push("/");
+          this.$router.push("/post");
 
         })
         .catch(( {message }) => {
