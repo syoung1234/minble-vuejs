@@ -24,7 +24,7 @@
             </a>
           </div>
             <div class="text-end mb-2">
-                <a href="/post/create" class="btn mb-0 bg-gradient-dark btn-md null null"><i class="fas fa-plus me-2"></i>Add</a>
+                <a href="/post/create" class="btn mb-0 bg-gradient-dark btn-md null null" v-if="role != null"><i class="fas fa-plus me-2"></i>Add</a>
             </div>
           <div class="card z-index-0">
             <div class="card-header text-center pt-4">
@@ -78,6 +78,7 @@ export default {
     return {
       postList : [],
       followingList: [],
+      role: null
     }
   },
   components: {
@@ -110,6 +111,7 @@ export default {
           console.log(response.data);
           this.postList = response.data.postList;
           this.followingList = response.data.following;
+          this.role = response.data.role;
         })
         .catch((error)=> {
           console.log(error)
