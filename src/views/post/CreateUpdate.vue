@@ -23,9 +23,9 @@
           <div class="card z-index-0">
             <div class="card-header pt-4">
                 <h5>
-                    <button type="button" class="my-auto btn btn-link btn-icon-only btn-rounded btn-sm text-dark"><i class="ni ni-bold-left"></i></button>
-                  <span>포스트 쓰기</span>
-                  <button type="button" class="btn mb-0 bg-gradient-dark btn-md align-right null null">등록</button>
+                  <button type="button" class="my-auto btn btn-link btn-icon-only btn-rounded btn-sm text-dark"><i class="ni ni-bold-left"></i></button>
+                  <span>게시글 작성</span>
+                  <button type="button" class="btn mb-0 bg-gradient-dark btn-md align-right null null" @click="postData">등록</button>
                   <!-- <a href="/post/create" class="btn mb-0 ml-5 bg-gradient-dark btn-md text-right null null">등록</a> -->
                 </h5>
             </div>
@@ -33,11 +33,29 @@
               <form role="form">
                   <table border="1" bordercolor="gray" width ="100%" height="auto" align = "center" class="card card-body mb-4" >
                       <tr>
-                        <textarea class="form-control form-control-lg invalid"></textarea>
+                        <textarea class="form-control form-control-lg invalid" v-model="content"></textarea>
                       </tr>
                   </table>
+                  <!-- <div v-if="uploadImageFile.length > 0">
+                  <div v-for="(imageUrl, i) in uploadImageFile" :key="i">
+                    <img class="img-size" :src="imageUrl">
+                  </div>
+                  </div> -->
+                  <div v-if="imageUrlLists.length > 0">
+                  <div v-for="(imageUrl, index) in imageUrlLists" :key="index">
+                  <img class="img-size" :src="imageUrl">
+                  </div>
+                  </div>
                 <div class="mb-2">
-                  <a href="/post/create" class="btn mb-0 bg-gradient-dark btn-md null null"><i class="ni ni-image"></i></a>
+                  <!-- <a href="" class="btn mb-0 bg-gradient-dark btn-md null null"><i class="ni ni-image"></i></a> -->
+                  <div class="btn mb-0 bg-gradient-dark btn-md null null">
+                    <!-- <button type="button" @click="$refs.fileRef.click" class="ni ni-image color-white mx-auto mb-0"> -->
+                    <label for="file" class="ni ni-image color-white mx-auto mb-0">
+                      <input type="file" id="file" @change="previewFile()" ref="fileRef" multiple hidden>
+                    </label>
+                  <!-- </button> -->
+                  </div>
+                
                 </div>
               </form>
             </div>
@@ -53,10 +71,26 @@
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
+import store from "@/store/index.js";
 const body = document.getElementsByTagName("body")[0];
-
+const axiosConfig = {
+        headers:{
+            "X-AUTH-TOKEN": store.state.token.accessToken,
+            "Content-Type": "multipart/form-data",
+        }
+};
 export default {
   name: "post",
+  data() {
+    return {
+      content: null,
+      files: [],
+      preview: "",
+      uploadImageFile: "",
+      fileCount: 0,
+      imageUrlLists: [],
+    }
+  },
   components: {
     Navbar,
     AppFooter,
@@ -75,6 +109,53 @@ export default {
     this.$store.state.showFooter = true;
     body.classList.add("bg-gray-100");
   },
+  methods: {
+    async postData() {
+      const formData = new FormData()
+      formData.append('content', this.content)
+
+      this.files = this.$refs.fileRef.files
+      if (this.files.length > 0) {
+        for (let i = 0; i < this.files.length; i ++) {
+          const fileForm = this.files[i]
+          formData.append(`files[${i}]`, fileForm)
+        }
+      }
+
+      await this.$axios.post("/api/post/create", formData, axiosConfig)
+          .then((response) => {
+            console.log(response)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+    },
+    previewFile(){
+      // var input = event.target;
+      console.log(event.target.files)
+      this.fileCount = event.target.files.length
+
+      const imageLists = event.target.files;
+    //let imageUrlLists = [];
+
+    for (let i = 0; i < imageLists.length; i++) {
+      const currentImageUrl = URL.createObjectURL(imageLists[i]);
+      this.imageUrlLists.push(currentImageUrl);
+    }
+    console.log(this.imageUrlLists)
+      
+    //  if (input.files && input.files[0]) { 
+    //      var reader = new FileReader();
+    //      reader.onload = (e) => {
+    //              this.uploadImageFile = e.target.result;
+    //              this.uploadImageFileList.push(e.target.result)
+    //      }             
+    //      console.log(this.uploadImageFileList)
+    //      reader.readAsDataURL(input.files[0]);
+         
+    //  }
+    },
+  }
 
 }
 
