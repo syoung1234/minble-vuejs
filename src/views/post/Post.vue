@@ -19,7 +19,7 @@
         <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
           <div class="scroll">
             <a href="" v-for="(following, i) in followingList" :key="i">
-                <img v-if="following.profilePath" :src="following.profilePath" class="rounded-circle profile-size border border-2 border-white">
+                <img v-if="following?.profilePath" :src="following?.profilePath" class="rounded-circle profile-size border border-2 border-white">
                 <img v-else src="/img/team-4.53033970.jpg" class="rounded-circle profile-size border border-2 border-white">
             </a>
           </div>
@@ -35,25 +35,25 @@
                   <table border="1" bordercolor="gray" width ="100%" height="auto" align = "center" class="card card-body mb-4" v-for="(post,index) in postList" :key="index">
                     <i class="fa fa-ellipsis-v text-xs text-end"></i>
                       <tr>
-                          <td width="20%" v-if="post.profilePath != null">
-                          <img :src="post.profilePath" class="rounded-circle img-size border border-2 border-white">
+                          <td width="20%" v-if="post?.profilePath != null">
+                          <img :src="post?.profilePath" class="rounded-circle img-size border border-2 border-white">
                           </td>
                           <td width="20%" v-else>
                           <img src="/img/team-4.53033970.jpg" class="rounded-circle img-size border border-2 border-white">
                           </td>
                           <td>
-                              <span>{{ post.nickname }}</span> <br>
-                              <span>{{ post.createdAt }}</span>
+                              <span>{{ post?.nickname }}</span> <br>
+                              <span>{{ post?.createdAt }}</span>
                           </td>
                       </tr>
                       <tr class="mt-2">
-                        <a href="/post/detail">
-                          <td><div class="text-ellipsis"><span>{{ post.content }}</span></div></td>
+                        <a href="" @click="getDetail(`${post?.id}`)">
+                          <td><div class="text-ellipsis"><span>{{ post?.content }}</span></div></td>
                         </a>
                       </tr>
                       <tr>
-                        <td><img class="w-8 me-1 mb-0" src="/icon/hearts--v1.png" alt="logo">{{ post.favoriteCount }}
-                        <img class="w-7 me-1 mb-0" src="/icon/speech-bubble--v2.png" alt="logo">{{ post.commentCount }}</td>
+                        <td><img class="w-8 me-1 mb-0" src="/icon/hearts--v1.png" alt="logo">{{ post?.favoriteCount }}
+                        <img class="w-7 me-1 mb-0" src="/icon/speech-bubble--v2.png" alt="logo">{{ post?.commentCount }}</td>
                       </tr>
                   </table>
               </form>
@@ -72,11 +72,6 @@ import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 import store from '@/store/index.js';
 const body = document.getElementsByTagName("body")[0];
-const axiosConfig = {
-        headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken
-        }
-};
 export default {
   name: "post",
   data() {
@@ -90,12 +85,12 @@ export default {
     AppFooter,
   },
   created() {
+    this.getList();
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
     this.$store.state.showFooter = false;
     body.classList.remove("bg-gray-100");
-    this.getList();
   },
   beforeUnmount() {
     this.$store.state.hideConfigButton = false;
@@ -106,7 +101,11 @@ export default {
   },
   methods: {
     async getList() {
-      await this.$axios.get("/api/post", axiosConfig)
+      await this.$axios.get("/api/post", {
+        headers:{
+            "X-AUTH-TOKEN": store.state.token.accessToken
+        }
+      })
         .then((response) => {
           console.log(response.data);
           this.postList = response.data.postList;
@@ -115,8 +114,16 @@ export default {
         .catch((error)=> {
           console.log(error)
         })
+    },
+     getDetail(num) {
+      let params = {
+        "num": num
+      }
+      this.$router.push({path: "/post/detail", query: params})
     }
-  }
+  },
+
+  
 
 }
 
