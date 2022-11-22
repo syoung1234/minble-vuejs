@@ -23,7 +23,7 @@
           <div class="card z-index-0">
             <div class="card-header pt-4">
                 <h5>
-                  <button type="button" class="my-auto btn btn-link btn-icon-only btn-rounded btn-sm text-dark"><i class="ni ni-bold-left"></i></button>
+                  <button type="button" class="my-auto btn btn-link btn-icon-only btn-rounded btn-sm text-dark" @click="this.$router.go(-1);"><i class="ni ni-bold-left"></i></button>
                   <span>게시글 작성</span>
                   <button type="button" class="btn mb-0 bg-gradient-dark btn-md align-right null null" @click="postData">등록</button>
                   <!-- <a href="/post/create" class="btn mb-0 ml-5 bg-gradient-dark btn-md text-right null null">등록</a> -->
@@ -41,20 +41,28 @@
                     <img class="img-size" :src="imageUrl">
                   </div>
                   </div> -->
-                  <div v-if="imageUrlLists.length > 0">
+                  <!-- <div v-if="imageUrlLists.length > 0">
                   <div v-for="(imageUrl, index) in imageUrlLists" :key="index">
                   <img class="img-size" :src="imageUrl">
                   </div>
-                  </div>
+                  </div> -->
+                  <table class="mb-3">
+                    <tr v-if="imageUrlLists.length > 0">
+                      <td v-for="(imageUrl, index) in imageUrlLists" :key="index">
+                        <img class="img-size file-upload-img-size" :src="imageUrl">
+                      </td>
+                    </tr>
+                  </table>
                 <div class="mb-2">
                   <!-- <a href="" class="btn mb-0 bg-gradient-dark btn-md null null"><i class="ni ni-image"></i></a> -->
-                  <div class="btn mb-0 bg-gradient-dark btn-md null null">
-                    <!-- <button type="button" @click="$refs.fileRef.click" class="ni ni-image color-white mx-auto mb-0"> -->
-                    <label for="file" class="ni ni-image color-white mx-auto mb-0">
+                    <button type="button" @click="$refs.fileRef.click" class="btn mb-0 bg-gradient-dark btn-md null null">
+                    <div class="ni ni-image color-white mx-auto mb-0">
                       <input type="file" id="file" @change="previewFile()" ref="fileRef" multiple hidden>
-                    </label>
-                  <!-- </button> -->
-                  </div>
+                    </div>
+                    <!-- <label for="file" class="ni ni-image color-white mx-auto mb-0"> -->
+                    <!-- </label> -->
+                  </button>
+                  최대 10장까지 업로드 가능합니다.
                 
                 </div>
               </form>
@@ -89,6 +97,7 @@ export default {
       uploadImageFile: "",
       fileCount: 0,
       imageUrlLists: [],
+      fileList: [],
     }
   },
   components: {
@@ -114,10 +123,15 @@ export default {
       const formData = new FormData()
       formData.append('content', this.content)
 
-      this.files = this.$refs.fileRef.files
-      if (this.files.length > 0) {
-        for (let i = 0; i < this.files.length; i ++) {
-          const fileForm = this.files[i]
+      // this.files = this.$refs.fileRef.files
+      this.files = this.fileList
+      this.fileCount = this.imageUrlLists.length
+      if (this.fileCount > 10) {
+        this.fileCount = 10
+      }
+      if (this.fileCount > 0) {
+        for (let i = 0; i < this.fileCount; i ++) {
+          const fileForm = this.files[0][i]
           formData.append(`files[${i}]`, fileForm)
         }
       }
@@ -125,6 +139,8 @@ export default {
       await this.$axios.post("/api/post/create", formData, axiosConfig)
           .then((response) => {
             console.log(response)
+            this.$router.push("/post");
+            
           })
           .catch((error) => {
             console.log(error)
@@ -133,16 +149,18 @@ export default {
     previewFile(){
       // var input = event.target;
       console.log(event.target.files)
-      this.fileCount = event.target.files.length
 
       const imageLists = event.target.files;
     //let imageUrlLists = [];
 
-    for (let i = 0; i < imageLists.length; i++) {
+    if (this.imageUrlLists.length < 10) {
+      for (let i = 0; i < imageLists.length; i++) {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
       this.imageUrlLists.push(currentImageUrl);
+      }
+      this.fileList.push(event.target.files)
     }
-    console.log(this.imageUrlLists)
+    
       
     //  if (input.files && input.files[0]) { 
     //      var reader = new FileReader();
