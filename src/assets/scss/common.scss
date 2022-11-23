@@ -51,6 +51,18 @@
     width: 100%;
 }
 
+.close-button {
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    right: 5%;
+    border: 0;
+}
+
+.position-re {
+    position: relative;
+}
+
 textarea {
     width: 100%;
     height: 25em;
