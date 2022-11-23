@@ -10,7 +10,8 @@
       </div>
     </div>
   </div>
-      
+  <Modal v-if="showModal" @close="showModal = false">
+  </Modal>
   <main class="main-content mt-8">
     <section>
       <div class="page-header min-vh-100">
@@ -33,7 +34,11 @@
             <div class="card-body">
               <form role="form">
                   <table border="1" bordercolor="gray" width ="100%" height="auto" align = "center" class="card card-body mb-4" v-for="(post,index) in postList" :key="index">
-                    <i class="fa fa-ellipsis-v text-xs text-end"></i>
+                  <div class="text-end">
+                    <a href="javascript:">
+                      <i class="fa fa-ellipsis-v text-xs" @click="showModal = true"></i>
+                    </a>
+                  </div>
                       <tr>
                           <td width="20%" v-if="post?.profilePath != null">
                           <img :src="post?.profilePath" class="rounded-circle img-size border border-2 border-white">
@@ -48,18 +53,28 @@
                       </tr>
                       <tr class="mt-2 mb-2">
                         <a href="javascript:" @click="getDetail(`${post?.id}`)">
-                          <td><div class="text-ellipsis"><span>{{ post?.content }}</span></div></td>
+                          <td><div class="text-ellipsis"><span>{{ post?.content }}</span>
+                          <img v-if="post?.postFileList[0]" class="img-size me-1 mb-0" :src="post?.postFileList[0]"/>
+                          </div>
+                          </td>
                         </a>
                       </tr>
                       <tr>
-                        <td><img class="w-8 me-1 mb-0" src="/icon/hearts--v1.png" alt="logo">{{ post?.favoriteCount }}
-                        <img class="w-7 me-1 mb-0" src="/icon/speech-bubble--v2.png" alt="logo">{{ post?.commentCount }}</td>
+                        <td>
+                          <a href="javascript:" class="me-2" @click="getFavorite(`${post?.id}`, index)">
+                            <img v-show="post?.favorite == false" class="w-8 me-1 mb-0" src="/icon/hearts--v1.png">
+                            <img v-show="post?.favorite == true" class="w-8 me-1 mb-0" src="/icon/full-heart-icon.png">{{ post?.favoriteCount }}
+                          </a>
+                          <a href="javascript:" class="me-2">
+                          <img class="w-7 me-1 mb-0" src="/icon/speech-bubble--v2.png">{{ post?.commentCount }}
+                          </a>
+                        </td>
                       </tr>
                   </table>
               </form>
               <div class="text-center mb-2" v-if="pageList?.page < pageList?.totalPages-1">
                 <a href="javascript:" @click="nextPage()">
-                <img class="w-10 mb-0 mt-3" src="/icon/plus_icon.png" alt="logo">
+                  <img class="w-10 mb-0 mt-3" src="/icon/plus_icon.png" alt="logo">
                 </a>
               </div>
             </div>
@@ -76,6 +91,8 @@
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 import store from '@/store/index.js';
+import Modal from "@/examples/PostModal.vue";
+
 const body = document.getElementsByTagName("body")[0];
 export default {
   name: "post",
@@ -85,11 +102,13 @@ export default {
       followingList: [],
       role: null,
       pageList: null,
+      showModal: false,
     }
   },
   components: {
     Navbar,
     AppFooter,
+    Modal,
   },
   created() {
     this.getList();
@@ -145,6 +164,26 @@ export default {
         .catch((error)=> {
           console.log(error)
         })
+    },
+    async getFavorite(postId, index) {
+      let saveData = {};
+      saveData.postId = postId;
+      await this.$axios.post("/api/favorite", saveData, {
+        headers:{
+            "X-AUTH-TOKEN": store.state.token.accessToken
+        }
+      }).then((response) => {
+        if (response.data.message == "delete") {
+          this.postList[index].favorite = false
+        } else {
+          this.postList[index].favorite = true
+        }
+        this.postList[index].favoriteCount = response.data.favoriteCount
+        
+      })
+      .catch((error) => {
+        console.log(error)
+      })
     }
   },
 
