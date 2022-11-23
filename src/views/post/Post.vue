@@ -43,11 +43,11 @@
                           </td>
                           <td>
                               <span>{{ post?.nickname }}</span> <br>
-                              <span>{{ post?.createdAt }}</span>
+                              <span class="small">{{ post?.createdAt }}</span>
                           </td>
                       </tr>
-                      <tr class="mt-2">
-                        <a href="" @click="getDetail(`${post?.id}`)">
+                      <tr class="mt-2 mb-2">
+                        <a href="javascript:" @click="getDetail(`${post?.id}`)">
                           <td><div class="text-ellipsis"><span>{{ post?.content }}</span></div></td>
                         </a>
                       </tr>
@@ -57,6 +57,11 @@
                       </tr>
                   </table>
               </form>
+              <div class="text-center mb-2" v-if="pageList?.page < pageList?.totalPages-1">
+                <a href="javascript:" @click="nextPage()">
+                <img class="w-10 mb-0 mt-3" src="/icon/plus_icon.png" alt="logo">
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -78,7 +83,8 @@ export default {
     return {
       postList : [],
       followingList: [],
-      role: null
+      role: null,
+      pageList: null,
     }
   },
   components: {
@@ -101,7 +107,7 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-    async getList() {
+    async getList() { // 목록
       await this.$axios.get("/api/post", {
         headers:{
             "X-AUTH-TOKEN": store.state.token.accessToken
@@ -112,16 +118,33 @@ export default {
           this.postList = response.data.postList;
           this.followingList = response.data.following;
           this.role = response.data.role;
+          this.pageList = response.data.pageList;
         })
         .catch((error)=> {
           console.log(error)
         })
     },
-     getDetail(num) {
+     getDetail(num) { // 상세 조회
       let params = {
         "num": num
       }
       this.$router.push({path: "/post/detail", query: params})
+    },
+    async nextPage() { // 더보기
+      await this.$axios.get(`/api/post?page=${this.pageList.page+1}`, {
+        headers:{
+            "X-AUTH-TOKEN": store.state.token.accessToken
+        }
+      })
+        .then((response) => {
+          for (let i = 0; i < response.data.postList.length; i++) {
+            this.postList.push(response.data.postList[i])
+          }
+          this.pageList = response.data.pageList;
+        })
+        .catch((error)=> {
+          console.log(error)
+        })
     }
   },
 
