@@ -28,7 +28,11 @@
             <div class="card-body">
               <form role="form">
                   <table border="1" bordercolor="gray" width ="100%" height="auto" align = "center" class="card card-body mb-4" >
+                    <div class="text-end">
+                    <a href="javascript:">
                       <i class="fa fa-ellipsis-v text-xs text-end" @click="showModal = true"></i>
+                    </a>
+                    </div>
                       <tr>
                           <td width="20%" v-if="postDetail?.profilePath != null">
                           <img :src="postDetail?.profilePath" class="rounded-circle img-size border border-2 border-white">
@@ -37,16 +41,57 @@
                           <img src="/img/team-4.53033970.jpg" class="rounded-circle img-size border border-2 border-white">
                           </td>
                           <td>
-                              <span>{{ postDetail?.nickname }}</span> <br>
-                              <span>{{ postDetail?.createdAt }}</span>
+                              <span class="text-bold">{{ postDetail?.nickname }}</span> <br>
+                              <span class="small">{{ postDetail?.createdAt }}</span>
                           </td>
                       </tr>
                       <tr class="mt-2">
-                          <td><div class=""><span>{{ postDetail?.content }}</span></div></td>
+                          <td>
+                            <div class="">
+                              <span>{{ postDetail?.content }}</span>
+                            </div>
+                            <div v-for="(file, i) in postDetail?.postFileList" :key="i">
+                              <img class="img-size" :src="file.filePath">
+                            </div>
+                          </td>
                       </tr>
                       <tr>
-                        <td><img class="w-8 me-1 mb-0" src="/icon/hearts--v1.png" alt="logo">{{ postDetail?.favoriteCount }}
-                        <img class="w-7 me-1 mb-0" src="/icon/speech-bubble--v2.png" alt="logo">{{ postDetail?.commentCount }}</td>
+                        <td>
+                          <a href="javascript:" class="me-2" @click="getFavorite(`${postDetail?.id}`, index)">
+                            <img v-show="postDetail?.favorite == false" class="w-8 me-1 mb-0" src="/icon/hearts--v1.png">
+                            <img v-show="postDetail?.favorite == true" class="w-8 me-1 mb-0" src="/icon/full-heart-icon.png">{{ postDetail?.favoriteCount }}
+                          </a>
+                          <a href="javascript:" class="me-2">
+                          <img class="w-7 me-1 mb-0" src="/icon/speech-bubble--v2.png">{{ postDetail?.commentCount }}
+                          </a>
+                        </td>
+                      </tr>
+                      <hr>
+                      <b>댓글</b>
+                      <tr class="mt-3">
+                        <td width="85%">
+                          <textarea class="textarea-comment-h" v-model="content" placeholder="댓글 쓰기" @keydown="resize" @keyup="resize"></textarea>
+                        </td>
+                        <td width=15%>
+                          <a href="javascript:" @click="postComment">
+                            <img class="img-size mb-1" src="/icon/send-message-2-2.png">
+                          </a>
+                        </td>
+                      </tr>
+                      <tr v-for="(comment, index) in postDetail?.commentList" :key="index" class="mb-2">
+                        <td width="15%" v-if="comment?.profilePath != null">
+                          <img :src="comment?.profilePath" class="rounded-circle img-size border border-2 border-white">
+                        </td>
+                        <td>
+                          <span class="text-bold me-1 small">{{ comment?.nickname }}</span> 
+                          <span class="small">{{ comment?.content }}</span>
+                          <br>
+                          <span class="text-xs">{{ comment?.createdAt }}</span> &nbsp;
+                          <span class="text-xs">답글 달기</span> &nbsp;
+                          <a href="javascript:" @click="deleteComment(comment?.commentId)">
+                            <span class="text-xs">삭제</span>
+                          </a>
+                        </td>
                       </tr>
                   </table>
               </form>
@@ -85,6 +130,7 @@ export default {
           id: this.$route.query.num,
           showModal: false,
           postDetail: null,
+          content: null,
       }
   },
   created() {
@@ -106,11 +152,42 @@ export default {
     async getPost() {
       await this.$axios.get("/api/post/"+this.id, axiosConfig)
         .then((response) => {
+          console.log(response)
           this.postDetail = response.data;
         })
         .catch((error)=> {
           console.log(error)
         })
+    },
+    async postComment() {
+      let saveData = {}
+      saveData.content = this.content
+      saveData.postId = this.id
+      await this.$axios.post("/api/comment", saveData, axiosConfig)
+        .then((response) => {
+          console.log(response)
+          this.$router.go()
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+    async deleteComment(commentId) {
+      const result = confirm("삭제 하시겠습니까?")
+      if (result == false) return;
+      await this.$axios.delete(`/api/comment/${commentId}/delete`, axiosConfig)
+      .then((response) => {
+        console.log(response)
+        this.$router.go()
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    },
+    resize(event) {
+      let obj = event.target
+      obj.style.height = '1px';
+      obj.style.height = (10 + obj.scrollHeight) + 'px';
     }
 
   }
