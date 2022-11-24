@@ -32,7 +32,7 @@
               <form role="form">
                   <table border="1" bordercolor="gray" width ="100%" height="auto" align = "center" class="card card-body mb-4" >
                       <tr>
-                        <textarea class="form-control form-control-lg invalid" v-model="content"></textarea>
+                        <textarea class="form-control form-control-lg textarea-h invalid" v-model="content"></textarea>
                       </tr>
                   </table>
                   <table class="mb-3">
@@ -151,7 +151,7 @@ export default {
       this.imageUrlLists.splice(index, 1)
       this.fileList.splice(index, 1)
     }
-  }
+  },
 
 }
 

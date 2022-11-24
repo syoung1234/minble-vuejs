@@ -65,7 +65,14 @@
 
 textarea {
     width: 100%;
+    resize: none;
+}
+
+.textarea-h {
     height: 25em;
     border: none;
-    resize: none;
+}
+
+.textarea-comment-h {
+    height: 40px;
 }
