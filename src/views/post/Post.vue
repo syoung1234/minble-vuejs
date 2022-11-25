@@ -54,7 +54,7 @@
                       <tr class="mt-2 mb-2">
                         <a href="javascript:" @click="getDetail(`${post?.id}`)">
                           <td><div class="text-ellipsis"><span>{{ post?.content }}</span>
-                          <img v-if="post?.postFileList[0]" class="img-size me-1 mb-0" :src="post?.postFileList[0]"/>
+                          <img v-if="post?.postFileList[0]" class="img-size me-1 mb-0" :src="post?.postFileList[0].filePath"/>
                           </div>
                           </td>
                         </a>
