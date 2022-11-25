@@ -12,6 +12,16 @@
   </div>
    <Modal v-if="showModal" @close="showModal = false">
    </Modal>
+   <ImageModal v-if="showImageModal" @close="showImageModal = false">
+      <div><img class="img-size" :src="modalFilePath"></div>
+      <!-- /default -->
+      <!-- footer 슬롯 콘텐츠 -->
+      <div class="img-modal-footer">
+        <button type="button" class="btn btn-link bg-white w-100" @click="downloadFile">
+            다운로드
+        </button>
+      </div>
+   </ImageModal>
   <main class="main-content mt-8">
     <section>
       <div class="page-header min-vh-100">
@@ -51,13 +61,15 @@
                               <span>{{ postDetail?.content }}</span>
                             </div>
                             <div v-for="(file, i) in postDetail?.postFileList" :key="i">
+                            <button type="button" class="btn btn-link" @click="showImage(file.filePath, file.filename)">
                               <img class="img-size" :src="file.filePath">
+                            </button>
                             </div>
                           </td>
                       </tr>
                       <tr>
                         <td>
-                          <a href="javascript:" class="me-2" @click="getFavorite(`${postDetail?.id}`, index)">
+                          <a href="javascript:" class="me-2" @click="getFavorite(`${postDetail?.id}`)">
                             <img v-show="postDetail?.favorite == false" class="w-8 me-1 mb-0" src="/icon/hearts--v1.png">
                             <img v-show="postDetail?.favorite == true" class="w-8 me-1 mb-0" src="/icon/full-heart-icon.png">{{ postDetail?.favoriteCount }}
                           </a>
@@ -109,6 +121,7 @@
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 import Modal from "@/examples/PostModal.vue";
+import ImageModal from "@/examples/ImageModal.vue";
 import store from "@/store/index.js"
 
 const body = document.getElementsByTagName("body")[0];
@@ -124,6 +137,7 @@ export default {
     Navbar,
     AppFooter,
     Modal,
+    ImageModal,
   },
   data() {
       return {
@@ -131,6 +145,9 @@ export default {
           showModal: false,
           postDetail: null,
           content: null,
+          showImageModal: false,
+          modalFilePath: null,
+          modalFileName: null,
       }
   },
   created() {
@@ -150,7 +167,11 @@ export default {
   },
   methods: {
     async getPost() {
-      await this.$axios.get("/api/post/"+this.id, axiosConfig)
+      await this.$axios.get("/api/post/"+this.id, {
+        headers:{
+            "X-AUTH-TOKEN": store.state.token.accessToken
+        }
+      })
         .then((response) => {
           console.log(response)
           this.postDetail = response.data;
@@ -164,8 +185,7 @@ export default {
       saveData.content = this.content
       saveData.postId = this.id
       await this.$axios.post("/api/comment", saveData, axiosConfig)
-        .then((response) => {
-          console.log(response)
+        .then(() => {
           this.$router.go()
         })
         .catch((error) => {
@@ -176,19 +196,52 @@ export default {
       const result = confirm("삭제 하시겠습니까?")
       if (result == false) return;
       await this.$axios.delete(`/api/comment/${commentId}/delete`, axiosConfig)
-      .then((response) => {
-        console.log(response)
+      .then(() => {
         this.$router.go()
       })
       .catch((error) => {
         console.log(error)
       })
     },
+    async getFavorite(postId) {
+      let saveData = {};
+      saveData.postId = postId;
+      await this.$axios.post("/api/favorite", saveData, {
+        headers:{
+            "X-AUTH-TOKEN": store.state.token.accessToken
+        }
+      }).then((response) => {
+        if (response.data.message == "delete") {
+          this.postDetail.favorite = false
+        } else {
+          this.postDetail.favorite = true
+        }
+        this.postDetail.favoriteCount = response.data.favoriteCount
+        
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    },
+    async downloadFile() {
+      try {
+      let element = document.createElement('a');
+               element.setAttribute('href', `/api/file/post/download/${this.modalFileName}` );
+               element.click();
+      } catch(error) {
+        console.log(error)
+      }
+    },
     resize(event) {
       let obj = event.target
       obj.style.height = '1px';
       obj.style.height = (10 + obj.scrollHeight) + 'px';
-    }
+    },
+    showImage(filePath, fileName) {
+      this.showImageModal = true;
+      this.modalFilePath = filePath;
+      this.modalFileName = fileName;
+    },
 
   }
  
