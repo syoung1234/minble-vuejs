@@ -90,11 +90,11 @@
                           </a>
                         </td>
                       </tr>
-                      <tr v-for="(comment, index) in postDetail?.commentList" :key="index" class="mb-2">
+                      <tr v-for="(comment, index) in commentList" :key="index" class="mb-2 align-top">
                         <td width="15%" v-if="comment?.profilePath != null">
                           <img :src="comment?.profilePath" class="rounded-circle img-size border border-2 border-white">
                         </td>
-                        <td>
+                        <td class="word-break">
                           <span class="text-bold me-1 small">{{ comment?.nickname }}</span> 
                           <span class="small">{{ comment?.content }}</span>
                           <br>
@@ -105,6 +105,11 @@
                           </a>
                         </td>
                       </tr>
+                      <div class="text-center mb-2" v-if="pageList.nextPage < pageList.totalPages">
+                        <a href="javascript:" @click="nextPage()">
+                          <img class="w-10 mb-0 mt-3" src="/icon/plus_icon.png" alt="logo">
+                        </a>
+                      </div>
                   </table>
               </form>
             </div>
@@ -148,6 +153,8 @@ export default {
           showImageModal: false,
           modalFilePath: null,
           modalFileName: null,
+          commentList: [],
+          pageList: [],
       }
   },
   created() {
@@ -175,6 +182,8 @@ export default {
         .then((response) => {
           console.log(response)
           this.postDetail = response.data;
+          this.commentList = response.data.commentList;
+          this.pageList = response.data.pageList;
         })
         .catch((error)=> {
           console.log(error)
@@ -223,7 +232,24 @@ export default {
         console.log(error)
       })
     },
-    async downloadFile() {
+    async nextPage() {
+      await this.$axios.get(`/api/post/${this.id}?page=${this.pageList.page+1}`, {
+        headers:{
+            "X-AUTH-TOKEN": store.state.token.accessToken
+        }
+      })
+        .then((response) => {
+          console.log(response)
+          for (let i = 0; i < response.data.commentList.length; i++) {
+            this.commentList.push(response.data.commentList[i])
+          }
+          this.pageList = response.data.pageList;
+        })
+        .catch((error)=> {
+          console.log(error)
+        })
+    },
+    downloadFile() {
       try {
       let element = document.createElement('a');
                element.setAttribute('href', `/api/file/post/download/${this.modalFileName}` );
