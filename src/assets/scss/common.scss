@@ -94,6 +94,7 @@ textarea {
     &-window {
       background: #fff;
     //   border-radius: 4px;
+      max-width: 80%;
       overflow: hidden;
     }
   
@@ -126,6 +127,10 @@ textarea {
       opacity: 0;
       transform: translateY(-20px);
     }
+}
+
+.modal-img-mh {
+  max-height: 500px;
 }
 
 .word-break {
