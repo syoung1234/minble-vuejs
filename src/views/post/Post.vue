@@ -52,7 +52,7 @@
                           </td>
                       </tr>
                       <tr class="mt-2 mb-2">
-                        <a href="javascript:" @click="getDetail(`${post?.id}`)">
+                        <a :href="`/post/detail?num=${post.id}`">
                           <td><div class="text-ellipsis"><span>{{ post?.content }}</span>
                           <img v-if="post?.postFileList[0]" class="img-size me-1 mb-0" :src="post?.postFileList[0].filePath"/>
                           </div>
@@ -142,12 +142,6 @@ export default {
         .catch((error)=> {
           console.log(error)
         })
-    },
-     getDetail(num) { // 상세 조회
-      let params = {
-        "num": num
-      }
-      this.$router.push({path: "/post/detail", query: params})
     },
     async nextPage() { // 더보기
       await this.$axios.get(`/api/post?page=${this.pageList.page+1}`, {
