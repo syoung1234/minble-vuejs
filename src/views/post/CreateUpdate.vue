@@ -25,14 +25,18 @@
                 <h5>
                   <button type="button" class="my-auto btn btn-link btn-icon-only btn-rounded btn-sm text-dark" @click="this.$router.go(-1);"><i class="ni ni-bold-left"></i></button>
                   <span>게시글 작성</span>
-                  <button type="button" class="btn mb-0 bg-gradient-dark btn-md align-right null null" @click="postData">등록</button>
+                  <button type="button" class="btn mb-0 bg-gradient-dark btn-md align-right null null" @click="postData">
+                    <span v-if="!num">등록</span>
+                    <span v-if="num">완료</span>
+                  </button>
                 </h5>
             </div>
             <div class="card-body">
               <form role="form">
                   <table border="1" bordercolor="gray" width ="100%" height="auto" align = "center" class="card card-body mb-4" >
                       <tr>
-                        <textarea class="form-control form-control-lg textarea-h invalid" v-model="content"></textarea>
+                        <textarea class="form-control form-control-lg textarea-h invalid" v-model="content">
+                        </textarea>
                       </tr>
                   </table>
                   <table class="mb-3">
@@ -76,10 +80,12 @@ const axiosConfig = {
             "Content-Type": "multipart/form-data",
         }
 };
+let postUrl = "create"
 export default {
   name: "post",
   data() {
     return {
+      num: this.$route.query.num,
       content: null,
       files: [],
       preview: "",
@@ -87,6 +93,7 @@ export default {
       fileCount: 0,
       imageUrlLists: [],
       fileList: [],
+      fileDeleteList: [],
     }
   },
   components: {
@@ -99,6 +106,7 @@ export default {
     this.$store.state.showSidenav = false;
     this.$store.state.showFooter = false;
     body.classList.remove("bg-gray-100");
+    this.getPost();
   },
   beforeUnmount() {
     this.$store.state.hideConfigButton = false;
@@ -108,7 +116,28 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-    async postData() {
+    async getPost() { // page: update 
+      if (this.num != null) {
+        await await this.$axios.get("/api/post/"+this.num, {
+        headers:{
+            "X-AUTH-TOKEN": store.state.token.accessToken
+        }
+      })
+        .then((response) => {
+          console.log(response)
+          this.content = response.data.content;
+          this.fileList = response.data.postFileList;
+          for (let i = 0; i < response.data.postFileList.length; i++) {
+            this.imageUrlLists.push(response.data.postFileList[i].filePath);
+          }
+          
+        })
+        .catch((error)=> {
+          console.log(error)
+        })
+      }
+    },
+    async postData() { // 등록 또는 수정
       const formData = new FormData()
       formData.append('content', this.content)
 
@@ -121,11 +150,18 @@ export default {
       if (this.fileCount > 0) {
         for (let i = 0; i < this.fileCount; i ++) {
           const fileForm = this.files[i]
+          if (this.files[i].filename) {
+            continue;
+          }
           formData.append(`files[${i}]`, fileForm)
         }
       }
-
-      await this.$axios.post("/api/post/create", formData, axiosConfig)
+      formData.append("deleteList", this.fileDeleteList);
+      if (this.num != null) {
+        postUrl = "update"
+      }
+      if (postUrl == "create") {
+        await this.$axios.post("/api/post/"+postUrl, formData, axiosConfig)
           .then((response) => {
             console.log(response)
             this.$router.push("/post");
@@ -134,6 +170,18 @@ export default {
           .catch((error) => {
             console.log(error)
           })
+      } else {
+        await this.$axios.put("/api/post/"+this.num+"/update", formData, axiosConfig)
+          .then((response) => {
+            console.log(response)
+            this.$router.push("/post");
+            
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
+      
     },
     previewFile(){
       const imageLists = event.target.files;
@@ -143,13 +191,22 @@ export default {
       const currentImageUrl = URL.createObjectURL(imageLists[i]);
       this.imageUrlLists.push(currentImageUrl);
       this.fileList.push(event.target.files[i])
+        if (this.imageUrlLists.length >= 10) {
+          break;
+        }
       }
     }
     
     },
     removeFile(index) {
+      if (this.fileList[index].filename) {
+        this.fileDeleteList.push(this.fileList[index].filename)
+        console.log(this.fileDeleteList);
+      }
+      
       this.imageUrlLists.splice(index, 1)
       this.fileList.splice(index, 1)
+      console.log(this.fileList);
     }
   },
 
