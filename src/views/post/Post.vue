@@ -11,6 +11,14 @@
     </div>
   </div>
   <Modal v-if="showModal" @close="showModal = false">
+    <div class="mb-1">
+      <a :href="`/post/create?num=${num}`">
+        <i class="fas fa-pencil-alt text-dark me-2"> 수정</i>
+      </a>
+    </div>
+    <div>
+        <i class="fas fa-trash-alt me-2"> 삭제</i>
+    </div>
   </Modal>
   <main class="main-content mt-8">
     <section>
@@ -36,7 +44,7 @@
                   <table border="1" bordercolor="gray" width ="100%" height="auto" align = "center" class="card card-body mb-4" v-for="(post,index) in postList" :key="index">
                   <div class="text-end">
                     <a href="javascript:">
-                      <i class="fa fa-ellipsis-v text-xs" @click="showModal = true"></i>
+                      <i class="fa fa-ellipsis-v text-xs" @click="postModal(post?.id)"></i>
                     </a>
                   </div>
                       <tr>
@@ -103,6 +111,7 @@ export default {
       role: null,
       pageList: null,
       showModal: false,
+      num: null,
     }
   },
   components: {
@@ -178,7 +187,11 @@ export default {
       .catch((error) => {
         console.log(error)
       })
-    }
+    },
+    postModal(num) {
+      this.showModal = true;
+      this.num = num;
+    },
   },
 
   

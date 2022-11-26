@@ -11,9 +11,17 @@
     </div>
   </div>
    <Modal v-if="showModal" @close="showModal = false">
+   <div class="mb-1">
+      <a :href="`/post/create?num=${id}`">
+        <i class="fas fa-pencil-alt text-dark me-2"> 수정</i>
+      </a>
+    </div>
+    <div>
+        <i class="fas fa-trash-alt me-2"> 삭제</i>
+    </div>
    </Modal>
    <ImageModal v-if="showImageModal" @close="showImageModal = false">
-      <div><img class="img-size" :src="modalFilePath"></div>
+      <div><img class="img-size modal-img-mh" :src="modalFilePath"></div>
       <!-- /default -->
       <!-- footer 슬롯 콘텐츠 -->
       <div class="img-modal-footer">

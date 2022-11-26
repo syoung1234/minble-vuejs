@@ -14,15 +14,8 @@
                     </div>
 
                     <div class="modal-body">
-                        <slot name="body"> 
-                            <div class="mb-1">
-                                <i class="fas fa-pencil-alt text-dark me-2"> 수정</i>
-                            </div>
-                            <div>
-                                <i class="fas fa-trash-alt me-2"> 삭제</i>
-                            </div>
+                        <slot/> 
                             
-                        </slot>
                     </div>
 
                 </div>
