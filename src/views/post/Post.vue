@@ -17,7 +17,9 @@
       </a>
     </div>
     <div>
+      <a href="javascript:" @click="deletePost">
         <i class="fas fa-trash-alt me-2"> 삭제</i>
+      </a>
     </div>
   </Modal>
   <main class="main-content mt-8">
@@ -142,7 +144,6 @@ export default {
         }
       })
         .then((response) => {
-          console.log(response.data);
           this.postList = response.data.postList;
           this.followingList = response.data.following;
           this.role = response.data.role;
@@ -185,6 +186,19 @@ export default {
         
       })
       .catch((error) => {
+        console.log(error)
+      })
+    },
+    async deletePost() {
+      const result = confirm("삭제 하시겠습니까?")
+      if (result == false) return;
+      await this.$axios.delete("/api/post/"+this.num+"/delete", {
+        headers:{
+            "X-AUTH-TOKEN": store.state.token.accessToken
+        }
+      }).then(() => {
+        this.$router.go()
+      }).catch((error) => {
         console.log(error)
       })
     },

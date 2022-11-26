@@ -17,7 +17,9 @@
       </a>
     </div>
     <div>
+      <a href="javascript:" @click="deletePost">
         <i class="fas fa-trash-alt me-2"> 삭제</i>
+        </a>
     </div>
    </Modal>
    <ImageModal v-if="showImageModal" @close="showImageModal = false">
@@ -188,7 +190,6 @@ export default {
         }
       })
         .then((response) => {
-          console.log(response)
           this.postDetail = response.data;
           this.commentList = response.data.commentList;
           this.pageList = response.data.pageList;
@@ -247,7 +248,6 @@ export default {
         }
       })
         .then((response) => {
-          console.log(response)
           for (let i = 0; i < response.data.commentList.length; i++) {
             this.commentList.push(response.data.commentList[i])
           }
@@ -256,6 +256,19 @@ export default {
         .catch((error)=> {
           console.log(error)
         })
+    },
+    async deletePost() {
+      const result = confirm("삭제 하시겠습니까?")
+      if (result == false) return;
+      await this.$axios.delete("/api/post/"+this.id+"/delete", {
+        headers:{
+            "X-AUTH-TOKEN": store.state.token.accessToken
+        }
+      }).then(() => {
+        this.$router.push("/post")
+      }).catch((error) => {
+        console.log(error)
+      })
     },
     downloadFile() {
       try {
