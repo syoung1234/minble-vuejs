@@ -72,15 +72,10 @@
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
-import store from "@/store/index.js";
+
 const body = document.getElementsByTagName("body")[0];
-const axiosConfig = {
-        headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken,
-            "Content-Type": "multipart/form-data",
-        }
-};
 let postUrl = "create"
+
 export default {
   name: "post",
   data() {
@@ -94,6 +89,12 @@ export default {
       imageUrlLists: [],
       fileList: [],
       fileDeleteList: [],
+      axiosConfig: {
+        headers:{
+            "X-AUTH-TOKEN": this.$store.state.token.accessToken,
+            "Content-Type": "multipart/form-data",
+        }
+      },
     }
   },
   components: {
@@ -120,11 +121,10 @@ export default {
       if (this.num != null) {
         await await this.$axios.get("/api/post/"+this.num, {
         headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken
+            "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       })
         .then((response) => {
-          console.log(response)
           this.content = response.data.content;
           this.fileList = response.data.postFileList;
           for (let i = 0; i < response.data.postFileList.length; i++) {
@@ -161,9 +161,8 @@ export default {
         postUrl = "update"
       }
       if (postUrl == "create") {
-        await this.$axios.post("/api/post/"+postUrl, formData, axiosConfig)
-          .then((response) => {
-            console.log(response)
+        await this.$axios.post("/api/post/"+postUrl, formData, this.axiosConfig)
+          .then(() => {
             this.$router.push("/post");
             
           })
@@ -171,9 +170,8 @@ export default {
             console.log(error)
           })
       } else {
-        await this.$axios.put("/api/post/"+this.num+"/update", formData, axiosConfig)
-          .then((response) => {
-            console.log(response)
+        await this.$axios.put("/api/post/"+this.num+"/update", formData, this.axiosConfig)
+          .then(() => {
             this.$router.push("/post");
             
           })

@@ -137,14 +137,8 @@ import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 import Modal from "@/examples/PostModal.vue";
 import ImageModal from "@/examples/ImageModal.vue";
-import store from "@/store/index.js"
 
 const body = document.getElementsByTagName("body")[0];
-const axiosConfig = {
-        headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken
-        }
-};
 
 export default {
   name: "post",
@@ -165,6 +159,11 @@ export default {
           modalFileName: null,
           commentList: [],
           pageList: [],
+          axiosConfig: {
+            headers:{
+                "X-AUTH-TOKEN": this.$store.state.token.accessToken
+            }
+          },
       }
   },
   created() {
@@ -184,11 +183,7 @@ export default {
   },
   methods: {
     async getPost() {
-      await this.$axios.get("/api/post/"+this.id, {
-        headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken
-        }
-      })
+      await this.$axios.get("/api/post/"+this.id, this.axiosConfig)
         .then((response) => {
           this.postDetail = response.data;
           this.commentList = response.data.commentList;
@@ -202,7 +197,7 @@ export default {
       let saveData = {}
       saveData.content = this.content
       saveData.postId = this.id
-      await this.$axios.post("/api/comment", saveData, axiosConfig)
+      await this.$axios.post("/api/comment", saveData, this.axiosConfig)
         .then(() => {
           this.$router.go()
         })
@@ -213,7 +208,7 @@ export default {
     async deleteComment(commentId) {
       const result = confirm("삭제 하시겠습니까?")
       if (result == false) return;
-      await this.$axios.delete(`/api/comment/${commentId}/delete`, axiosConfig)
+      await this.$axios.delete(`/api/comment/${commentId}/delete`, this.axiosConfig)
       .then(() => {
         this.$router.go()
       })
@@ -224,11 +219,8 @@ export default {
     async getFavorite(postId) {
       let saveData = {};
       saveData.postId = postId;
-      await this.$axios.post("/api/favorite", saveData, {
-        headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken
-        }
-      }).then((response) => {
+      await this.$axios.post("/api/favorite", saveData, this.axiosConfig)
+      .then((response) => {
         if (response.data.message == "delete") {
           this.postDetail.favorite = false
         } else {
@@ -242,11 +234,7 @@ export default {
       })
     },
     async nextPage() {
-      await this.$axios.get(`/api/post/${this.id}?page=${this.pageList.page+1}`, {
-        headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken
-        }
-      })
+      await this.$axios.get(`/api/post/${this.id}?page=${this.pageList.page+1}`, this.axiosConfig)
         .then((response) => {
           for (let i = 0; i < response.data.commentList.length; i++) {
             this.commentList.push(response.data.commentList[i])
@@ -260,11 +248,8 @@ export default {
     async deletePost() {
       const result = confirm("삭제 하시겠습니까?")
       if (result == false) return;
-      await this.$axios.delete("/api/post/"+this.id+"/delete", {
-        headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken
-        }
-      }).then(() => {
+      await this.$axios.delete("/api/post/"+this.id+"/delete", this.axiosConfig)
+      .then(() => {
         this.$router.push("/post")
       }).catch((error) => {
         console.log(error)

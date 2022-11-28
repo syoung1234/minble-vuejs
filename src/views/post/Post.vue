@@ -100,7 +100,6 @@
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
-import store from '@/store/index.js';
 import Modal from "@/examples/PostModal.vue";
 
 const body = document.getElementsByTagName("body")[0];
@@ -114,6 +113,11 @@ export default {
       pageList: null,
       showModal: false,
       num: null,
+      axiosConfig: {
+        headers:{
+            "X-AUTH-TOKEN": this.$store.state.token.accessToken
+        }
+      },
     }
   },
   components: {
@@ -138,11 +142,7 @@ export default {
   },
   methods: {
     async getList() { // 목록
-      await this.$axios.get("/api/post", {
-        headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken
-        }
-      })
+      await this.$axios.get("/api/post", this.axiosConfig)
         .then((response) => {
           this.postList = response.data.postList;
           this.followingList = response.data.following;
@@ -154,11 +154,7 @@ export default {
         })
     },
     async nextPage() { // 더보기
-      await this.$axios.get(`/api/post?page=${this.pageList.page+1}`, {
-        headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken
-        }
-      })
+      await this.$axios.get(`/api/post?page=${this.pageList.page+1}`, this.axiosConfig)
         .then((response) => {
           for (let i = 0; i < response.data.postList.length; i++) {
             this.postList.push(response.data.postList[i])
@@ -172,11 +168,8 @@ export default {
     async getFavorite(postId, index) {
       let saveData = {};
       saveData.postId = postId;
-      await this.$axios.post("/api/favorite", saveData, {
-        headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken
-        }
-      }).then((response) => {
+      await this.$axios.post("/api/favorite", saveData, this.axiosConfig)
+      .then((response) => {
         if (response.data.message == "delete") {
           this.postList[index].favorite = false
         } else {
@@ -192,11 +185,8 @@ export default {
     async deletePost() {
       const result = confirm("삭제 하시겠습니까?")
       if (result == false) return;
-      await this.$axios.delete("/api/post/"+this.num+"/delete", {
-        headers:{
-            "X-AUTH-TOKEN": store.state.token.accessToken
-        }
-      }).then(() => {
+      await this.$axios.delete("/api/post/"+this.num+"/delete", this.axiosConfig)
+      .then(() => {
         this.$router.go()
       }).catch((error) => {
         console.log(error)
