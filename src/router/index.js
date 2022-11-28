@@ -10,6 +10,7 @@ import Signin from "../views/Signin.vue";
 import Post from "../views/post/Post.vue";
 import PostCreateUpdate from "../views/post/CreateUpdate.vue";
 import PostDetail from "../views/post/Detail.vue";
+import Message from "../views/message/Message.vue";
 import store from "../store";
 
 const beforeAuth = isAuth => (from, to , next) => {
@@ -83,6 +84,11 @@ const routes = [
     name: "Signup",
     component: Signup,
   },
+  {
+    path: "/message",
+    name: "message",
+    component: Message,
+  }
   
 ];
 
