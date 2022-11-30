@@ -146,12 +146,18 @@ textarea {
 }
 
 .msg-input {
-  position: absolute;
   width: 80%;
   bottom: 0;
-  margin-bottom: 2rem;
 }
 
 .text-right {
   text-align: right;
 }
+
+.speech-bubble {
+  background-color: #D4F4FA;
+  padding: 0.8rem;
+  border-radius: 1rem;
+}
+
+
