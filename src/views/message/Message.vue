@@ -79,11 +79,6 @@ export default {
             },
             channel: null,
             profilePath: null,
-            widthList: [],
-            currentMessageList: [],
-            currentWidthList: [],
-            dateList: [],
-            today: null,
         }
     },
     components: {
@@ -177,17 +172,6 @@ export default {
             }, deep:true
             
         },
-        currentMessageList: {
-            handler() {
-                    this.$nextTick(() => {
-                    // let messages = this.$refs.currentMessageList;
-                    this.$refs.messageList.scrollTo({ top: this.$refs.messageList.scrollHeight});
-
-                });
-            }, deep:true
-            
-        }
-        
     },
 }
 </script>
