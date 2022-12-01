@@ -19,10 +19,10 @@
                             <td align="center" colspan="2"><p class="mt-3">{{messageList[index].createdAt.substr(0, 10)}}</p></td>
                         </tr>
                         <tr>
-                            <td width="15%" class="">
+                            <td width="15%" class="" v-if="this.nickname != message.nickname && message.nickname == message.channel">
                                 <img :src="message.profilePath" v-if="this.nickname != message.nickname" class="rounded-circle img-size border border-2 border-white">
                             </td>
-                            <td v-if="this.nickname != message.nickname">
+                            <td v-if="message.nickname == message.channel">
                                 <div class="mt-2">
                                 <span> {{ message.nickname }}</span>
                                 </div>
@@ -33,7 +33,7 @@
                                     <span class="text-xs ms-1">{{ message.createdAt.substr(-5) }}</span>
                                 </div>
                             </td>
-                            <td v-else align="right">
+                            <td colspan="2" v-else-if="this.nickname == message.nickname" align="right">
                                 <div class="mt-2 speech-bubble msg-bg float-right">
                                 <span>{{ message.content }}</span>
                                 </div>
