@@ -1,8 +1,8 @@
 <template>
-  <main class="main-content mt-1">
+  <main class="main-content">
     <section>
       <div class="page-header">
-    <div class="container">
+    <div class="container pd-0">
       <div class="row">
         <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
           <div class="card z-index-0 msg-h">
@@ -14,46 +14,42 @@
             </div>
              <div class="card-body scroll" ref="messageList">
                 <table>
-                    <tr v-for="(message, index) in messageList" :key="index">
-                        <td width="15%" class="">
-                            <img :src="message.profilePath" v-if="this.nickname != message.nickname" class="rounded-circle img-size border border-2 border-white">
-                        </td>
-                        <td v-if="this.nickname != message.nickname">
-                            <div class="mt-2">
-                            <span> {{message.nickname }}</span>
-                            </div>
-                            <div class="mt-3 speech-bubble" :style="`width: ${widthList[index]}px`">
-                            <span :class="`${index}`" :ref="`contentWidth${index}`">{{ message.content }}</span>
-                            </div>
-                        </td>
-                        <td v-else align="right">
-                            <div class="mt-4 speech-bubble" :style="`width: ${widthList[index]}px`">
-                            <span :class="`${index}`" :ref="`contentWidth${index}`">{{ message.content }}</span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr v-for="(message, index) in currentMessageList" :key="index" ref="currentMessageList">
-                        <td width="15%" class="">
-                            <img :src="message.profilePath" v-if="this.nickname != message.nickname" class="rounded-circle img-size border border-2 border-white">
-                        </td>
-                        <td v-if="this.nickname != message.nickname">
-                            <div class="mt-2">
-                            <span> {{message.nickname }}</span>
-                            </div>
-                            <div class="mt-3 speech-bubble" :style="`width: ${currentWidthList[index]}px`">
-                            <span :class="`${index}`" :ref="`currentWidth${index}`">{{ message.content }}</span>
-                            </div>
-                        </td>
-                        <td v-else align="right">
-                            <div class="mt-4 speech-bubble" :style="`width: ${currentWidthList[index]}px`">
-                            <span :class="`${index}`" :ref="`currentWidth${index}`">{{ message.content }}</span>
-                            </div>
-                        </td>
-                    </tr>
+                    <template v-for="(message, index) in messageList" :key="index">
+                        <tr v-if="index > 0 && messageList[index-1].createdAt.substr(0, 10) != messageList[index].createdAt.substr(0, 10)">
+                            <td align="center" colspan="2"><p class="mt-3">{{messageList[index].createdAt.substr(0, 10)}}</p></td>
+                        </tr>
+                        <tr>
+                            <td width="15%" class="">
+                                <img :src="message.profilePath" v-if="this.nickname != message.nickname" class="rounded-circle img-size border border-2 border-white">
+                            </td>
+                            <td v-if="this.nickname != message.nickname">
+                                <div class="mt-2">
+                                <span> {{ message.nickname }}</span>
+                                </div>
+                                <div class="mt-1 speech-bubble float-left">
+                                <span>{{ message.content }}</span>
+                                </div>
+                                <div class="mt-4">
+                                    <span class="text-xs ms-1">{{ message.createdAt.substr(-5) }}</span>
+                                </div>
+                            </td>
+                            <td v-else align="right">
+                                <div class="mt-2 speech-bubble msg-bg float-right">
+                                <span>{{ message.content }}</span>
+                                </div>
+                                <div class="mt-4 float-right">
+                                    <span class="text-xs me-1">{{ message.createdAt.substr(-5) }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
                 </table>
             </div>
             <div class="card-footer">
                 <input type="text" class="msg-input" v-model="message" @keyup="sendMessage">
+                <a href="javascript:" @click="postComment">
+                    <img class="img-size mb-1 ms-2 msg-btn" src="/icon/send-message-2-2.png">
+                </a>
             </div>
           </div>
         </div>
@@ -86,6 +82,8 @@ export default {
             widthList: [],
             currentMessageList: [],
             currentWidthList: [],
+            dateList: [],
+            today: null,
         }
     },
     components: {
@@ -152,12 +150,11 @@ export default {
                     this.connected = true;
                     console.log("소켓 연결 성공", frame)
                     console.log(this.$refs.contentWidth1)
-                    this.resizeWidth();
                     // 서버의 메시지 전송 endpoit를 구독 (pub/sub)
                     this.stompClient.subscribe(`/send/${this.channel}`, res => {
                         console.log("구독으로 받은 메시지 입니다.", res.body);
-                        this.currentMessageList.push(JSON.parse(res.body))
-                        console.log("c_messageList:" + this.currentMessageList)
+                        this.messageList.push(JSON.parse(res.body))
+                        console.log("messageList:" + this.messageList)
                     });
                 },
                 error => {
@@ -176,9 +173,6 @@ export default {
                 let messages = this.$refs.messageList;
                 messages.scrollTo({ top: messages.scrollHeight});
 
-                for (let i = 0; i < this.messageList.length; i++) {
-                this.widthList.push(this.$refs['contentWidth'+i].offsetWidth + 35)
-                }
                 });
             }, deep:true
             
@@ -189,9 +183,6 @@ export default {
                     // let messages = this.$refs.currentMessageList;
                     this.$refs.messageList.scrollTo({ top: this.$refs.messageList.scrollHeight});
 
-                    for (let i = this.currentMessageList.length-1; i < this.currentMessageList.length; i++) {
-                        this.currentWidthList.push(this.$refs['currentWidth'+i].offsetWidth + 35)
-                    }
                 });
             }, deep:true
             

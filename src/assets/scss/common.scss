@@ -142,12 +142,13 @@ textarea {
 }
 
 .msg-h {
-  height: 95vh;
+  height: 100vh;
 }
 
 .msg-input {
   width: 80%;
   bottom: 0;
+  height: 35px;
 }
 
 .text-right {
@@ -160,4 +161,22 @@ textarea {
   border-radius: 1rem;
 }
 
+.pd-0 {
+  padding: 0;
+}
 
+.msg-bg {
+  background-color: #e5facd;
+}
+
+.msg-btn {
+  width: 15%;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
