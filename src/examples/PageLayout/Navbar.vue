@@ -62,7 +62,7 @@
               Profile
             </router-link>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!this.$store.state.token.accessToken">
             <router-link class="nav-link me-2" to="/signup">
               <i
                 class="fas fa-user-circle opacity-6 me-1"
@@ -81,6 +81,16 @@
               ></i>
               Sign In
             </router-link>
+          </li>
+          <li class="nav-item" v-if="this.$store.state.token.accessToken">
+            <a href="javascript:" class="nav-link me-2" @click="logout">
+              <i
+                class="fas fa-user-circle opacity-6 me-1"
+                aria-hidden="true"
+                :class="isBlur ? 'text-dark' : 'text-white'"
+              ></i>
+              로그아웃
+            </a>
           </li>
         </ul>
         <ul class="navbar-nav d-lg-block d-none">
@@ -126,6 +136,14 @@ export default {
         "text-dark": this.darkMode
       };
     }
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch("logout", {})
+      .then(() => this.$router.push("/signin"))
+      .catch(({ message }) => alert(message))
+    }
+
   }
 };
 </script>

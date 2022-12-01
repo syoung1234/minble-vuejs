@@ -57,6 +57,11 @@ export default createStore({
       state.isAuthenticated = true
       jwt.saveToken(payload.accessToken)
     },
+    logout: function (state = {}) {
+      state.token.accessToken = ""
+      state.isAuthenticated = false
+      jwt.destroyToken()
+    },
   },
   actions: {
     toggleSidebarColor({ commit }, payload) {
@@ -67,7 +72,7 @@ export default createStore({
         headers:{
             "Content-Type": "application/json"
         }
-    }
+      }
       let params = {
           email: payload.email,
           password: payload.password
@@ -86,8 +91,16 @@ export default createStore({
                   reject(error)
               })
       })
-  }
   },
+  logout: function (context, payload) {
+    return new Promise(resolve => {
+      setTimeout(function() {
+        context.commit("logout", payload)
+        resolve({})
+      }, 1000)
+    })
+  }
+},
   getters: {
     getAccessToken: function (state) {
       return state.token.accessToken
