@@ -11,6 +11,7 @@ import Post from "../views/post/Post.vue";
 import PostCreateUpdate from "../views/post/CreateUpdate.vue";
 import PostDetail from "../views/post/Detail.vue";
 import Message from "../views/message/Message.vue";
+import Start from "../views/Start.vue"
 import store from "../store";
 
 const beforeAuth = isAuth => (from, to , next) => {
@@ -23,6 +24,11 @@ const beforeAuth = isAuth => (from, to , next) => {
 }
 
 const routes = [
+  {
+    path: "/start",
+    name: "Start",
+    component: Start,
+  },
   {
     path: "/",
     name: "/",
