@@ -28,24 +28,34 @@
     <div class="container">
       <div class="row">
         <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
-          <div class="scroll">
-            <a href="" v-for="(following, i) in followingList" :key="i">
-                <img v-if="following?.profilePath" :src="following?.profilePath" class="rounded-circle profile-size border border-2 border-white">
-                <img v-else src="/img/team-4.53033970.jpg" class="rounded-circle profile-size border border-2 border-white">
-            </a>
-          </div>
             <div class="text-end mb-2">
                 <a href="/post/create" class="btn mb-0 bg-gradient-dark btn-md null null" v-if="role != null"><i class="fas fa-plus me-2"></i>Add</a>
             </div>
           <div class="card z-index-0">
-            <div class="card-header text-center pt-4">
-              <h5>Post</h5>
-            </div>
             <div class="card-body">
+
+              <div class="scroll mb-5 float-left">
+                <h5>나의 팔로잉 목록</h5>
+                <a href="" v-for="(following, i) in followingList" :key="i">
+                  <figure class="float-left profile-area me-2">
+                      <img v-if="following?.profilePath" :src="following?.profilePath" class="rounded-circle profile-size border border-2 border-white" alt="est">
+                      <img v-else src="/img/team-4.53033970.jpg" class="rounded-circle profile-size border border-2 border-white">
+                    <figcaption class="text-center"><span class="small">{{ following?.nickname }}</span></figcaption>
+                  </figure>
+                </a>
+                <figure class="float-left profile-area me-2">
+                  <a href="/start" class="text-center">
+                    <img src="/icon/plus_icon.png" class="rounded-circle profile-size border border-2 border-white">
+                  <figcaption class="text-center"><span class="small">팔로잉 추가</span></figcaption>
+                  </a>
+                </figure>
+              </div>
+
               <form role="form">
+                <h5>게시글</h5>
                   <table border="1" bordercolor="gray" width ="100%" height="auto" align = "center" class="card card-body mb-4" v-for="(post,index) in postList" :key="index">
                   <div class="text-end">
-                    <a href="javascript:">
+                    <a href="javascript:" v-if="nickname == post?.nickname">
                       <i class="fa fa-ellipsis-v text-xs" @click="postModal(post?.id)"></i>
                     </a>
                   </div>
