@@ -25,7 +25,7 @@
             </div>
             <div class="card-body">
                 <div class="scroll mb-5 float-left">
-                <a href="javascript:" v-for="(following, i) in followingList" :key="i" @click="postFollow">
+                <a href="javascript:" v-for="(following, i) in followingList" :key="i" @click="postFollow(following.nickname)">
                   <figure class="float-left profile-area me-2">
                       <img :src="following?.profilePath" class="rounded-circle profile-size border border-2 border-white" alt="est">
                     <figcaption class="text-center"><span class="small">{{ following?.nickname }}</span></figcaption>
@@ -58,7 +58,6 @@ export default {
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       },
-      nickname: null,
     }
   },
   components: {
@@ -91,11 +90,16 @@ export default {
           console.log(error)
         })
     },
-    async postFollow() { // 팔로우 하기 
+    async postFollow(nickname) { // 팔로우 하기 
       if (this.$store.state.token.accessToken) {
-        await this.$axios.post("/api/follow/create", this.axiosConfig)
-          .then((response) => {
-            console.log(response)
+        const result = confirm("팔로우 하시겠습니까?")
+        if (result == false) return;
+        let saveData = {}
+        saveData.nickname = nickname
+        console.log(nickname)
+        await this.$axios.post("/api/follow/create", saveData, this.axiosConfig)
+          .then(() => {
+            this.$router.go()
           })
           .catch((error) => {
             console.log(error)
