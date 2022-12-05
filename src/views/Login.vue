@@ -49,7 +49,7 @@
                     <a
                       href="javascript:;"
                       class="text-success text-gradient font-weight-bold"
-                    >Sign up</a>
+                    >회원가입</a>
                   </p>
                 </div>
               </div>
@@ -72,7 +72,7 @@ import ArgonButton from "@/components/ArgonButton.vue";
 const body = document.getElementsByTagName("body")[0];
 
 export default {
-  name: "signin",
+  name: "login",
   data() {
         return {
             email: null,

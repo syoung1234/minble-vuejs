@@ -63,23 +63,23 @@
             </router-link>
           </li>
           <li class="nav-item" v-if="!this.$store.state.token.accessToken">
-            <router-link class="nav-link me-2" to="/signup">
+            <router-link class="nav-link me-2" to="/register">
               <i
                 class="fas fa-user-circle opacity-6 me-1"
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
-              Sign Up
+              Register
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link me-2" to="/signin">
+            <router-link class="nav-link me-2" to="/login">
               <i
                 class="fas fa-key opacity-6 me-1"
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
-              Sign In
+              Login
             </router-link>
           </li>
           <li class="nav-item" v-if="this.$store.state.token.accessToken">
@@ -140,7 +140,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch("logout", {})
-      .then(() => this.$router.push("/signin"))
+      .then(() => this.$router.push("/login"))
       .catch(({ message }) => alert(message))
     }
 

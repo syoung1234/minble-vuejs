@@ -92,9 +92,9 @@
       </li>
       <li class="nav-item">
         <sidenav-item
-          url="/signin"
-          :class="getRoute() === 'signin' ? 'active' : ''"
-          :navText="this.$store.state.isRTL ? 'تسجيل الدخول' : 'Sign In'"
+          url="/login"
+          :class="getRoute() === 'login' ? 'active' : ''"
+          :navText="this.$store.state.isRTL ? 'تسجيل الدخول' : 'Login'"
         >
           <template v-slot:icon>
             <i class="ni ni-single-copy-04 text-danger text-sm opacity-10"></i>
@@ -103,9 +103,9 @@
       </li>
       <li class="nav-item">
         <sidenav-item
-          url="/signup"
-          :class="getRoute() === 'signup' ? 'active' : ''"
-          :navText="this.$store.state.isRTL ? 'اشتراك' : 'Sign Up'"
+          url="/register"
+          :class="getRoute() === 'register' ? 'active' : ''"
+          :navText="this.$store.state.isRTL ? 'اشتراك' : 'Register'"
         >
           <template v-slot:icon>
             <i class="ni ni-collection text-info text-sm opacity-10"></i>

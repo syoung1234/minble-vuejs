@@ -36,7 +36,7 @@
         <ul class="navbar-nav justify-content-end">
           <li class="nav-item d-flex align-items-center">
             <router-link
-              :to="{ name: 'Signin' }"
+              :to="{ name: 'Login' }"
               class="px-0 nav-link font-weight-bold text-white"
               target="_blank"
             >

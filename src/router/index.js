@@ -5,8 +5,8 @@ import Billing from "../views/Billing.vue";
 import VirtualReality from "../views/VirtualReality.vue";
 import RTL from "../views/Rtl.vue";
 import Profile from "../views/Profile.vue";
-import Signup from "../views/Signup.vue";
-import Signin from "../views/Signin.vue";
+import Register from "../views/Register.vue";
+import Login from "../views/Login.vue";
 import Post from "../views/post/Post.vue";
 import PostCreateUpdate from "../views/post/CreateUpdate.vue";
 import PostDetail from "../views/post/Detail.vue";
@@ -87,14 +87,14 @@ const routes = [
     component: PostDetail,
   },
   {
-    path: "/signin",
-    name: "Signin",
-    component: Signin,
+    path: "/login",
+    name: "Login",
+    component: Login,
   },
   {
-    path: "/signup",
-    name: "Signup",
-    component: Signup,
+    path: "/register",
+    name: "Register",
+    component: Register,
   },
   {
     path: "/message",

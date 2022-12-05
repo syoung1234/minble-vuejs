@@ -128,14 +128,14 @@
                 </div>
                 
                 <div class="text-center">
-                  <button class="btn mb-0 bg-gradient-dark btn-md w-100 null my-4 mb-2" type="button" fullWidth color="dark" variant="gradient" @click="postData">Sign up</button>
+                  <button class="btn mb-0 bg-gradient-dark btn-md w-100 null my-4 mb-2" type="button" fullWidth color="dark" variant="gradient" @click="postData">회원가입</button>
                 </div>
                 <p class="text-sm mt-3 mb-0">
                   Already have an account?
                   <a
                     href="javascript:;"
                     class="text-dark font-weight-bolder"
-                  >Sign in</a>
+                  >로그인</a>
                 </p>
               </form>
             </div>
@@ -159,7 +159,7 @@ const axiosConfig = {
         }
     }
 export default {
-  name: "signin",
+  name: "register",
   data() {
         return {
             email: null,
