@@ -10,43 +10,28 @@
       </div>
     </div>
   </div>
-  <Modal v-if="showModal" @close="showModal = false">
-    <div class="mb-1">
-      <a :href="`/post/create?num=${num}`">
-        <i class="fas fa-pencil-alt text-dark me-2"> 수정</i>
-      </a>
-    </div>
-    <div>
-      <a href="javascript:" @click="deletePost">
-        <i class="fas fa-trash-alt me-2"> 삭제</i>
-      </a>
-    </div>
-  </Modal>
   <main class="main-content mt-8">
     <section>
       <div class="page-header min-vh-100">
     <div class="container">
       <div class="row">
         <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
-          
-            <div class="text-end mb-2">
-                <a href="/post/create" class="btn mb-0 bg-gradient-dark btn-md null null" v-if="role != null"><i class="fas fa-plus me-2"></i>Add</a>
-            </div>
-          <div class="card z-index-0 msg-h text-center">
-            <div class="card-header text-center pt-4">
-              <h5>Profile</h5>
+          <div class="card z-index-0 msg-h">
+            <div class="card-header mt-2">
+              <a href="/home" v-if="this.$store.state.token.accessToken">
+                  <img class="img-size w-10" src="/icon/x-icon.png">
+              </a>
+              <span class="text-bold ms-3">팔로우 추가하기</span>
             </div>
             <div class="card-body">
-                <div class="mb-3"><span class="text-bold">팔로잉 목록</span></div>
-                <template v-for="(following, i) in followingList" :key="i">
-                <a href="" class="me-1 ms-1 mb-1" >
-                    <img v-if="following?.profilePath" :src="following?.profilePath" class="rounded-circle profile-size border border-2 border-white">
-                    <img v-else src="/img/team-4.53033970.jpg" class="rounded-circle profile-size border border-2 border-white">
+                <div class="scroll mb-5 float-left">
+                <a href="javascript:" v-for="(following, i) in followingList" :key="i" @click="postFollow">
+                  <figure class="float-left profile-area me-2">
+                      <img :src="following?.profilePath" class="rounded-circle profile-size border border-2 border-white" alt="est">
+                    <figcaption class="text-center"><span class="small">{{ following?.nickname }}</span></figcaption>
+                  </figure>
                 </a>
-                <span>{{ following?.nickname }}</span>
-                
-                </template>
-                <div class="mt-5"><span class="text-bold">팔로잉 추가하기</span></div>
+              </div>
             </div>
           </div>
         </div>
@@ -60,34 +45,28 @@
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
-import Modal from "@/examples/PostModal.vue";
 
 const body = document.getElementsByTagName("body")[0];
 export default {
   name: "start",
   data() {
     return {
-      postList : [],
       followingList: [],
-      role: null,
-      pageList: null,
-      showModal: false,
       num: null,
       axiosConfig: {
         headers:{
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       },
+      nickname: null,
     }
   },
   components: {
     Navbar,
     AppFooter,
-    Modal,
   },
   created() {
     this.getList();
-    this.getNickname();
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
@@ -102,76 +81,31 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-    async getNickname() {
-        await this.$axios.get("/api/mypage", this.axiosConfig)
+    async getList() { // 목록
+      await this.$axios.get("/api/follow/list", this.axiosConfig)
+        .then((response) => {
+          console.log(response)
+          this.followingList = response.data
+        })
+        .catch((error)=> {
+          console.log(error)
+        })
+    },
+    async postFollow() { // 팔로우 하기 
+      if (this.$store.state.token.accessToken) {
+        await this.$axios.post("/api/follow/create", this.axiosConfig)
           .then((response) => {
             console.log(response)
-            this.$store.state.nickname = response.data.nickname
-            console.log(this.$store.state.nickname);
           })
           .catch((error) => {
             console.log(error)
           })
-    },
-    async getList() { // 목록
-      await this.$axios.get("/api/post", this.axiosConfig)
-        .then((response) => {
-          this.postList = response.data.postList;
-          this.followingList = response.data.following;
-          this.role = response.data.role;
-          this.pageList = response.data.pageList;
-        })
-        .catch((error)=> {
-          console.log(error)
-        })
-    },
-    async nextPage() { // 더보기
-      await this.$axios.get(`/api/post?page=${this.pageList.page+1}`, this.axiosConfig)
-        .then((response) => {
-          for (let i = 0; i < response.data.postList.length; i++) {
-            this.postList.push(response.data.postList[i])
-          }
-          this.pageList = response.data.pageList;
-        })
-        .catch((error)=> {
-          console.log(error)
-        })
-    },
-    async getFavorite(postId, index) {
-      let saveData = {};
-      saveData.postId = postId;
-      await this.$axios.post("/api/favorite", saveData, this.axiosConfig)
-      .then((response) => {
-        if (response.data.message == "delete") {
-          this.postList[index].favorite = false
-        } else {
-          this.postList[index].favorite = true
-        }
-        this.postList[index].favoriteCount = response.data.favoriteCount
-        
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-    },
-    async deletePost() {
-      const result = confirm("삭제 하시겠습니까?")
-      if (result == false) return;
-      await this.$axios.delete("/api/post/"+this.num+"/delete", this.axiosConfig)
-      .then(() => {
-        this.$router.go()
-      }).catch((error) => {
-        console.log(error)
-      })
-    },
-    postModal(num) {
-      this.showModal = true;
-      this.num = num;
+      } else {
+        alert("로그인이 필요한 서비스입니다.");
+        this.$router.push("/login")
+      }
     },
   },
-
-  
-
 }
 
 </script>

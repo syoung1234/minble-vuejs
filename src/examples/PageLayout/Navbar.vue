@@ -29,17 +29,29 @@
       <div class="collapse navbar-collapse" id="navigation">
         <ul class="navbar-nav mx-auto">
           <li class="nav-item">
-            <router-link
+            <router-link v-if="this.$store.state.token.accessToken"
               class="nav-link d-flex align-items-center me-2 active"
               aria-current="page"
-              to="/dashboard-default"
+              to="/home"
             >
               <i
                 class="fa fa-chart-pie opacity-6 me-1"
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
-              Dashboard
+              Home
+            </router-link>
+            <router-link v-else-if="!this.$store.state.token.accessToken"
+              class="nav-link d-flex align-items-center me-2 active"
+              aria-current="page"
+              to="/start"
+            >
+              <i
+                class="fa fa-chart-pie opacity-6 me-1"
+                aria-hidden="true"
+                :class="isBlur ? 'text-dark' : 'text-white'"
+              ></i>
+              Home
             </router-link>
           </li>
           <li class="nav-item">
@@ -52,7 +64,7 @@
               Post
             </router-link>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="this.$store.state.token.accessToken">
             <router-link class="nav-link me-2" to="/profile">
               <i
                 class="fa fa-user opacity-6 me-1"
@@ -72,7 +84,7 @@
               Register
             </router-link>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!this.$store.state.token.accessToken">
             <router-link class="nav-link me-2" to="/login">
               <i
                 class="fas fa-key opacity-6 me-1"
@@ -89,18 +101,8 @@
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
-              로그아웃
+              Logout
             </a>
-          </li>
-        </ul>
-        <ul class="navbar-nav d-lg-block d-none">
-          <li class="nav-item">
-            <a
-              href="https://www.creative-tim.com/product/vue-argon-dashboard"
-              class="btn btn-sm mb-0 me-1"
-              :class="isBtn"
-              >Free download</a
-            >
           </li>
         </ul>
       </div>
@@ -118,7 +120,12 @@ export default {
   data() {
     return {
       downArrWhite,
-      downArrBlack
+      downArrBlack,
+      axiosConfig: {
+        headers:{
+            "X-AUTH-TOKEN": this.$store.state.token.accessToken
+        }
+      },
     };
   },
   props: {
