@@ -36,7 +36,7 @@
 
               <div class="scroll mb-5 float-left">
                 <h5>나의 팔로잉 목록</h5>
-                <a href="" v-for="(following, i) in followingList" :key="i">
+                <a :href="`/post?name=${following.nickname}`" v-for="(following, i) in followingList" :key="i">
                   <figure class="float-left profile-area me-2">
                       <img v-if="following?.profilePath" :src="following?.profilePath" class="rounded-circle profile-size border border-2 border-white" alt="est">
                       <img v-else src="/img/team-4.53033970.jpg" class="rounded-circle profile-size border border-2 border-white">

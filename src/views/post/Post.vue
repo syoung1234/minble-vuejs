@@ -33,26 +33,10 @@
             </div>
           <div class="card z-index-0">
             <div class="card-body">
-
-              <div class="scroll mb-5 float-left">
-                <h5>나의 팔로잉 목록</h5>
-                <a href="" v-for="(following, i) in followingList" :key="i">
-                  <figure class="float-left profile-area me-2">
-                      <img v-if="following?.profilePath" :src="following?.profilePath" class="rounded-circle profile-size border border-2 border-white" alt="est">
-                      <img v-else src="/img/team-4.53033970.jpg" class="rounded-circle profile-size border border-2 border-white">
-                    <figcaption class="text-center"><span class="small">{{ following?.nickname }}</span></figcaption>
-                  </figure>
-                </a>
-                <figure class="float-left profile-area me-2">
-                  <a href="/start" class="text-center">
-                    <img src="/icon/plus_icon.png" class="rounded-circle profile-size border border-2 border-white">
-                  <figcaption class="text-center"><span class="small">팔로잉 추가</span></figcaption>
-                  </a>
-                </figure>
-              </div>
-
+              <div class="float-left"><h5>게시글</h5></div>
+              <div class="text-right"><a href="javascript:" class="small" @click="deleteFollow">팔로잉 취소</a></div>
+              
               <form role="form">
-                <h5>게시글</h5>
                   <table border="1" bordercolor="gray" width ="100%" height="auto" align = "center" class="card card-body mb-4" v-for="(post,index) in postList" :key="index">
                   <div class="text-end">
                     <a href="javascript:" v-if="nickname == post?.nickname">
@@ -128,6 +112,7 @@ export default {
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       },
+      name: this.$route.query.name
     }
   },
   components: {
@@ -213,6 +198,17 @@ export default {
       }).catch((error) => {
         console.log(error)
       })
+    },
+    async deleteFollow() {
+      const result = confirm("팔로잉 취소하시겠습니까?")
+      if (result == false) return;
+      await this.$axios.delete(`/api/follow/${this.name}/delete`, this.axiosConfig)
+        .then(() => {
+          this.$router.push("/home")
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
     postModal(num) {
       this.showModal = true;
