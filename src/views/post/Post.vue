@@ -56,12 +56,12 @@
                           </td>
                       </tr>
                       <tr class="mt-2 mb-2">
-                        <a :href="`/post/detail?num=${post.id}`">
+                        <router-link :to="`/post/detail?num=${post.id}`">
                           <td><div class="text-ellipsis"><span>{{ post?.content }}</span>
                           <img v-if="post?.postFileList[0]" class="img-size me-1 mb-0" :src="post?.postFileList[0].filePath"/>
                           </div>
                           </td>
-                        </a>
+                        </router-link>
                       </tr>
                       <tr>
                         <td>
@@ -95,6 +95,7 @@
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 import Modal from "@/examples/PostModal.vue";
+import { mapMutations } from "vuex";
 
 const body = document.getElementsByTagName("body")[0];
 export default {
@@ -137,6 +138,7 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
+    ...mapMutations(["updateName"]),
     async getNickname() {
         await this.$axios.get("/api/mypage", this.axiosConfig)
           .then((response) => {
@@ -149,19 +151,22 @@ export default {
           })
     },
     async getList() { // 목록
-      await this.$axios.get("/api/post", this.axiosConfig)
+      await this.$axios.get(`/api/post?name=${this.name}`, this.axiosConfig)
         .then((response) => {
           this.postList = response.data.postList;
           this.followingList = response.data.following;
           this.role = response.data.role;
           this.pageList = response.data.pageList;
+
+          // store 저장 
+          this.updateName(this.name);
         })
         .catch((error)=> {
           console.log(error)
         })
     },
     async nextPage() { // 더보기
-      await this.$axios.get(`/api/post?page=${this.pageList.page+1}`, this.axiosConfig)
+      await this.$axios.get(`/api/post?name=${this.name}&page=${this.pageList.page+1}`, this.axiosConfig)
         .then((response) => {
           for (let i = 0; i < response.data.postList.length; i++) {
             this.postList.push(response.data.postList[i])

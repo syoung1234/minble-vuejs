@@ -20,10 +20,11 @@ export default createStore({
     showMain: true,
     layout: "default",
     count: 0,
-      token: {
-        accessToken: jwt.getToken(),
-      },
-      isAuthenticated: !!jwt.getToken(),
+    token: {
+      accessToken: jwt.getToken(),
+    },
+    isAuthenticated: !!jwt.getToken(),
+    name: null,
   },
   mutations: {
     toggleConfigurator(state) {
@@ -51,6 +52,9 @@ export default createStore({
       } else {
         state.isNavFixed = false;
       }
+    },
+    updateName(state, payload) {
+      state.name = payload;
     },
     login: function (state, payload = {}) {
       state.token.accessToken = payload.accessToken
