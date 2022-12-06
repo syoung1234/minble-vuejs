@@ -34,7 +34,7 @@
    </ImageModal>
   <main class="main-content mt-8">
     <section>
-      <div class="page-header min-vh-100">
+      <div class="page-header">
     <div class="container">
       <div class="row">
         <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
@@ -56,9 +56,6 @@
                       <tr>
                           <td width="20%" v-if="postDetail?.profilePath != null">
                           <img :src="postDetail?.profilePath" class="rounded-circle img-size border border-2 border-white">
-                          </td>
-                          <td width="20%" v-else>
-                          <img src="/img/team-4.53033970.jpg" class="rounded-circle img-size border border-2 border-white">
                           </td>
                           <td>
                               <span class="text-bold">{{ postDetail?.nickname }}</span> <br>
