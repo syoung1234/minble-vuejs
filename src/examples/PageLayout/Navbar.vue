@@ -29,10 +29,9 @@
       <div class="collapse navbar-collapse" id="navigation">
         <ul class="navbar-nav mx-auto">
           <li class="nav-item">
-            <router-link v-if="this.$store.state.token.accessToken"
+            <router-link to="/home" v-if="this.$store.state.token.accessToken"
               class="nav-link d-flex align-items-center me-2 active"
               aria-current="page"
-              to="/home"
             >
               <i
                 class="fa fa-chart-pie opacity-6 me-1"
@@ -41,10 +40,9 @@
               ></i>
               Home
             </router-link>
-            <router-link v-else-if="!this.$store.state.token.accessToken"
+            <a href="/start" v-else-if="!this.$store.state.token.accessToken"
               class="nav-link d-flex align-items-center me-2 active"
               aria-current="page"
-              to="/start"
             >
               <i
                 class="fa fa-chart-pie opacity-6 me-1"
@@ -52,16 +50,26 @@
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
               Home
-            </router-link>
+            </a>
           </li>
-          <li class="nav-item">
-            <router-link class="nav-link me-2" to="/post">
+          <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name">
+            <router-link class="nav-link me-2" :to="`/post?name=${this.$store.state.name}`">
               <i
                 class="fas fa-key opacity-6 me-1"
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
               Post
+            </router-link>
+          </li>
+          <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name">
+            <router-link class="nav-link me-2" :to="`/message?name=${this.$store.state.name}`">
+              <i
+                class="fas fa-key opacity-6 me-1"
+                aria-hidden="true"
+                :class="isBlur ? 'text-dark' : 'text-white'"
+              ></i>
+              Message
             </router-link>
           </li>
           <li class="nav-item" v-if="this.$store.state.token.accessToken">
@@ -71,7 +79,7 @@
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
-              Profile
+              My
             </router-link>
           </li>
           <li class="nav-item" v-if="!this.$store.state.token.accessToken">
@@ -147,7 +155,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch("logout", {})
-      .then(() => this.$router.push("/login"))
+      .then(() => this.$router.push("/start"))
       .catch(({ message }) => alert(message))
     }
 
