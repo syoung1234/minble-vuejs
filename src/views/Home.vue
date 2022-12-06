@@ -155,7 +155,13 @@ export default {
     async getNickname() {
         await this.$axios.get("/api/mypage", this.axiosConfig)
           .then((response) => {
+            this.$store.state.name = null;
             console.log(response)
+            if (response.data == '') {
+              this.$store.dispatch("logout", {})
+              .then(() => this.$router.push("/start"))
+              .catch(({ message }) => alert(message))
+            }
             this.$store.state.nickname = response.data.nickname
             console.log(this.$store.state.nickname);
           })
