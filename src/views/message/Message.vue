@@ -71,7 +71,6 @@ export default {
             nickname: "",
             message: "",
             messageList: [],
-            i: 0,
             axiosConfig: {
             headers:{
                   "X-AUTH-TOKEN": this.$store.state.token.accessToken
@@ -79,6 +78,7 @@ export default {
             },
             channel: null,
             profilePath: null,
+            name: this.$route.query.name
         }
     },
     components: {
@@ -100,9 +100,13 @@ export default {
     },
     methods: {
         async getMessage() {
-            await this.$axios.get("/api/message/test2", this.axiosConfig)
+            await this.$axios.get(`/api/message/${this.name}`, this.axiosConfig)
             .then((response) => {
-                console.log(response);
+                if (response.data == '') {
+                    alert("구독 서비스가 필요합니다.")
+                    this.$router.go(-1);
+                    return;
+                }
                 this.channel = response.data.channel;
                 this.profilePath = response.data.profilePath;
                 this.nickname = response.data.nickname;
@@ -122,7 +126,6 @@ export default {
         },
         send() {
             console.log("Send message:" + this.message);
-            this.i = this.i+1;
             if (this.stompClient && this.stompClient.connected) {
                 const msg = {
                     nickname: this.nickname,
