@@ -13,6 +13,7 @@ import PostDetail from "../views/post/Detail.vue";
 import Message from "../views/message/Message.vue";
 import Start from "../views/Start.vue";
 import Home from "../views/Home.vue";
+import Shop from "../views/shop/Shop.vue";
 import store from "../store";
 
 const beforeAuth = isAuth => (from, to , next) => {
@@ -100,7 +101,12 @@ const routes = [
     path: "/message",
     name: "message",
     component: Message,
-  }
+  },
+  {
+    path: "/shop",
+    name: "shop",
+    component: Shop,
+  },
   
 ];
 
