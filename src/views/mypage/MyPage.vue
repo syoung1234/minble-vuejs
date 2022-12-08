@@ -10,6 +10,17 @@
       </div>
     </div>
   </div>
+  <MyPageModal v-if="showModal" @close="showModal = false">
+   <div class="mb-1">
+      <input type="text" class="form-control form-control-lg invalid" :value="nickname">
+    </div>
+    <div>
+        <span class="small">이미 사용 중인 닉네임입니다.</span>
+    </div>
+    <div class="modal-btn mt-3">
+        <button type="btn" class="btn">저장</button>
+    </div>
+   </MyPageModal>
   <main class="main-content mt-8">
     <section>
       <div class="page-header">
@@ -22,7 +33,7 @@
                 <div class="mb-5">
                     <a href=""><img :src="profilePath" class="rounded-circle img-size border border-2 border-white w-30"></a>
                     <span class="text-bold text-xl me-1">{{ nickname }}</span>
-                    <a href="">
+                    <a href="javascript:" @click="showModal = true">
                       <i class="fas fa-pencil-alt color-gray me-2"></i>
                     </a>
                 </div>
@@ -49,6 +60,7 @@
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
+import MyPageModal from "@/examples/MyPageModal.vue";
 
 const body = document.getElementsByTagName("body")[0];
 export default {
@@ -69,6 +81,7 @@ export default {
   components: {
     Navbar,
     AppFooter,
+    MyPageModal,
   },
   created() {
     this.getNickname();
