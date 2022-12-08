@@ -83,7 +83,7 @@
             </router-link>
           </li>
           <li class="nav-item" v-if="this.$store.state.token.accessToken">
-            <router-link class="nav-link me-2" to="/profile">
+            <router-link class="nav-link me-2" to="/my">
               <i
                 class="fa fa-user opacity-6 me-1"
                 aria-hidden="true"
