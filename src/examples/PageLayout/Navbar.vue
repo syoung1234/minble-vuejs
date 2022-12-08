@@ -40,7 +40,7 @@
               ></i>
               Home
             </router-link>
-            <a href="/start" v-else-if="!this.$store.state.token.accessToken"
+            <router-link to="/start" v-else-if="!this.$store.state.token.accessToken"
               class="nav-link d-flex align-items-center me-2 active"
               aria-current="page"
             >
@@ -50,7 +50,7 @@
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
               Home
-            </a>
+            </router-link>
           </li>
           <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name">
             <router-link class="nav-link me-2" :to="`/post?name=${this.$store.state.name}`">

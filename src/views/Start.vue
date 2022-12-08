@@ -18,9 +18,9 @@
         <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
           <div class="card z-index-0 msg-h">
             <div class="card-header mt-2">
-              <a href="/home" v-if="this.$store.state.token.accessToken">
+              <router-link to="/home" v-if="this.$store.state.token.accessToken">
                   <img class="img-size w-10" src="/icon/x-icon.png">
-              </a>
+              </router-link>
               <span class="text-bold ms-3">팔로우 추가하기</span>
             </div>
             <div class="card-body">

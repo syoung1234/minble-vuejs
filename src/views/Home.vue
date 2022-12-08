@@ -44,10 +44,10 @@
                   </figure>
                 </a>
                 <figure class="float-left profile-area me-2">
-                  <a href="/start" class="text-center">
+                  <router-link to="/start" class="text-center">
                     <img src="/icon/plus_icon.png" class="rounded-circle profile-size border border-2 border-white">
                   <figcaption class="text-center"><span class="small">팔로잉 추가</span></figcaption>
-                  </a>
+                  </router-link>
                 </figure>
               </div>
 
