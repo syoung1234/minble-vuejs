@@ -15,6 +15,7 @@ import Start from "../views/Start.vue";
 import Home from "../views/Home.vue";
 import Shop from "../views/shop/Shop.vue";
 import MyPage from "../views/mypage/MyPage.vue";
+import ChangePassword from "../views/mypage/ChangePassword.vue";
 import store from "../store";
 
 const beforeAuth = isAuth => (from, to , next) => {
@@ -112,6 +113,11 @@ const routes = [
     path: "/my",
     name: "mypage",
     component: MyPage,
+  },
+  {
+    path: "/change/password",
+    name: "changePassord",
+    component: ChangePassword,
   },
   
 ];
