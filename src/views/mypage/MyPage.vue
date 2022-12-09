@@ -47,7 +47,7 @@
                     <a href="/my/payment/history"><span class="text-bold text-lg">결제내역</span></a>
                 </div>
                 <div class="mb-6">
-                    <a href=""><span class="text-bold text-lg">작성한 댓글</span></a>
+                    <a href="/my/comment"><span class="text-bold text-lg">작성한 댓글</span></a>
                 </div>
 
             </div>
