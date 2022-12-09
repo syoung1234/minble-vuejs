@@ -24,18 +24,25 @@
                 </h5>
                 <div class="mb-5">
                     <p>현재 비밀번호</p>
-                    <input type="text" class="form-control form-control-lg invalid">
+                    <input type="password" v-model="password" class="form-control form-control-lg invalid">
                 </div>
                 <div class="mb-2">
                     <p>변경할 비밀번호</p>
-                    <input type="text" class="form-control form-control-lg invalid">
+                    <input type="password" v-model="newPassword" class="form-control form-control-lg invalid" @keyup="passwordValid(), passwordCheckValid()">
+
+                    <div class="text-muted font-italic" v-if="!passwordValidFlag"> 
+                        <small class="color-red">8~16자 영문, 숫자를 사용하세요.</small>
+                    </div>
                 </div>
                 <div class="mb-5">
                     <p>변경할 비밀번호 확인</p>
-                    <input type="text" class="form-control form-control-lg invalid">
+                    <input type="password" v-model="newPasswordConfirmation" class="form-control form-control-lg invalid" @keyup="passwordCheckValid">
+                    <div class="text-muted font-italic" v-if="!passwordCheckFlag">
+                      <small class="color-red">비밀번호가 일치하지 않습니다.</small>
+                    </div>
                 </div>
                 <div class="mb-3 float-right">
-                    <button type="button" class="btn">완료</button>
+                    <button type="button" class="btn" @click="postPassword">완료</button>
                 </div>
             </div>
           </div>
@@ -64,8 +71,12 @@ export default {
         }
       },
       profilePath: null,
-      nickname: null,
-      nicknameDuplicateFlag: null,
+      password: null,
+      newPassword: null,
+      newPasswordConfirmation: null,
+      passwordCheckFlag: null,
+      passwordValidFlag: null,
+
     }
   },
   components: {
@@ -107,48 +118,43 @@ export default {
             console.log(error)
           })
     },
-    // 중복체크
-    async duplicate() {
-        console.log(this.updateNickname)
-        if (this.updateNickname.length == 20) {
+    async postPassword() {
+        if (this.passwordCheckFlag != true || this.passwordValidFlag != true || this.password == null) {
             return;
         }
-        if (this.updateNickname == null || this.updateNickname == "") {
-          this.nicknameDuplicateFlag = null;
-            return;
-        }
-        let data = {};
-        data.nickname = this.updateNickname;
-        let result = null;
-        await this.$axios.post("/api/duplicate/nickname", data, this.axiosConfig)
-        .then((res) => {
-            if (res.data == "exist") {
-                result = false;
-            } else {
-                result = true;
-            }
-            this.nicknameDuplicateFlag = result;
-                  
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-            
-    },
-    async postNickname() {
-        if (this.updateNickname == null || this.updateNickname == "") {
-            return;
-        }
-        const postData = {};
-        postData.nickname = this.updateNickname
-        await this.$axios.post("/api/mypage/nickname", postData, this.axiosConfig)
+        const saveData = {};
+        saveData.password = this.password;
+        saveData.newPassword = this.newPassword;
+        saveData.newPasswordConfirmation = this.newPasswordConfirmation;
+        await this.$axios.post("/api/mypage/password", saveData, this.axiosConfig)
         .then((response) => {
             console.log(response)
+            if (response.data != "success") {
+                alert("잘못된 비밀번호입니다.")
+            } else {
+                alert("변경이 완료되었습니다.")
+            }
         })
         .catch((error) => {
             console.log(error)
         })
-    }
+    },
+     // 비밀번호 유효성
+    passwordValid () {
+      if (/^(?=.*[a-z])(?=.*[0-9]).{8,16}$/.test(this.newPassword)) {
+        this.passwordValidFlag = true
+      } else {
+        this.passwordValidFlag = false
+      }
+    },
+    // 비밀번호 확인
+    passwordCheckValid() {
+        if(this.newPassword === this.newPasswordConfirmation) {
+            this.passwordCheckFlag = true
+        } else {
+            this.passwordCheckFlag = false
+        }
+    },
 
   },
 
