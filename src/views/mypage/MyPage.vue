@@ -12,13 +12,16 @@
   </div>
   <MyPageModal v-if="showModal" @close="showModal = false">
    <div class="mb-1">
-      <input type="text" class="form-control form-control-lg invalid" :value="nickname">
+      <input type="text" maxlength="20" class="form-control form-control-lg invalid" v-model="updateNickname" @keyup="duplicate()">
     </div>
-    <div>
-        <span class="small">이미 사용 중인 닉네임입니다.</span>
+    <div class="text-muted font-italic" v-if="nicknameDuplicateFlag === false"> 
+      <small class="color-red">이미 사용 중인 닉네임입니다.</small>
+    </div>
+    <div class="text-muted font-italic" v-else-if="nicknameDuplicateFlag === true"> 
+      <small class="color-green">사용 가능한 닉네임입니다.</small>
     </div>
     <div class="modal-btn mt-3">
-        <button type="btn" class="btn">저장</button>
+        <button type="button" class="btn" @click="postNickname">저장</button>
     </div>
    </MyPageModal>
   <main class="main-content mt-8">
@@ -38,13 +41,13 @@
                     </a>
                 </div>
                 <div class="mb-3">
-                    <a href=""><span class="text-bold text-xl">비밀번호 변경</span></a>
+                    <a href="/change/password"><span class="text-bold text-lg">비밀번호 변경</span></a>
                 </div>
                 <div class="mb-3">
-                    <a href=""><span class="text-bold text-xl">구매내역</span></a>
+                    <a href=""><span class="text-bold text-lg">구매내역</span></a>
                 </div>
-                <div class="mb-3">
-                    <a href=""><span class="text-bold text-xl">작성한 댓글</span></a>
+                <div class="mb-6">
+                    <a href=""><span class="text-bold text-lg">작성한 댓글</span></a>
                 </div>
 
             </div>
@@ -76,6 +79,7 @@ export default {
       },
       profilePath: null,
       nickname: null,
+      nicknameDuplicateFlag: null,
     }
   },
   components: {
@@ -118,20 +122,49 @@ export default {
             console.log(error)
           })
     },
-    async postSubscriber() {
-        const saveData = {};
-        saveData.nickname = this.name;
-        await this.$axios.post("/api/subscriber", saveData, this.axiosConfig)
-            .then((response) => {
-                if (response.data.includes("already")) {
-                    alert("이미 구독 서비스 중입니다.")
-                }
-                console.log(response)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+    // 중복체크
+    async duplicate() {
+        console.log(this.updateNickname)
+        if (this.updateNickname.length == 20) {
+            return;
+        }
+        if (this.updateNickname == null || this.updateNickname == "") {
+          this.nicknameDuplicateFlag = null;
+            return;
+        }
+        let data = {};
+        data.nickname = this.updateNickname;
+        let result = null;
+        await this.$axios.post("/api/duplicate/nickname", data, this.axiosConfig)
+        .then((res) => {
+            if (res.data == "exist") {
+                result = false;
+            } else {
+                result = true;
+            }
+            this.nicknameDuplicateFlag = result;
+                  
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+            
+    },
+    async postNickname() {
+        if (this.updateNickname == null || this.updateNickname == "") {
+            return;
+        }
+        const postData = {};
+        postData.nickname = this.updateNickname
+        await this.$axios.post("/api/mypage/nickname", postData, this.axiosConfig)
+        .then((response) => {
+            console.log(response)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
     }
+
   },
 
   
