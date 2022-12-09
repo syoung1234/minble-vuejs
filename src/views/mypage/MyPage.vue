@@ -41,10 +41,10 @@
                     </a>
                 </div>
                 <div class="mb-3">
-                    <a href="/change/password"><span class="text-bold text-lg">비밀번호 변경</span></a>
+                    <a href="/my/change/password"><span class="text-bold text-lg">비밀번호 변경</span></a>
                 </div>
                 <div class="mb-3">
-                    <a href=""><span class="text-bold text-lg">구매내역</span></a>
+                    <a href="/my/payment/history"><span class="text-bold text-lg">결제내역</span></a>
                 </div>
                 <div class="mb-6">
                     <a href=""><span class="text-bold text-lg">작성한 댓글</span></a>
