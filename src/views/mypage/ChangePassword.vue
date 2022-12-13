@@ -133,6 +133,7 @@ export default {
                 alert("잘못된 비밀번호입니다.")
             } else {
                 alert("변경이 완료되었습니다.")
+                this.$router.push("/my")
             }
         })
         .catch((error) => {
