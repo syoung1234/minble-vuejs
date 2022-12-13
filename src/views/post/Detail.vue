@@ -106,11 +106,22 @@
                           <span class="small">{{ comment?.content }}</span>
                           <br>
                           <span class="text-xs">{{ comment?.createdAt }}</span> &nbsp;
-                          <span class="text-xs">답글 달기</span> &nbsp;
-                          <a href="javascript:" @click="deleteComment(comment?.commentId)">
+                          <a href="javascript:"><span class="text-xs" @click="displayReply(comment?.id)">답글 달기</span></a> &nbsp;
+                          <a href="javascript:" @click="deleteComment(comment?.id)">
                             <span class="text-xs">삭제</span>
                           </a>
+                          <br>
+                          <a href="javascript:"><span class="text-xs">⎯⎯ 답글 보기</span></a>
+                          <br>
+                          <div :ref="`replyDisplay${comment?.id}`" style="display: none;">
+                          <textarea class="textarea-comment-h w-80" :ref="`reply${comment?.id}`" placeholder="답글 쓰기" @keydown="resize" @keyup="resize"></textarea> &nbsp;
+                            <a href="javascript:" @click="postReply(comment?.id)">
+                              <img class="img-size mb-1 w-10 align-initial" src="/icon/send-message-2-2.png">
+                            </a>
+                          </div>
                         </td>
+                      </tr>
+                      <tr>
                       </tr>
                       <div class="text-center mb-2" v-if="pageList.nextPage < pageList.totalPages">
                         <a href="javascript:" @click="nextPage()">
@@ -182,6 +193,7 @@ export default {
     async getPost() {
       await this.$axios.get("/api/post/"+this.id, this.axiosConfig)
         .then((response) => {
+          console.log(response)
           this.postDetail = response.data;
           this.commentList = response.data.commentList;
           this.pageList = response.data.pageList;
@@ -202,6 +214,20 @@ export default {
         .catch((error) => {
           console.log(error)
         })
+    },
+    async postReply(commentId) {
+      let replyData = {}
+      replyData.content = this.$refs["reply"+commentId].value
+      replyData.commentId = commentId;
+
+      await this.$axios.post("/api/reply", replyData, this.axiosConfig)
+      .then((response) => {
+        console.log(response)
+        this.$router.go()
+      })
+      .catch((error) => {
+        console.log(error)
+      })
     },
     async deleteComment(commentId) {
       const result = confirm("삭제 하시겠습니까?")
@@ -272,6 +298,14 @@ export default {
       this.modalFilePath = filePath;
       this.modalFileName = fileName;
     },
+    displayReply(commentId) {
+      if (this.$refs["replyDisplay"+commentId].style.display == "") {
+        this.$refs["replyDisplay"+commentId].style.display = "none"
+      } else {
+        this.$refs["replyDisplay"+commentId].style.display = ""
+      }
+      
+    }
 
   }
  
