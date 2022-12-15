@@ -33,8 +33,13 @@
           <div class="card z-index-0">
             <div class="card-body">
                 <h5 class="mb-4">마이페이지</h5>
-                <div class="mb-5">
-                    <a href=""><img :src="profilePath" class="rounded-circle img-size border border-2 border-white w-30"></a>
+                <div class="mb-4">
+                    <button type="button" @click="$refs.fileRef.click" class="btn btn-link mb-0 w-25 pd-0 me-2">
+                    <img :src="profilePath" class="rounded-circle img-size border border-2 border-white">
+                    <div class="ni ni-image color-white mx-auto mb-0">
+                      <input type="file" id="file" ref="fileRef" @change="postProfile()" hidden>
+                    </div>
+                  </button>
                     <span class="text-bold text-xl me-1">{{ nickname }}</span>
                     <a href="javascript:" @click="showModal = true">
                       <i class="fas fa-pencil-alt color-gray me-2"></i>
@@ -80,6 +85,7 @@ export default {
       profilePath: null,
       nickname: null,
       nicknameDuplicateFlag: null,
+      profile: null,
     }
   },
   components: {
@@ -163,7 +169,20 @@ export default {
         .catch((error) => {
             console.log(error)
         })
-    }
+    },
+    async postProfile() {
+      const formData = new FormData();
+      console.log(event.target.files);
+      console.log(event.target.files[0]);
+      formData.append("profile", event.target.files[0]);
+      await this.$axios.post("/api/mypage/profile", formData, this.axiosConfig)
+      .then(() => {
+        this.$router.go()
+      })
+      .catch(() => {
+        alert("잘 못 된 접근입니다.")
+      })
+    },
 
   },
 
