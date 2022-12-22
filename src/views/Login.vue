@@ -19,7 +19,6 @@
               <div class="card card-plain">
                 <div class="pb-0 card-header text-start">
                   <h4 class="font-weight-bolder">로그인</h4>
-                  <p class="mb-0">Enter your email and password to sign in</p>
                 </div>
                 <div class="card-body">
                   <form role="form">
@@ -29,7 +28,7 @@
                     <div class="mb-3">
                       <input type="password" class="form-control form-control-lg invalid" placeholder="비밀번호" name="password" size="lg" v-model="password" />
                     </div>
-                    <argon-switch id="rememberMe">Remember me</argon-switch>
+                    <!-- <argon-switch id="rememberMe">Remember me</argon-switch> -->
 
                     <div class="text-center">
                       <argon-button @click="postData()"
@@ -39,15 +38,14 @@
                         color="success"
                         fullWidth
                         size="lg"
-                      >Sign in</argon-button>
+                      >로그인</argon-button>
                     </div>
                   </form>
                 </div>
                 <div class="px-1 pt-0 text-center card-footer px-lg-2">
                   <p class="mx-auto mb-4 text-sm">
-                    Don't have an account?
                     <a
-                      href="javascript:;"
+                      href="/register"
                       class="text-success text-gradient font-weight-bold"
                     >회원가입</a>
                   </p>
@@ -67,7 +65,7 @@
 
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
-import ArgonSwitch from "@/components/ArgonSwitch.vue";
+// import ArgonSwitch from "@/components/ArgonSwitch.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
 const body = document.getElementsByTagName("body")[0];
 
@@ -102,8 +100,8 @@ export default {
           this.$router.push("/home");
 
         })
-        .catch(( {message }) => {
-          alert(message)
+        .catch(() => {
+          alert("이메일 또는 비밀번호를 맞지 않습니다.")
         })
 
       // this.$axios
@@ -121,7 +119,7 @@ export default {
   },
   components: {
     Navbar,
-    ArgonSwitch,
+    // ArgonSwitch,
     ArgonButton,
   },
   created() {
