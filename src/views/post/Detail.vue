@@ -92,7 +92,7 @@
                           <textarea class="textarea-comment-h" v-model="content" placeholder="댓글 쓰기" @keydown="resize" @keyup="resize"></textarea>
                         </td>
                         <td width=15%>
-                          <a href="javascript:" @click="postComment">
+                          <a href="javascript:" @click="postComment(null)">
                             <img class="img-size mb-1" src="/icon/send-message-2-2.png">
                           </a>
                         </td>
@@ -114,7 +114,7 @@
                           
                           <div :ref="`replyDisplay${comment?.id}`" style="display: none;">
                           <textarea class="textarea-comment-h w-80" :ref="`reply${comment?.id}`" placeholder="답글 쓰기" @keydown="resize" @keyup="resize"></textarea> &nbsp;
-                            <a href="javascript:" @click="postReply(comment?.id)">
+                            <a href="javascript:" @click="postComment(comment?.id)">
                               <img class="img-size mb-1 w-10 align-initial" src="/icon/send-message-2-2.png">
                             </a>
                           </div>
@@ -239,10 +239,21 @@ export default {
           console.log(error)
         })
     },
-    async postComment() {
+    async postComment(commentId) {
+      let depth = 0;
+      let commentContent = this.content 
+
+      if (commentId > 0) {
+        depth = 1;
+        commentContent = this.$refs["reply"+commentId].value
+      }
+
       let saveData = {}
-      saveData.content = this.content
+      saveData.content = commentContent
       saveData.postId = this.id
+      saveData.parentId = commentId
+      saveData.depth = depth
+
       await this.$axios.post("/api/comment", saveData, this.axiosConfig)
         .then(() => {
           this.$router.go()
@@ -250,20 +261,6 @@ export default {
         .catch((error) => {
           console.log(error)
         })
-    },
-    async postReply(commentId) {
-      let replyData = {}
-      replyData.content = this.$refs["reply"+commentId].value
-      replyData.commentId = commentId;
-
-      await this.$axios.post("/api/reply", replyData, this.axiosConfig)
-      .then((response) => {
-        console.log(response)
-        this.$router.go()
-      })
-      .catch((error) => {
-        console.log(error)
-      })
     },
     async deleteComment(commentId) {
       const result = confirm("삭제 하시겠습니까?")
@@ -346,7 +343,8 @@ export default {
       if (this.replyPageList[commentId]) {
         replyPage = this.replyPageList[commentId].page+1
       }
-      this.$axios.get(`/api/reply/${commentId}?page=${replyPage}`, this.axiosConfig)
+      console.log(commentId);
+      this.$axios.get(`/api/comment/${commentId}/children?page=${replyPage}`, this.axiosConfig)
       .then((response) => {
         console.log(response)
         if (this.replyList[commentId]) {
