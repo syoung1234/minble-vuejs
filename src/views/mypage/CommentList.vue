@@ -25,17 +25,13 @@
                 <table>
                     <th class="me-2 pe-5">작성일</th>
                     <th>내용</th>
-                    <tr style="cursor: pointer;">
-                        <td class="small me-2">2022.11.10</td>
-                        <td>내용내용</td>
-                    </tr>
-                    <tr>
-                        <td class="small">2022.11.10</td>
-                        <td>내용내용</td>
+                    <tr class="align-top" style="cursor: pointer;" v-for="(comment, index) in commentList" :key="index">
+                        <td width="35%" class="text-xs me-2 mb-2 pt-2" @click="getPost(comment?.postId)">{{ comment?.createdAt }}</td>
+                        <td @click="getPost(comment?.postId)">{{ comment?.content }}</td>
                     </tr>
                 </table>
-                <div class="text-center">
-                    <button type="button" class="btn btn-link text-dark"><span>더보기 </span><span class="text-lg align-bottom">⌵</span>  </button>
+                <div class="text-center" v-if="pageList.nextPage < pageList.totalPages">
+                    <button type="button" class="btn btn-link text-dark" @click="getComment"><span>더보기 </span><span class="text-lg align-bottom">⌵</span>  </button>
                 </div>
             </div>
           </div>
@@ -63,7 +59,9 @@ export default {
       },
       profilePath: null,
       nickname: null,
-      nicknameDuplicateFlag: null,
+      commentList: [],
+      pageList: [],
+      page: 0
     }
   },
   components: {
@@ -71,6 +69,7 @@ export default {
   },
   created() {
     this.getNickname();
+    this.getComment();
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
@@ -89,7 +88,6 @@ export default {
         this.$store.state.name = this.name;
         await this.$axios.get("/api/mypage", this.axiosConfig)
           .then((response) => {
-            console.log(response)
             if (response.data == '') {
               this.$store.dispatch("logout", {})
               .then(() => this.$router.push("/start"))
@@ -98,12 +96,32 @@ export default {
             this.$store.state.nickname = response.data.nickname
             this.profilePath = response.data.profilePath
             this.nickname = response.data.nickname
-            console.log(this.$store.state.nickname);
           })
           .catch((error) => {
             console.log(error)
           })
     },
+    async getComment() {
+      await this.$axios.get("/api/mypage/comment?page="+this.page, this.axiosConfig)
+      .then((response) => {
+        console.log(response)
+        if (this.page > 0) {
+          for (let i = 0; i < response.data.commentList.length; i++) {
+            this.commentList.push(response.data.commentList[i])
+          }
+        } else {
+          this.commentList = response.data.commentList;
+        }
+        this.pageList = response.data.pageList;
+        this.page = response.data.pageList.nextPage;
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    },
+    getPost(postId) {
+      this.$router.push("/post/detail?num="+postId)
+    }
   },
 
 }
