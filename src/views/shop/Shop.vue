@@ -135,13 +135,16 @@ export default {
               console.log(rsp)
               // 결제 성공 시 로직,
               let saveData = {};
-              saveData.rsp = rsp;
-              this.$axios.post("/api/subscriber", saveData, this.axiosConfig)
+              saveData = rsp;
+              saveData.nickname = this.name;
+              this.$axios.post("/api/subscriber", rsp, this.axiosConfig)
                 .then((response) => {
                     if (response.data.includes("already")) {
                         alert("이미 구독 서비스 중입니다.")
+                    } else {
+                      alert("구독이 완료되었습니다. Message 서비스 이용 가능합니다.")
+                      this.$router.push("/message?name="+this.nickname)
                     }
-                    console.log(response)
                 })
                 .catch((error) => {
                     console.log(error)
