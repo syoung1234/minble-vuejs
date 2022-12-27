@@ -19,12 +19,11 @@
           <div class="card z-index-0">
             <div class="card-body">
                 <h5 class="mb-4">스토어</h5>
-                <button type="button" class="card card-body btn w-100" @click="postSubscriber">
+                <button type="button" class="card card-body btn w-100" @click="requestPay">
                     <h4>Message 구독</h4>
                     <p>스타와 메시지를 나눠보세요.</p>
                     <span>월 3300원</span>
                 </button>
-
             </div>
           </div>
         </div>
@@ -55,6 +54,9 @@ export default {
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       },
+      nickname: null,
+      email: null,
+      status: null,
     }
   },
   components: {
@@ -62,7 +64,7 @@ export default {
     AppFooter,
   },
   created() {
-    this.getNickname();
+    this.getShop();
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
@@ -77,9 +79,10 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-    async getNickname() {
+    async getShop() {
         this.$store.state.name = this.name;
-        await this.$axios.get("/api/mypage", this.axiosConfig)
+        console.log(this.name)
+        await this.$axios.get("/api/subscriber?name="+this.name, this.axiosConfig)
           .then((response) => {
             console.log(response)
             if (response.data == '') {
@@ -88,7 +91,9 @@ export default {
               .catch(({ message }) => alert(message))
             }
             this.$store.state.nickname = response.data.nickname
-            console.log(this.$store.state.nickname);
+            this.nickname = response.data.nickname
+            this.email = response.data.email
+            this.status = response.data.status;
           })
           .catch((error) => {
             console.log(error)
@@ -107,10 +112,47 @@ export default {
             .catch((error) => {
                 console.log(error)
             })
-    }
+    },
+     requestPay: function () {
+       if (this.status == true) {
+         alert("이미 구독중입니다.")
+         return;
+       }
+       var IMP = window.IMP; // 생략 가능
+       IMP.init("imp54845043"); // 예: imp00000000
+          // IMP.request_pay(param, callback) 결제창 호출
+          IMP.request_pay({ // param
+            pg: 'html5_inicis',
+            pay_method: "card",
+            merchant_uid: 'merchant_' + new Date().getTime(),
+            name: "Message 구독",
+            amount: 3300,
+            buyer_email: this.email,
+            buyer_name: this.nickname,
+          }, rsp => { // callback
+            if (rsp.success) {
+              console.log(rsp.success)
+              console.log(rsp)
+              // 결제 성공 시 로직,
+              let saveData = {};
+              saveData.rsp = rsp;
+              this.$axios.post("/api/subscriber", saveData, this.axiosConfig)
+                .then((response) => {
+                    if (response.data.includes("already")) {
+                        alert("이미 구독 서비스 중입니다.")
+                    }
+                    console.log(response)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+            } else {
+              // 결제 실패 시 로직,
+              console.log("??")
+            }
+          });
+     }
   },
-
-  
 
 }
 
