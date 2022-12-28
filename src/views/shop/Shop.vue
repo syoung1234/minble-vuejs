@@ -137,6 +137,7 @@ export default {
               let saveData = {};
               saveData = rsp;
               saveData.nickname = this.name;
+              saveData.description = this.name;
               this.$axios.post("/api/subscriber", rsp, this.axiosConfig)
                 .then((response) => {
                     if (response.data.includes("already")) {
