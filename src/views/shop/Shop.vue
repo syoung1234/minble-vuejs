@@ -122,13 +122,14 @@ export default {
        IMP.init("imp54845043"); // 예: imp00000000
           // IMP.request_pay(param, callback) 결제창 호출
           IMP.request_pay({ // param
-            pg: 'html5_inicis',
-            pay_method: "card",
-            merchant_uid: 'merchant_' + new Date().getTime(),
-            name: "Message 구독",
-            amount: 3300,
-            buyer_email: this.email,
-            buyer_name: this.nickname,
+            pg: 'kakaopay',
+            merchant_uid: 'merchant_' + new Date().getTime(), // 상점에서 관리하는 주문 번호
+	          name : '최초인증결제',
+	          amount : 0, // 빌링키 발급만 진행하며 결제승인을 하지 않습니다.
+	          customer_uid : this.nickname + '_' + new Date().getTime(), // 필수 입력
+	          buyer_email : this.email,
+	          buyer_name : this.nickname,
+	          buyer_tel : '02-1234-1234'
           }, rsp => { // callback
             if (rsp.success) {
               console.log(rsp.success)
@@ -152,7 +153,7 @@ export default {
                 })
             } else {
               // 결제 실패 시 로직,
-              console.log("??")
+              console.log(rsp)
             }
           });
      }
