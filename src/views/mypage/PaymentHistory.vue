@@ -22,19 +22,14 @@
                     <button type="button" class="my-auto btn btn-link btn-icon-only btn-rounded btn-sm text-dark" @click="this.$router.go(-1);"><i class="ni ni-bold-left"></i></button>
                     결제 내역
                 </h5>
-                <div class="card card-body mb-3">
-                    <p class="text-lg text-bold mb-0">Message 구독</p>
-                    <p class="mb-4 small">2022.11.10 ~ 2022.12.09</p>
-                    <p class="mb-0 small">총 결제 내역: 3300원</p>
-                    <p class="mb-0 small">결제일: 2022. 11.08</p>
+                <div class="card card-body mb-3" v-for="(payment, index) in paymentList" :key="index">
+                    <p class="mb-2 small text-bold">{{ payment?.description }}</p>
+                    <p class="text-lg text-bold mb-0">{{ payment?.name }}</p>
+                    <p class="mb-4 small">{{ payment?.createdAt }} ~ {{ payment?.expiredAt }}</p>
+                    <p class="mb-0 small">총 결제 내역: {{ payment?.amount }}원</p>
+                    <p class="mb-0 small">결제일: {{ payment?.createdAt }}</p>
                 </div>
-                <div class="card card-body mb-3">
-                    <p class="text-lg text-bold mb-0">Message 구독</p>
-                    <p class="mb-4 small">2022.10.10 ~ 2022.11.09</p>
-                    <p class="mb-0 small">총 결제 내역: 3300원</p>
-                    <p class="mb-0 small">결제일: 2022. 10.08</p>
-                </div>
-                <div class="text-center">
+                <div class="text-center" v-if="pageList.nextPage < pageList.totalPages">
                     <button type="button" class="btn btn-link text-dark"><span>더보기 </span><span class="text-lg align-bottom">⌵</span>  </button>
                 </div>
             </div>
@@ -45,11 +40,9 @@
     </div>
     </section>
   </main>
-  <app-footer />
 </template>
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
-import AppFooter from "@/examples/PageLayout/Footer.vue";
 
 const body = document.getElementsByTagName("body")[0];
 export default {
@@ -65,15 +58,16 @@ export default {
       },
       profilePath: null,
       nickname: null,
-      nicknameDuplicateFlag: null,
+      paymentList: [],
+      pageList: [],
     }
   },
   components: {
     Navbar,
-    AppFooter,
   },
   created() {
     this.getNickname();
+    this.getPayment();
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
@@ -92,7 +86,6 @@ export default {
         this.$store.state.name = this.name;
         await this.$axios.get("/api/mypage", this.axiosConfig)
           .then((response) => {
-            console.log(response)
             if (response.data == '') {
               this.$store.dispatch("logout", {})
               .then(() => this.$router.push("/start"))
@@ -101,12 +94,22 @@ export default {
             this.$store.state.nickname = response.data.nickname
             this.profilePath = response.data.profilePath
             this.nickname = response.data.nickname
-            console.log(this.$store.state.nickname);
           })
           .catch((error) => {
             console.log(error)
           })
     },
+    async getPayment() {
+      await this.$axios.get("/api/mypage/payment", this.axiosConfig)
+      .then((response) => {
+        console.log(response)
+        this.paymentList = response.data.paymentList;
+        this.pageList = response.data.pageList;
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    }
   },
 
 }
