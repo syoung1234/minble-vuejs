@@ -123,13 +123,12 @@ export default {
           // IMP.request_pay(param, callback) 결제창 호출
           IMP.request_pay({ // param
             pg: 'kakaopay',
-            merchant_uid: 'merchant_' + new Date().getTime(), // 상점에서 관리하는 주문 번호
+            merchant_uid: 'merchant_billingKey_' + new Date().getTime(), // 상점에서 관리하는 주문 번호
 	          name : '최초인증결제',
 	          amount : 0, // 빌링키 발급만 진행하며 결제승인을 하지 않습니다.
-	          customer_uid : this.nickname + '_' + new Date().getTime(), // 필수 입력
+	          customer_uid : this.nickname + '_billingKey_' + new Date().getTime(), // 필수 입력
 	          buyer_email : this.email,
 	          buyer_name : this.nickname,
-	          buyer_tel : '02-1234-1234'
           }, rsp => { // callback
             if (rsp.success) {
               console.log(rsp.success)
@@ -138,14 +137,13 @@ export default {
               let saveData = {};
               saveData = rsp;
               saveData.nickname = this.name;
-              saveData.description = this.name;
               this.$axios.post("/api/subscriber", rsp, this.axiosConfig)
                 .then((response) => {
                     if (response.data.includes("already")) {
                         alert("이미 구독 서비스 중입니다.")
                     } else {
                       alert("구독이 완료되었습니다. Message 서비스 이용 가능합니다.")
-                      this.$router.push("/message?name="+this.nickname)
+                      // this.$router.push("/message?name="+this.nickname)
                     }
                 })
                 .catch((error) => {
