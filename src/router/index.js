@@ -19,6 +19,8 @@ import ChangePassword from "../views/mypage/ChangePassword.vue";
 import PaymentHistory from "../views/mypage/PaymentHistory.vue";
 import CommentList from "../views/mypage/CommentList.vue";
 import store from "../store";
+import AdminMember from "../views/admin/member/Member.vue";
+import AdminMemberDetail from "../views/admin/member/Detail.vue";
 
 const beforeAuth = isAuth => (from, to , next) => {
   const isAuthenticated = store.getters["isAuthenticated"]
@@ -130,6 +132,16 @@ const routes = [
     path: "/my/comment",
     name: "commentList",
     component: CommentList,
+  },
+  {
+    path: "/admin/member",
+    name: "adminMember",
+    component: AdminMember,
+  },
+  {
+    path: "/admin/member/detail",
+    name: "adminMemberDetail",
+    component: AdminMemberDetail,
   },
   
 ];
