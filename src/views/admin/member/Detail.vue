@@ -15,7 +15,6 @@
       <div class="page-header">
     <div class="container">
       <div class="row">
-        <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
           <div class="card z-index-0">
             <div class="card-body">
                 <h5 class="mb-4">
@@ -23,32 +22,31 @@
                     회원 관리
                 </h5>
                 <div class="mb-3">
-                    프로필
+                    <img :src="data?.profilePath" class="rounded-circle img-size border border-2 border-white file-upload-img-size">
                 </div>
                 <div class="mb-3">
-                    <span class="text-lg">닉네임: test5</span>
+                    <span class="text-lg">닉네임: {{ data?.nickname }}</span>
                 </div>
                 <div class="mb-3">
-                    <span class="text-lg">이메일: test5@test.com</span>
+                    <span class="text-lg">이메일: {{ data?.email }}</span>
                 </div>
                 <div class="mb-3">
                     <span class="text-lg">회원유형: </span>
                     <select>
-                        <option>일반</option>
-                        <option>구독자</option>
-                        <option>스타</option>
-                        <option>관리자</option>
+                        <option :selected="data?.role == '일반'">일반</option>
+                        <option :selected="data?.role == '구독자'">구독자</option>
+                        <option :selected="data?.role == '스타'">스타</option>
+                        <option :selected="data?.role == '관리자'">관리자</option>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <span class="text-lg">가입일: 2022.12.30</span>
+                    <span class="text-lg">가입일: {{ data?.createdAt }}</span>
                 </div>
                 <button type="button" class="btn">저장</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
     </section>
   </main>
@@ -58,27 +56,23 @@ import Navbar from "@/examples/PageLayout/Navbar.vue";
 
 const body = document.getElementsByTagName("body")[0];
 export default {
-  name: "paymentHistory",
+  name: "adminMemberDetail",
   data() {
     return {
-      showModal: false,
       name: this.$route.query.name,
       axiosConfig: {
         headers:{
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       },
-      profilePath: null,
-      nickname: null,
-      paymentList: [],
-      pageList: [],
+      data: null,
     }
   },
   components: {
     Navbar,
   },
   created() {
-    this.getNickname();
+    this.getMember();
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
@@ -93,23 +87,16 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-    async getNickname() {
-        this.$store.state.name = this.name;
-        await this.$axios.get("/api/mypage", this.axiosConfig)
-          .then((response) => {
-            if (response.data == '') {
-              this.$store.dispatch("logout", {})
-              .then(() => this.$router.push("/start"))
-              .catch(({ message }) => alert(message))
-            }
-            this.$store.state.nickname = response.data.nickname
-            this.profilePath = response.data.profilePath
-            this.nickname = response.data.nickname
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-    },
+    async getMember() {
+      await this.$axios.get(`/api/admin/member/${this.name}`, this.axiosConfig)
+      .then((response) => {
+        console.log(response)
+        this.data = response.data;
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    }
   },
 
 }
