@@ -32,17 +32,17 @@
                 </div>
                 <div class="mb-3">
                     <span class="text-lg">회원유형: </span>
-                    <select>
-                        <option :selected="data?.role == '일반'">일반</option>
-                        <option :selected="data?.role == '구독자'">구독자</option>
-                        <option :selected="data?.role == '스타'">스타</option>
-                        <option :selected="data?.role == '관리자'">관리자</option>
+                    <select v-model="roleType">
+                        <option>일반</option>
+                        <option>구독자</option>
+                        <option>스타</option>
+                        <option>관리자</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <span class="text-lg">가입일: {{ data?.createdAt }}</span>
                 </div>
-                <button type="button" class="btn">저장</button>
+                <button type="button" class="btn" @click="postRole">저장</button>
             </div>
           </div>
         </div>
@@ -66,6 +66,7 @@ export default {
         }
       },
       data: null,
+      roleType: null,
     }
   },
   components: {
@@ -90,8 +91,23 @@ export default {
     async getMember() {
       await this.$axios.get(`/api/admin/member/${this.name}`, this.axiosConfig)
       .then((response) => {
-        console.log(response)
         this.data = response.data;
+        this.roleType = response.data.role;
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    },
+    async postRole() {
+      let saveData = {};
+      saveData.nickname = this.data.nickname;
+      saveData.role = this.roleType;
+      console.log(this.roleType)
+      await this.$axios.post("/api/admin/member", saveData, this.axiosConfig)
+      .then((response) => {
+        if(response.data == 'success') {
+          alert("변경이 완료되었습니다.")
+        }
       })
       .catch((error) => {
         console.log(error)
