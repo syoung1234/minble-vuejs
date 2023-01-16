@@ -35,12 +35,14 @@
                         <th width="25%">회원유형</th>
                         <th width="25%">가입일</th>
                     </tr>
-                    <tr class="pointer" @click="getDetail" v-for="(member, index) in memberList" :key="index">
+                    <template v-for="(member, index) in memberList" :key="index">
+                      <tr class="pointer" @click="getDetail(member.nickname)">
                         <td>{{ member.nickname }}</td>
                         <td>{{ member.email }}</td>
                         <td>{{ member.role }}</td>
                         <td>{{ member.createdAt }}</td>
-                    </tr>
+                      </tr>
+                    </template>
                 </table>
             </div>
             <argon-pagination>
@@ -64,11 +66,10 @@ import ArgonPaginationItem from "@/components/ArgonPaginationItem.vue";
 
 const body = document.getElementsByTagName("body")[0];
 export default {
-  name: "paymentHistory",
+  name: "adminMember",
   data() {
     return {
       showModal: false,
-      name: this.$route.query.name,
       axiosConfig: {
         headers:{
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
@@ -128,8 +129,6 @@ export default {
         this.memberList = response.data.content;
         this.currentPage = response.data.pageable.pageNumber;
         this.totalPages = response.data.totalPages;
-        console.log(this.currentPage);
-        console.log(this.totalPages);
       })
       .catch((error) => {
         console.log(error)
@@ -137,8 +136,10 @@ export default {
     },
     changePage(n) {
       this.axiosConfig.params.page = n-1
-      console.log(this.axiosConfig)
       this.getMember();
+    },
+    getDetail(nickname) {
+      this.$router.push("/admin/member/detail?name="+nickname)
     }
   }
 }
