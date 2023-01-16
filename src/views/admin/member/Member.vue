@@ -15,19 +15,18 @@
       <div class="page-header">
     <div class="container">
       <div class="row">
-        <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
           <div class="card z-index-0">
             <div class="card-body">
                 <h5 class="mb-4">
                     회원 관리
                 </h5>
-                <div class="mb-7">
-                  <select class="form-control w-25 float-left">
+                <div class="mb-4">
+                  <select class="form-control w-10 float-left me-3">
                     <option>닉네임</option>
                     <option>이메일</option>
                     <option>회원유형</option>
                   </select>
-                  <input type="text" class="form-control w-70 float-right">
+                  <input type="text" class="form-control w-40">
                 </div>
                 <table>
                     <tr>
@@ -36,31 +35,24 @@
                         <th width="25%">회원유형</th>
                         <th width="25%">가입일</th>
                     </tr>
-                    <tr class="pointer" @click="getDetail">
-                        <td>test5</td>
-                        <td>test5@test.com</td>
-                        <td>일반</td>
-                        <td>2022.12.15</td>
-                    </tr>
-                    <tr class="pointer">
-                        <td>test5</td>
-                        <td>test5@test.com</td>
-                        <td>일반</td>
-                        <td>2022.12.15</td>
+                    <tr class="pointer" @click="getDetail" v-for="(member, index) in memberList" :key="index">
+                        <td>{{ member.nickname }}</td>
+                        <td>{{ member.email }}</td>
+                        <td>{{ member.role }}</td>
+                        <td>{{ member.createdAt }}</td>
                     </tr>
                 </table>
             </div>
-            <argon-pagination class="justify-center">
-              <argon-pagination-item prev />
-              <argon-pagination-item label="1" active />
-              <argon-pagination-item label="2" disabled />
-              <argon-pagination-item label="3" />
-              <argon-pagination-item next />
+            <argon-pagination>
+              <argon-pagination-item prev @click="changePage(currentPage)" />
+              <template v-for="n in totalPages" :key="n">
+                <argon-pagination-item :label="n" :active="currentPage+1 == n" @click="changePage(n)" />
+              </template>
+              <argon-pagination-item next @click="changePage(currentPage+2)" />
             </argon-pagination>
           </div>
         </div>
       </div>
-    </div>
     </div>
     </section>
   </main>
@@ -80,12 +72,14 @@ export default {
       axiosConfig: {
         headers:{
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
-        }
+        },
+        params: {},
       },
-      profilePath: null,
       nickname: null,
-      paymentList: [],
-      pageList: [],
+      memberList: [],
+      currentPage: 0,
+      totalPages: 0,
+      params: {},
     }
   },
   components: {
@@ -95,7 +89,7 @@ export default {
   },
   created() {
     this.getNickname();
-    this.getPayment();
+    this.getMember();
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
@@ -127,22 +121,26 @@ export default {
             console.log(error)
           })
     },
-    async getPayment() {
-      await this.$axios.get("/api/mypage/payment", this.axiosConfig)
+    async getMember() {
+      await this.$axios.get("/api/admin/member", this.axiosConfig)
       .then((response) => {
         console.log(response)
-        this.paymentList = response.data.paymentList;
-        this.pageList = response.data.pageList;
+        this.memberList = response.data.content;
+        this.currentPage = response.data.pageable.pageNumber;
+        this.totalPages = response.data.totalPages;
+        console.log(this.currentPage);
+        console.log(this.totalPages);
       })
       .catch((error) => {
         console.log(error)
       })
     },
-    getDetail() {
-      this.$router.push("/admin/member/detail");
+    changePage(n) {
+      this.axiosConfig.params.page = n-1
+      console.log(this.axiosConfig)
+      this.getMember();
     }
-  },
-
+  }
 }
 
 </script>
