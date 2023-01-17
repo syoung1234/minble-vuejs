@@ -21,12 +21,19 @@
                     회원 관리
                 </h5>
                 <div class="mb-4">
-                  <select class="form-control w-10 float-left me-3">
-                    <option>닉네임</option>
-                    <option>이메일</option>
-                    <option>회원유형</option>
+                  <select class="form-control w-10 float-left me-3" v-model="searchType">
+                    <option value="nickname">닉네임</option>
+                    <option value="email">이메일</option>
+                    <option value="role">회원유형</option>
                   </select>
-                  <input type="text" class="form-control w-40">
+                  <select class="form-control w-10 float-left me-3" v-if="searchType == 'role'" v-model="roleType">
+                    <option>일반</option>
+                    <option>구독자</option>
+                    <option>스타</option>
+                    <option>관리자</option>
+                  </select>
+                  <input v-else type="text" class="form-control w-40 float-left me-3" v-model="keyword">
+                  <button class="btn" type="button" @click="searchMember">검색</button>
                 </div>
                 <table>
                     <tr>
@@ -81,6 +88,9 @@ export default {
       currentPage: 0,
       totalPages: 0,
       params: {},
+      searchType: "nickname",
+      keyword: null,
+      roleType: "일반",
     }
   },
   components: {
@@ -125,7 +135,6 @@ export default {
     async getMember() {
       await this.$axios.get("/api/admin/member", this.axiosConfig)
       .then((response) => {
-        console.log(response)
         this.memberList = response.data.content;
         this.currentPage = response.data.pageable.pageNumber;
         this.totalPages = response.data.totalPages;
@@ -140,6 +149,17 @@ export default {
     },
     getDetail(nickname) {
       this.$router.push("/admin/member/detail?name="+nickname)
+    },
+    searchMember() {
+      this.axiosConfig.params.searchType = this.searchType;
+
+      if (this.searchType == 'role') {
+        this.axiosConfig.params.keyword = this.roleType;  
+      } else {
+        this.axiosConfig.params.keyword = this.keyword;
+      }
+      
+      this.getMember();
     }
   }
 }
