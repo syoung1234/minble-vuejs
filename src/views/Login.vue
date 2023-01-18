@@ -39,7 +39,9 @@
                         fullWidth
                         size="lg"
                       >로그인</argon-button>
+                      <a href="http://localhost:8080/oauth2/authorization/kakao"><img src="/icon/kakao_login_large_wide.png" class="img-size w-100"></a>
                     </div>
+                    
                   </form>
                 </div>
                 <div class="px-1 pt-0 text-center card-footer px-lg-2">
@@ -51,10 +53,6 @@
                   </p>
                 </div>
               </div>
-            </div>
-            <div
-              class="top-0 my-auto text-center col-6 d-lg-flex d-none h-100 pe-0 position-absolute end-0 justify-content-center flex-column"
-            >
             </div>
           </div>
         </div>
