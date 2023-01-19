@@ -21,6 +21,7 @@ import CommentList from "../views/mypage/CommentList.vue";
 import store from "../store";
 import AdminMember from "../views/admin/member/Member.vue";
 import AdminMemberDetail from "../views/admin/member/Detail.vue";
+import CreateNickname from "../views/CreateNickname.vue";
 
 const beforeAuth = isAuth => (from, to , next) => {
   const isAuthenticated = store.getters["isAuthenticated"]
@@ -142,6 +143,11 @@ const routes = [
     path: "/admin/member/detail",
     name: "adminMemberDetail",
     component: AdminMemberDetail,
+  },
+  {
+    path: "/create/nickname",
+    name: "createNikcname",
+    component: CreateNickname,
   },
   
 ];
