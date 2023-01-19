@@ -96,6 +96,9 @@ export default createStore({
               })
       })
   },
+  socialLogin: function(context, payload) {
+    context.commit("login", {accessToken: payload.accessToken});
+  },
   logout: function (context, payload) {
     return new Promise(resolve => {
       setTimeout(function() {

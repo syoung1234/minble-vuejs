@@ -58,6 +58,7 @@ export default {
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       },
+      accessToken: this.$route.query.accessToken,
     }
   },
   components: {
@@ -65,6 +66,7 @@ export default {
     AppFooter,
   },
   created() {
+    this.getSocial();
     this.getList();
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
@@ -80,6 +82,20 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
+    getSocial() {
+      if (this.accessToken) {
+        this.$store
+        .dispatch("socialLogin", {
+          accessToken: this.accessToken
+        })
+        .then(response => {
+          this.$router.push("/home");
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+      }
+    },
     async getList() { // 목록
       await this.$axios.get("/api/follow/list", this.axiosConfig)
         .then((response) => {
