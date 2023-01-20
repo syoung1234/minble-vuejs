@@ -88,7 +88,7 @@ export default {
         .dispatch("socialLogin", {
           accessToken: this.accessToken
         })
-        .then(response => {
+        .then(() => {
           this.$router.push("/home");
         })
         .catch((error) => {
