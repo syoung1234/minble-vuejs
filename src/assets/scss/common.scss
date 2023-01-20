@@ -155,3 +155,24 @@ textarea {
 .justify-center {
   justify-content: center;
 }
+
+.social-img {
+  height: 50px;
+}
+
+.btn-naver {
+  background-image: url("/icon/btnG_naver_ rectangle.png");
+  background-color: #03C75A;
+  width: 100%;
+  height: 50px;
+  background-size: 50px;
+  background-repeat: no-repeat;
+  border: 0;
+  border-radius: 0.4rem;
+  color: #ffffff;
+}
+
+.margin-naver {
+  margin-left: 6%;
+  font-size: 17px;
+}
