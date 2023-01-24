@@ -39,8 +39,13 @@
                         fullWidth
                         size="lg"
                       >로그인</argon-button>
-                      <a href="http://localhost:8080/oauth2/authorization/kakao"><img src="/icon/kakao_login_large_wide.png" class="img-size w-100"></a>
                     </div>
+                    <button type="button" class="btn-naver mt-5" @click="this.$refs.naverLogin.click"><span class="margin-naver">네이버 로그인</span></button>
+                    <a href="http://localhost:8080/oauth2/authorization/naver" ref="naverLogin"></a>
+                    <div class="mt-2">
+                      <a href="http://localhost:8080/oauth2/authorization/kakao"><img src="/icon/kakao_login_large_wide.png" class="img-size w-100 social-img"></a>
+                    </div>
+                    
                     
                   </form>
                 </div>
@@ -113,7 +118,7 @@ export default {
       // .catch((error) => {  // eslint-disable-line no-unused-vars
       //   alert("이메일 또는 비밀번호를 맞지 않습니다.")
       // })
-    }
+    },
   },
   components: {
     Navbar,
