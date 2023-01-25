@@ -40,13 +40,15 @@
                         size="lg"
                       >로그인</argon-button>
                     </div>
-                    <button type="button" class="btn-naver mt-5" @click="this.$refs.naverLogin.click"><span class="margin-naver">네이버 로그인</span></button>
+                    <button type="button" class="btn-naver mt-5" @click="this.$refs.naverLogin.click"><span class="social-font">네이버 로그인</span></button>
                     <a href="http://localhost:8080/oauth2/authorization/naver" ref="naverLogin"></a>
                     <div class="mt-2">
                       <a href="http://localhost:8080/oauth2/authorization/kakao"><img src="/icon/kakao_login_large_wide.png" class="img-size w-100 social-img"></a>
                     </div>
-                    
-                    
+                    <div class="mt-2">
+                      <button type="button" class="btn-google"><span class="social-font" @click="this.$refs.googleLogin.click">구글 로그인</span></button>
+                    </div>
+                    <a href="http://localhost:8080/oauth2/authorization/google" ref="googleLogin"></a>
                   </form>
                 </div>
                 <div class="px-1 pt-0 text-center card-footer px-lg-2">
