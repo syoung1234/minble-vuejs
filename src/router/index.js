@@ -46,7 +46,7 @@ const routes = [
   {
     path: "/",
     name: "/",
-    redirect: "/home",
+    redirect: "/start",
   },
   {
     path: "/dashboard-default",
