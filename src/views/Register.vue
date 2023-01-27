@@ -1,5 +1,5 @@
 <template>
-  <div class="container top-0 position-sticky z-index-sticky">
+  <div class="container top-0 position-sticky z-index-sticky" v-if="isLoading == false">
     <div class="row">
       <div class="col-12">
         <navbar
@@ -10,7 +10,8 @@
       </div>
     </div>
   </div>
-  <main class="main-content mt-8">
+  <LoadingSpinner v-if="isLoading"></LoadingSpinner>
+  <main class="main-content mt-8" v-else>
     <section>
       <div class="page-header min-vh-100">
     <div class="container">
@@ -81,12 +82,15 @@
     </div>
     </section>
   </main>
+  <div v-if="isLoading == false">
   <app-footer />
+  </div>
 </template>
 
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue"
 const body = document.getElementsByTagName("body")[0];
 const axiosConfig = {
         headers:{
@@ -109,6 +113,7 @@ export default {
             emailDuplicateFlag: '',
             nicknameDuplicateFlag: '',
             agreeCheck: false,
+            isLoading: false,
         }
     },
     methods: {
@@ -190,17 +195,20 @@ export default {
                 saveData.password = this.password;
                 saveData.nickname= this.nickname;
                 saveData.phone = this.phone;
-
+                this.isLoading = true;
+                
                 this.$axios
                 .post("/api/register", JSON.stringify(saveData), axiosConfig)
                 .then((res) => {
                   console.log(res)
                   if (res.data == "success") {
-                      this.$router.push("/");
+                    this.$router.push("/complete/register");
                   }
                 })
                 .catch((error) => { 
                   console.log(error);
+                  alert("회원가입에 실패하였습니다. 다시 시도해주세요.");
+                  this.$router.push('/');
                 })
                 .finally(() => {
                 });
@@ -210,6 +218,7 @@ export default {
   components: {
     Navbar,
     AppFooter,
+    LoadingSpinner,
   },
   created() {
     this.$store.state.hideConfigButton = true;
