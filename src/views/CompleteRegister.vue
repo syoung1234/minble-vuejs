@@ -15,8 +15,11 @@
     <div class="container">
       <div class="row">
         <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
-            <div class="card-header mt-2">
+            <div class="card-header mt-2" v-if="type == null">
               <span class="text-bold">가입하신 이메일의 메일함을 확인해주세요. <br> 인증 후 가입이 완료됩니다.</span>
+            </div>
+            <div class="card-header mt-2" v-else>
+              <span class="text-bold">재인증이 필요합니다. 다시 보내기 버튼을 클릭해주세요.<br> 인증 후 가입이 완료됩니다.</span>
             </div>
             <div class="text-center mt-3">
                 <button type="button" class="btn">다시 보내기</button>
@@ -35,14 +38,12 @@ export default {
   name: "CompleteRegister",
   data() {
     return {
-      followingList: [],
-      num: null,
       axiosConfig: {
         headers:{
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       },
-      accessToken: this.$route.query.accessToken,
+      type: this.$route.query.type,
     }
   },
   components: {
