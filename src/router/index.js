@@ -23,6 +23,7 @@ import AdminMember from "../views/admin/member/Member.vue";
 import AdminMemberDetail from "../views/admin/member/Detail.vue";
 import CreateNickname from "../views/CreateNickname.vue";
 import CompleteRegister from "../views/CompleteRegister.vue";
+import ConfirmEmail from "../views/ConfirmEmail.vue";
 
 const beforeAuth = isAuth => (from, to , next) => {
   const isAuthenticated = store.getters["isAuthenticated"]
@@ -109,6 +110,11 @@ const routes = [
     path: "/complete/register",
     name: "CompleteRegister",
     component: CompleteRegister,
+  },
+  {
+    path: "/confirm-email",
+    name: "ConfirmEmail",
+    component: ConfirmEmail,
   },
   {
     path: "/message",
