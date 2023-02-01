@@ -70,7 +70,6 @@
 
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
-// import ArgonSwitch from "@/components/ArgonSwitch.vue";
 import ArgonButton from "@/components/ArgonButton.vue";
 const body = document.getElementsByTagName("body")[0];
 
@@ -84,8 +83,6 @@ export default {
     },
   methods: {
     postData() {
-      console.log(this.email)
-      console.log(this.password)
       let saveData = {};
       saveData.email = this.email;
       saveData.password = this.password;
@@ -101,8 +98,11 @@ export default {
           password: this.password,
         })
         .then(response => {
-          console.log(response)
-          this.$router.push("/home");
+          if (response.data == "unconfirmed") {
+            this.$router.push("/complete/register?type=re_request&email="+this.email);
+          } else {
+            this.$router.push("/home");
+          }
 
         })
         .catch(() => {
@@ -124,7 +124,6 @@ export default {
   },
   components: {
     Navbar,
-    // ArgonSwitch,
     ArgonButton,
   },
   created() {
