@@ -22,7 +22,7 @@
               <span class="text-bold">재인증이 필요합니다. 다시 보내기 버튼을 클릭해주세요.<br> 인증 후 가입이 완료됩니다.</span>
             </div>
             <div class="text-center mt-3">
-                <button type="button" class="btn">다시 보내기</button>
+                <button type="button" class="btn" @click="postResend">다시 보내기</button>
             </div>
         </div>
       </div>
@@ -44,6 +44,7 @@ export default {
         }
       },
       type: this.$route.query.type,
+      email: this.$route.query.email,
     }
   },
   components: {
@@ -64,6 +65,18 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
+    postResend() {
+      let saveData = {};
+      saveData.email = this.email;
+      this.$axios.post("/api/email/confirm", saveData)
+      .then(() => {
+        alert("메일함을 확인해주세요.");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("잘 못 된 접근입니다. 다시 시도해주세요.");
+      })
+    }
   },
 }
 
