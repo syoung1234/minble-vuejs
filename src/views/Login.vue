@@ -99,7 +99,10 @@ export default {
         })
         .then(response => {
           if (response.data == "unconfirmed") {
-            this.$router.push("/complete/register?type=re_request&email="+this.email);
+            // 로그아웃
+            this.$store.dispatch("logout", {})
+              .then(() => this.$router.push("/complete/register?type=re_request&email="+this.email))
+              .catch(() => this.$router.push("/complete/register?type=re_request&email="+this.email))
           } else {
             this.$router.push("/home");
           }
