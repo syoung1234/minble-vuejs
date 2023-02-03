@@ -24,6 +24,7 @@ import AdminMemberDetail from "../views/admin/member/Detail.vue";
 import CreateNickname from "../views/CreateNickname.vue";
 import CompleteRegister from "../views/CompleteRegister.vue";
 import ConfirmEmail from "../views/ConfirmEmail.vue";
+import ResetPassword from "../views/ResetPassword.vue";
 
 const beforeAuth = isAuth => (from, to , next) => {
   const isAuthenticated = store.getters["isAuthenticated"]
@@ -115,6 +116,11 @@ const routes = [
     path: "/confirm-email",
     name: "ConfirmEmail",
     component: ConfirmEmail,
+  },
+  {
+    path: "/reset-password",
+    name: "resetPassword",
+    component: ResetPassword,
   },
   {
     path: "/message",
