@@ -55,8 +55,12 @@
                   <p class="mx-auto mb-4 text-sm">
                     <a
                       href="/register"
-                      class="text-success text-gradient font-weight-bold"
+                      class="text-success text-gradient font-weight-bold me-3"
                     >회원가입</a>
+                    <a
+                      href="/find-password"
+                      class="text-success text-gradient font-weight-bold"
+                    >비밀번호 찾기</a>
                   </p>
                 </div>
               </div>

@@ -25,6 +25,7 @@ import CreateNickname from "../views/CreateNickname.vue";
 import CompleteRegister from "../views/CompleteRegister.vue";
 import ConfirmEmail from "../views/ConfirmEmail.vue";
 import ResetPassword from "../views/ResetPassword.vue";
+import FindPassword from "../views/FindPassword.vue";
 
 const beforeAuth = isAuth => (from, to , next) => {
   const isAuthenticated = store.getters["isAuthenticated"]
@@ -121,6 +122,11 @@ const routes = [
     path: "/reset-password",
     name: "resetPassword",
     component: ResetPassword,
+  },
+  {
+    path: "/find-password",
+    name: "findPassword",
+    component: FindPassword,
   },
   {
     path: "/message",
