@@ -1,5 +1,6 @@
 <template>
-  <div class="container top-0 position-sticky z-index-sticky">
+<LoadingSpinner v-if="isLoading"></LoadingSpinner>
+  <div class="container top-0 position-sticky z-index-sticky" v-else-if="isLoading == false">
     <div class="row">
       <div class="col-12">
         <navbar
@@ -10,11 +11,25 @@
       </div>
     </div>
   </div>
-  <main class="main-content mt-8">
+  <main class="main-content mt-8" v-if="isLoading == false">
     <section>
     <div class="container">
       <div class="row">
-        <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
+        <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column" v-if="isSend == false">
+          <div class="mb-3">
+            <span>가입하신 이메일을 입력해주세요.</span>
+          </div>
+          <div class="mb-5">
+            <input class="form-control form-control-lg invalid" type="email" placeholder="이메일" name="email" v-model="email" />
+          </div>
+          <div class="text-center">
+            <button class="btn" type="button" @click="getPasswordEmail">비밀번호 찾기</button>
+          </div>
+        </div>
+
+        <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column" v-else>
+          <span>비밀번호 재설정 메일을 보냈습니다.</span>
+          <span>입력하신 메일함을 확인해주세요</span>
         </div>
       </div>
     </div>
@@ -24,17 +39,21 @@
 <script>
 
 import Navbar from "@/examples/PageLayout/Navbar.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue"
 const body = document.getElementsByTagName("body")[0];
 
 export default {
   name: "FindPassword",
   data() {
     return {
-      token: this.$route.query.token,
+      email: null,
+      isLoading: false,
+      isSend: false,
     }
   },
   components: {
       Navbar,
+      LoadingSpinner,
   },
   created() {
     this.$store.state.hideConfigButton = true;
@@ -51,25 +70,27 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-      getConfirmEmail() {
-          this.$axios.get("/api/email/confirm", {params: {"token": this.token}})
-          .then((response) => {
-              console.log(response)
-              if (response.data == "success") {
-                  this.$router.push("/")
-              } else if (response.data == "fail") {
-                  alert("잘못된 접근입니다.")
-                  this.$router.push("/")
-              } else {
-                  alert("유효기간이 만료되었습니다. 재인증이 필요합니다.")
-                  this.$router.push("/complete/register?type=re_request&email="+response.data)
-              }
-          })
-          .catch((error) => {
-              console.log(error)
-              this.$router.push("/")
-          })
+    getPasswordEmail() {
+      if (this.email == null || this.email == "") {
+        alert("이메일을 입력해주세요.");
+        return;
       }
+      this.isLoading = true;
+      this.$axios.get("/api/email/password", {params: {"email": this.email}})
+      .then((response) => {
+        if (response.data == "empty") {
+          alert("가입되지 않은 회원입니다.")
+          this.isLoading = false;
+        } else {
+          this.isSend = true;
+          this.isLoading = false;
+          alert("메일이 발송되었습니다. 메일함을 확인해주세요.")
+        }
+      })
+      .catch(() => {
+        alert("다시 시도해주세요.")
+      })
+    }
   },
 }
 
