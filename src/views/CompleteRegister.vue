@@ -1,5 +1,5 @@
 <template>
-  <div class="container top-0 position-sticky z-index-sticky">
+  <div class="container top-0 position-sticky z-index-sticky" v-if="isLoading == false">
     <div class="row">
       <div class="col-12">
         <navbar
@@ -10,7 +10,8 @@
       </div>
     </div>
   </div>
-  <main class="main-content mt-8">
+  <LoadingSpinner v-if="isLoading"></LoadingSpinner>
+  <main class="main-content mt-8" v-else>
     <section>
     <div class="container">
       <div class="row">
@@ -32,7 +33,7 @@
 </template>
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
-
+import LoadingSpinner from "@/components/LoadingSpinner.vue"
 const body = document.getElementsByTagName("body")[0];
 export default {
   name: "CompleteRegister",
@@ -45,10 +46,12 @@ export default {
       },
       type: this.$route.query.type,
       email: this.$route.query.email,
+      isLoading: false,
     }
   },
   components: {
     Navbar,
+    LoadingSpinner,
   },
   created() {
     this.$store.state.hideConfigButton = true;
@@ -68,8 +71,10 @@ export default {
     postResend() {
       let saveData = {};
       saveData.email = this.email;
+      this.isLoading = true;
       this.$axios.post("/api/email/confirm", saveData)
       .then(() => {
+        this.isLoading = false;
         alert("메일함을 확인해주세요.");
       })
       .catch((error) => {
