@@ -18,8 +18,11 @@
       <div class="row">
             <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
           <div class="card z-index-0">
-            <div class="card-header text-center pt-4">
-              <h5>회원가입</h5>
+            <div class="card-header pt-4">
+              <h4>
+                <button type="button" class="my-auto btn btn-link btn-icon-only btn-rounded btn-sm text-dark" @click="this.$router.go(-1);"><i class="ni ni-bold-left"></i></button>
+                회원가입
+              </h4>
             </div>
             <div class="card-body">
               <form role="form">
@@ -51,8 +54,8 @@
                   <div class="text-muted font-italic" v-else-if="nicknameDuplicateFlag === true"> 
                     <small class="color-green">사용 가능한 닉네임입니다.</small>
                   </div>
-                <input class="form-control form-control-default invalid mt-3" type="text" placeholder="휴대폰 번호" aria-label="Nickname" v-model="phone" />
-                <div class="form-check"> 
+                <!-- <input class="form-control form-control-default invalid mt-3" type="text" placeholder="휴대폰 번호" aria-label="Nickname" v-model="phone" /> -->
+                <div class="form-check mt-3"> 
                   <input type="checkbox" class="form-check-input" v-model="agreeCheck">
                   <label class="form-check-label" for="flexCheckDefault">
                     I agree the
@@ -69,7 +72,7 @@
                 <p class="text-sm mt-3 mb-0">
                   Already have an account?
                   <a
-                    href="javascript:;"
+                    href="/login"
                     class="text-dark font-weight-bolder"
                   >로그인</a>
                 </p>
