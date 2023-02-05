@@ -41,14 +41,14 @@
                       >로그인</argon-button>
                     </div>
                     <button type="button" class="btn-naver mt-5" @click="this.$refs.naverLogin.click"><span class="social-font">네이버 로그인</span></button>
-                    <a href="http://localhost:8080/oauth2/authorization/naver" ref="naverLogin"></a>
+                    <a :href="`${apiUrl}/oauth2/authorization/naver`" ref="naverLogin"></a>
                     <div class="mt-2">
-                      <a href="http://localhost:8080/oauth2/authorization/kakao"><img src="/icon/kakao_login_large_wide.png" class="img-size w-100 social-img"></a>
+                      <a :href="`${apiUrl}/oauth2/authorization/kakao`"><img src="/icon/kakao_login_large_wide.png" class="img-size w-100 social-img"></a>
                     </div>
                     <div class="mt-2">
                       <button type="button" class="btn-google"><span class="social-font" @click="this.$refs.googleLogin.click">구글 로그인</span></button>
                     </div>
-                    <a href="http://localhost:8080/oauth2/authorization/google" ref="googleLogin"></a>
+                    <a :href="`${apiUrl}/oauth2/authorization/google`" ref="googleLogin"></a>
                   </form>
                 </div>
                 <div class="px-1 pt-0 text-center card-footer px-lg-2">
@@ -83,6 +83,7 @@ export default {
         return {
             email: null,
             password: null,
+            apiUrl: process.env.VUE_APP_API_URL,
         }
     },
   methods: {
@@ -134,6 +135,7 @@ export default {
     ArgonButton,
   },
   created() {
+    console.log(process.env)
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
