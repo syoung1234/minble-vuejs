@@ -22,7 +22,7 @@
                             <td width="15%" class="" v-if="this.nickname != message.nickname && message.nickname == message.channel">
                                 <img :src="message.profilePath" v-if="this.nickname != message.nickname" class="rounded-circle img-size border border-2 border-white">
                             </td>
-                            <td v-if="message.nickname == message.channel">
+                            <td v-if="nickname != message.nickname">
                                 <div class="mt-2">
                                 <span> {{ message.nickname }}</span>
                                 </div>
@@ -33,7 +33,7 @@
                                     <span class="text-xs ms-1">{{ message.createdAt.substr(-5) }}</span>
                                 </div>
                             </td>
-                            <td colspan="2" v-else-if="this.nickname == message.nickname" align="right">
+                            <td colspan="2" v-else align="right">
                                 <div class="mt-2 speech-bubble msg-bg float-right">
                                 <span>{{ message.content }}</span>
                                 </div>
