@@ -26,3 +26,5 @@ package-lock.json
 yarn.lock
 
 /public/files
+
+.env
