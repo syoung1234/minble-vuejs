@@ -19,7 +19,7 @@
                             <td align="center" colspan="2"><p class="mt-3">{{messageList[index].createdAt.substr(0, 10)}}</p></td>
                         </tr>
                         <tr>
-                            <td width="15%" class="" v-if="this.nickname != message.nickname && message.nickname == message.channel">
+                            <td width="15%" class="" v-if="this.nickname != message.nickname">
                                 <img :src="message.profilePath" v-if="this.nickname != message.nickname" class="rounded-circle img-size border border-2 border-white">
                             </td>
                             <td v-if="nickname != message.nickname">
@@ -46,10 +46,11 @@
                 </table>
             </div>
             <div class="card-footer">
+                <div class="ni ni-image color-gray mx-auto mb-0 me-1 pointer"  @click="$refs.fileRef.click">
+                    <input type="file" id="file" @change="postFile()" ref="fileRef" multiple hidden>
+                </div>
                 <input type="text" class="msg-input" v-model="message" @keyup="sendMessage">
-                <a href="javascript:" @click="postComment">
-                    <img class="img-size mb-1 ms-2 msg-btn" src="/icon/send-message-2-2.png">
-                </a>
+                <img class="img-size mb-1 ms-2 msg-btn pointer" src="/icon/send-message-2-2.png" @click="send">
             </div>
           </div>
         </div>
@@ -102,6 +103,7 @@ export default {
         async getMessage() {
             await this.$axios.get(`/api/message/${this.name}`, this.axiosConfig)
             .then((response) => {
+                console.log(response)
                 if (response.data == '') {
                     alert("구독 서비스가 필요합니다.")
                     this.$router.go(-1);
@@ -121,10 +123,12 @@ export default {
         sendMessage(e) {
             if(e.keyCode === 13 && this.message !== "") {
                 this.send();
-                this.message = "";
             }
         },
         send() {
+            if (this.message == "") {
+                return;
+            }
             console.log("Send message:" + this.message);
             if (this.stompClient && this.stompClient.connected) {
                 const msg = {
@@ -135,6 +139,7 @@ export default {
                 };
                 this.stompClient.send("/receive", JSON.stringify(msg), {});
             }
+            this.message = "";
         },
         connect() {
             const serverURL = "http://localhost:8080"
@@ -161,6 +166,9 @@ export default {
                     this.connected = false;
                 }
             )
+        },
+        postFile() {
+            // 파일 전송 
         }
     },
     watch: {
