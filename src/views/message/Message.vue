@@ -18,24 +18,26 @@
                         <tr v-if="index > 0 && messageList[index-1].createdAt.substr(0, 10) != messageList[index].createdAt.substr(0, 10)">
                             <td align="center" colspan="2"><p class="mt-3">{{messageList[index].createdAt.substr(0, 10)}}</p></td>
                         </tr>
-                        <tr>
-                            <td width="15%" class="" v-if="this.nickname != message.nickname">
-                                <img :src="message.profilePath" v-if="this.nickname != message.nickname" class="rounded-circle img-size border border-2 border-white">
+                        <tr class="">
+                            <td width="15%" class="align-top" v-if="this.nickname != message.nickname">
+                                <img :src="message.profilePath" v-if="this.nickname != message.nickname" class="rounded-circle img-size border border-2 border-white mt-2">
                             </td>
                             <td v-if="nickname != message.nickname">
                                 <div class="mt-2">
                                 <span> {{ message.nickname }}</span>
                                 </div>
-                                <div class="mt-1 speech-bubble float-left">
-                                <span>{{ message.content }}</span>
+                                <img class="img-size float-left msg-file" :src="message.filePath" v-if="message.filePath">
+                                <div class="mt-1 speech-bubble float-left" v-else>
+                                    <span>{{ message.content }}</span>
                                 </div>
                                 <div class="mt-4">
                                     <span class="text-xs ms-1">{{ message.createdAt.substr(-5) }}</span>
                                 </div>
                             </td>
                             <td colspan="2" v-else align="right">
-                                <div class="mt-2 speech-bubble msg-bg float-right">
-                                <span>{{ message.content }}</span>
+                                <img class="img-size float-right msg-file" :src="message.filePath" v-if="message.filePath">
+                                <div class="mt-2 speech-bubble msg-bg float-right" v-else>
+                                    <span>{{ message.content }}</span>
                                 </div>
                                 <div class="mt-4 float-right">
                                     <span class="text-xs me-1">{{ message.createdAt.substr(-5) }}</span>
@@ -45,8 +47,8 @@
                     </template>
                 </table>
             </div>
-            <div class="card-footer">
-                <div class="ni ni-image color-gray mx-auto mb-0 me-1 pointer"  @click="$refs.fileRef.click">
+            <div :class="nickname == channel ? 'card-footer px-2' : 'card-footer'">
+                <div class="ni ni-image color-gray mx-auto mb-0 me-1 pointer" @click="$refs.fileRef.click" v-if="nickname == channel">
                     <input type="file" id="file" @change="postFile()" ref="fileRef" multiple hidden>
                 </div>
                 <input type="text" class="msg-input" v-model="message" @keyup="sendMessage">
@@ -79,7 +81,8 @@ export default {
             },
             channel: null,
             profilePath: null,
-            name: this.$route.query.name
+            name: this.$route.query.name,
+            filePath: null,
         }
     },
     components: {
@@ -136,10 +139,13 @@ export default {
                     content: this.message,
                     channel: this.channel,
                     profilePath: this.profilePath,
+                    filePath: this.filePath,
                 };
                 this.stompClient.send("/receive", JSON.stringify(msg), {});
             }
+            // 초기화
             this.message = "";
+            this.filePath = null;
         },
         connect() {
             const serverURL = "http://localhost:8080"
@@ -167,8 +173,26 @@ export default {
                 }
             )
         },
-        postFile() {
+        async postFile() {
+            const formData = new FormData()
             // 파일 전송 
+            let file = event.target.files[0];
+            console.log(file);
+            formData.append("file", file)
+            
+            // 파일 저장 후에 메시지 send()
+            await this.$axios.post("/api/messagefile", formData, {headers:{
+            "Content-Type": "multipart/form-data"}})
+            .then((response) => {
+                console.log(response)
+                this.filePath = response.data; // 메시지 보낸 후 초기화 해줘야함 
+                this.message = null; // 메시지가 null일 때는 메시지에 파일만 전송
+                this.send();
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+            
         }
     },
     watch: {
