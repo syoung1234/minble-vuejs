@@ -66,6 +66,7 @@ export default {
     AppFooter,
   },
   created() {
+    this.getNickname();
     this.getSocial();
     this.getList();
     this.$store.state.hideConfigButton = true;
@@ -82,6 +83,23 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
+    async getNickname() {
+        await this.$axios.get("/api/mypage", this.axiosConfig)
+          .then((response) => {
+            this.$store.state.name = null;
+            console.log(response)
+            if (response.data == '') {
+              this.$store.dispatch("logout", {})
+              .then(() => this.$router.push("/start"))
+              .catch(({ message }) => alert(message))
+            }
+            this.$store.state.nickname = response.data.nickname
+            console.log(this.$store.state.nickname);
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+    },
     getSocial() {
       if (this.accessToken) {
         this.$store
