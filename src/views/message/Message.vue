@@ -12,6 +12,16 @@
                   Message
               </h5>
             </div>
+            <ImageModal v-if="showImageModal" @close="showImageModal = false">
+               <div><img class="img-size modal-img-mh" :src="modalFilePath"></div>
+               <!-- /default -->
+               <!-- footer 슬롯 콘텐츠 -->
+               <div class="img-modal-footer">
+                 <button type="button" class="btn btn-link bg-white w-100" @click="downloadFile">
+                     다운로드
+                 </button>
+               </div>
+            </ImageModal>
              <div class="card-body scroll" ref="messageList">
                 <table>
                     <template v-for="(message, index) in messageList" :key="index">
@@ -26,7 +36,7 @@
                                 <div class="mt-2">
                                 <span> {{ message.nickname }}</span>
                                 </div>
-                                <img class="img-size float-left msg-file" :src="message.filePath" v-if="message.filePath">
+                                <img class="img-size float-left msg-file" :src="message.filePath" @click="showImage(message.filePath, message.filename)" v-if="message.filePath">
                                 <div class="mt-1 speech-bubble float-left" v-else>
                                     <span>{{ message.content }}</span>
                                 </div>
@@ -35,7 +45,7 @@
                                 </div>
                             </td>
                             <td colspan="2" v-else align="right">
-                                <img class="img-size float-right msg-file" :src="message.filePath" v-if="message.filePath">
+                                <img class="img-size float-right msg-file pointer" :src="message.filePath" v-if="message.filePath" @click="showImage(message.filePath, message.filename)">
                                 <div class="mt-2 speech-bubble msg-bg float-right" v-else>
                                     <span>{{ message.content }}</span>
                                 </div>
@@ -66,6 +76,8 @@
 <script>
 import Stomp from "webstomp-client"
 import SockJS from "sockjs-client"
+import ImageModal from "@/examples/ImageModal.vue";
+
 const body = document.getElementsByTagName("body")[0];
 export default {
     name: "message",
@@ -83,9 +95,13 @@ export default {
             profilePath: null,
             name: this.$route.query.name,
             filePath: null,
+            showImageModal: false,
+            modalFilePath: null,
+            modalFileName: null,
         }
     },
     components: {
+        ImageModal,
     },
     created() {
         this.getMessage();
@@ -192,7 +208,20 @@ export default {
             .catch((error) => {
                 console.log(error)
             })
-            
+        },
+        showImage(filePath, filename) {
+          this.showImageModal = true;
+          this.modalFilePath = filePath;
+          this.modalFileName = filename;
+        },
+        downloadFile() {
+            try {
+                let element = document.createElement('a');
+                    element.setAttribute('href', `/api/messagefile/download/${this.modalFileName}` );
+                    element.click();
+            } catch (error) {
+                console.log(error);
+            }
         }
     },
     watch: {
