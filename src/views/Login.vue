@@ -103,7 +103,7 @@ export default {
           password: this.password,
         })
         .then(response => {
-          if (response.data == "unconfirmed") {
+          if (response.data.status == "unconfirmed") {
             // 로그아웃
             this.$store.dispatch("logout", {})
               .then(() => this.$router.push("/complete/register?type=re_request&email="+this.email))
@@ -135,7 +135,7 @@ export default {
     ArgonButton,
   },
   created() {
-    console.log(process.env)
+    // console.log(process.env)
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
