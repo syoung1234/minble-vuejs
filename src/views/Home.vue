@@ -153,21 +153,17 @@ export default {
   },
   methods: {
     async getNickname() {
-        await this.$axios.get("/api/mypage", this.axiosConfig)
-          .then((response) => {
-            this.$store.state.name = null;
-            console.log(response)
-            if (response.data == '') {
-              this.$store.dispatch("logout", {})
-              .then(() => this.$router.push("/start"))
-              .catch(({ message }) => alert(message))
-            }
-            this.$store.state.nickname = response.data.nickname
-            console.log(this.$store.state.nickname);
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+      this.$store.state.name = null;
+      // localstorage에 등록하기
+      this.$store
+      .dispatch("user", {
+        accessToken: this.$store.state.token.accessToken,
+      })
+      .then(() => {
+      })
+      .catch((error) => {
+        alert("다시 시도해주세요"+ error)
+      })
     },
     async getList() { // 목록
       await this.$axios.get("/api/post", this.axiosConfig)

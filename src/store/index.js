@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import jwt from "../common/jwt";
+import user from "../common/user";
 import axios from "axios"
 
 export default createStore({
@@ -24,6 +25,9 @@ export default createStore({
       accessToken: jwt.getToken(),
     },
     isAuthenticated: !!jwt.getToken(),
+    user: {
+      user: user.getUser(),
+    },
     name: null,
   },
   mutations: {
@@ -61,6 +65,10 @@ export default createStore({
       state.isAuthenticated = true
       jwt.saveToken(payload.accessToken)
     },
+    user: function(state, payload = {}) {
+      state.user.user = payload.user;
+      user.saveUser(JSON.stringify(payload.user));
+    },
     logout: function (state = {}) {
       state.token.accessToken = ""
       state.isAuthenticated = false
@@ -87,7 +95,7 @@ export default createStore({
               .then(response => {
                   const { data } = response
                   context.commit("login", {
-                      accessToken: data,
+                      accessToken: data.accessToken,
                   })
                   resolve(response)
               })
@@ -95,19 +103,45 @@ export default createStore({
                   reject(error)
               })
       })
+    },
+    socialLogin: function(context, payload) {
+      context.commit("login", {accessToken: payload.accessToken});
+    },
+    user: function(context, payload) {
+      const axiosConfig = {
+        headers:{
+            "Content-Type": "application/json",
+            "X-AUTH-TOKEN": payload.accessToken,
+        }
+      }
+      return new Promise((resolve, reject) => {
+        axios.get("/api/mypage", axiosConfig)
+        .then(response => {
+          if (response.data == '') {
+            this.$store.dispatch("logout", {})
+            .then(() => this.$router.push("/start"))
+            .catch(({ message }) => alert(message))
+          }
+            const { data } = response
+            context.commit("user", {
+                user: data
+            })
+            resolve(response)
+        })
+        .catch(error => {
+            reject(error)
+        })
+      })
+    },
+    logout: function (context, payload) {
+      return new Promise(resolve => {
+        setTimeout(function() {
+          context.commit("logout", payload)
+          resolve({})
+        }, 1000)
+      })
+    }
   },
-  socialLogin: function(context, payload) {
-    context.commit("login", {accessToken: payload.accessToken});
-  },
-  logout: function (context, payload) {
-    return new Promise(resolve => {
-      setTimeout(function() {
-        context.commit("logout", payload)
-        resolve({})
-      }, 1000)
-    })
-  }
-},
   getters: {
     getAccessToken: function (state) {
       return state.token.accessToken
