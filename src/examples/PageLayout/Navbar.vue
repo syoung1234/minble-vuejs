@@ -29,7 +29,7 @@
       <div class="collapse navbar-collapse" id="navigation">
         <ul class="navbar-nav mx-auto">
           <li class="nav-item">
-            <router-link to="/home" v-if="this.$store.state.token.accessToken"
+            <router-link to="/home" v-if="this.$store.state.token.accessToken && userData.roleType != 'ROLE_STAR'"
               class="nav-link d-flex align-items-center me-2 active"
               aria-current="page"
             >
@@ -40,7 +40,7 @@
               ></i>
               Home
             </router-link>
-            <router-link to="/start" v-else-if="!this.$store.state.token.accessToken"
+            <router-link to="/start" v-else-if="!this.$store.state.token.accessToken && userData.roleType != 'ROLE_STAR'"
               class="nav-link d-flex align-items-center me-2 active"
               aria-current="page"
             >
@@ -59,7 +59,8 @@
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
-              Post
+              <span v-if="userData.roleType == 'ROLE_STAR'">Home</span>
+              <span v-else>Post</span>
             </router-link>
           </li>
           <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name">
@@ -134,6 +135,10 @@ export default {
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       },
+      // userData: JSON.parse(this.$store.state.user.user),
+      userData: this.$store.state.user.user,
+      name: this.$store.state.name,
+      accessToken: this.$store.state.token.accessToken,
     };
   },
   props: {
@@ -151,6 +156,9 @@ export default {
         "text-dark": this.darkMode
       };
     }
+  },
+  created() {
+    //if ()
   },
   methods: {
     logout() {

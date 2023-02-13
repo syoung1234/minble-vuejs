@@ -153,7 +153,7 @@ export default {
   },
   methods: {
     async getNickname() {
-      this.$store.state.name = null;
+      // this.$store.state.name = null;
       // localstorage에 등록하기
       this.$store
       .dispatch("user", {

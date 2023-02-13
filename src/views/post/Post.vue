@@ -95,7 +95,6 @@
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
 import Modal from "@/examples/PostModal.vue";
-import { mapMutations } from "vuex";
 
 const body = document.getElementsByTagName("body")[0];
 export default {
@@ -113,7 +112,7 @@ export default {
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       },
-      name: this.$route.query.name
+      name: this.$store.state.name,
     }
   },
   components: {
@@ -138,7 +137,6 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-    ...mapMutations(["updateName"]),
     async getNickname() {
         await this.$axios.get("/api/mypage", this.axiosConfig)
           .then((response) => {
@@ -157,9 +155,6 @@ export default {
           this.followingList = response.data.following;
           this.role = response.data.role;
           this.pageList = response.data.pageList;
-
-          // store 저장 
-          this.updateName(this.name);
         })
         .catch((error)=> {
           console.log(error)

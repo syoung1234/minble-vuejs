@@ -58,7 +58,10 @@ export default createStore({
       }
     },
     updateName(state, payload) {
-      state.name = payload;
+      console.log(state);
+      console.log(payload);
+      // state.name = payload;
+      // window.localStorage.setItem("name", payload)
     },
     login: function (state, payload = {}) {
       state.token.accessToken = payload.accessToken
@@ -68,6 +71,10 @@ export default createStore({
     user: function(state, payload = {}) {
       state.user.user = payload.user;
       user.saveUser(JSON.stringify(payload.user));
+      if (payload.user.roleType == 'ROLE_STAR') {
+        state.name = payload.user.nickname;
+        user.saveName(payload.user.nickname)
+      }
     },
     logout: function (state = {}) {
       state.token.accessToken = ""

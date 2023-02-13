@@ -110,7 +110,7 @@ export default {
   },
   methods: {
     async getNickname() {
-        this.$store.state.name = this.name;
+        // this.$store.state.name = this.name;
         await this.$axios.get("/api/mypage", this.axiosConfig)
           .then((response) => {
             console.log(response)

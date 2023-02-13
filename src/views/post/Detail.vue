@@ -233,7 +233,7 @@ export default {
           this.postDetail = response.data;
           this.commentList = response.data.commentList;
           this.pageList = response.data.pageList;
-          this.$store.state.name = response.data.nickname;
+          // this.$store.state.name = response.data.nickname;
         })
         .catch((error)=> {
           console.log(error)

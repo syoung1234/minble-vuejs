@@ -86,7 +86,7 @@ export default {
     async getNickname() {
         await this.$axios.get("/api/mypage", this.axiosConfig)
           .then((response) => {
-            this.$store.state.name = null;
+            // this.$store.state.name = null;
             console.log(response)
             if (response.data == '') {
               this.$store.dispatch("logout", {})

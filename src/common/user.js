@@ -12,8 +12,13 @@ export const destroyUser = () => {
     window.localStorage.removeItem(ID_TOKEN_KEY)
 }
 
+export const saveName = name => {
+    window.localStorage.setItem("star", name)
+}
+
 export default {
     getUser,
     saveUser,
-    destroyUser
+    destroyUser,
+    saveName,
 }
