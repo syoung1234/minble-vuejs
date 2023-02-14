@@ -29,7 +29,7 @@
       <div class="collapse navbar-collapse" id="navigation">
         <ul class="navbar-nav mx-auto">
           <li class="nav-item">
-            <router-link to="/home" v-if="this.$store.state.token.accessToken && userData.roleType != 'ROLE_STAR'"
+            <router-link to="/home" v-if="this.$store.state.token.accessToken && roleType != 'ROLE_STAR'"
               class="nav-link d-flex align-items-center me-2 active"
               aria-current="page"
             >
@@ -40,7 +40,7 @@
               ></i>
               Home
             </router-link>
-            <router-link to="/start" v-else-if="!this.$store.state.token.accessToken && userData.roleType != 'ROLE_STAR'"
+            <router-link to="/start" v-else-if="!this.$store.state.token.accessToken && roleType != 'ROLE_STAR'"
               class="nav-link d-flex align-items-center me-2 active"
               aria-current="page"
             >
@@ -59,7 +59,7 @@
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
-              <span v-if="userData.roleType == 'ROLE_STAR'">Home</span>
+              <span v-if="roleType == 'ROLE_STAR'">Home</span>
               <span v-else>Post</span>
             </router-link>
           </li>
@@ -73,7 +73,7 @@
               Message
             </router-link>
           </li>
-          <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name">
+          <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name && roleType != 'ROLE_STAR'">
             <router-link class="nav-link me-2" :to="`/shop?name=${this.$store.state.name}`">
               <i
                 class="fas fa-key opacity-6 me-1"
@@ -137,8 +137,8 @@ export default {
       },
       // userData: JSON.parse(this.$store.state.user.user),
       userData: this.$store.state.user.user,
-      name: this.$store.state.name,
       accessToken: this.$store.state.token.accessToken,
+      roleType: null,
     };
   },
   props: {
@@ -158,14 +158,32 @@ export default {
     }
   },
   created() {
-    //if ()
+    this.getNickname();
   },
   methods: {
     logout() {
       this.$store.dispatch("logout", {})
       .then(() => this.$router.push("/start"))
       .catch(({ message }) => alert(message))
-    }
+    },
+    getNickname() {
+      // 로그인이 안되어있을 경우 
+      if (this.$store.state.token.accessToken == null || this.$store.state.token.accessToken == '') {
+        return;
+      }
+      this.$store
+      .dispatch("user", {
+        accessToken: this.$store.state.token.accessToken,
+      })
+      .then((response) => {
+        this.roleType = response.data.roleType;
+        this.$store.state.nickname = response.data.nickname;
+        this.$store.state.profilePath = response.data.profilePath;
+      })
+      .catch((error) => {
+        alert("다시 시도해주세요"+ error)
+      })
+    },
 
   }
 };
