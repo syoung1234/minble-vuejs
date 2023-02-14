@@ -109,7 +109,11 @@ export default {
               .then(() => this.$router.push("/complete/register?type=re_request&email="+this.email))
               .catch(() => this.$router.push("/complete/register?type=re_request&email="+this.email))
           } else {
-            this.$router.push("/home");
+            if (response.data.roleType == "ROLE_STAR") {
+              this.$router.push("/post?name="+response.data.nickname);
+            } else {
+              this.$router.push("/home");
+            }
           }
 
         })
