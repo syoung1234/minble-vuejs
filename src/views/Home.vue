@@ -137,7 +137,6 @@ export default {
   },
   created() {
     this.getList();
-    this.getNickname();
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
@@ -152,20 +151,8 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-    async getNickname() {
-      // this.$store.state.name = null;
-      // localstorage에 등록하기
-      this.$store
-      .dispatch("user", {
-        accessToken: this.$store.state.token.accessToken,
-      })
-      .then(() => {
-      })
-      .catch((error) => {
-        alert("다시 시도해주세요"+ error)
-      })
-    },
     async getList() { // 목록
+      this.$store.state.name = null
       await this.$axios.get("/api/post", this.axiosConfig)
         .then((response) => {
           this.postList = response.data.postList;

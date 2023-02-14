@@ -112,7 +112,7 @@ export default {
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       },
-      name: this.$store.state.name,
+      name: this.$route.query.name,
     }
   },
   components: {
@@ -122,7 +122,6 @@ export default {
   },
   created() {
     this.getList();
-    this.getNickname();
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
@@ -137,18 +136,8 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-    async getNickname() {
-        await this.$axios.get("/api/mypage", this.axiosConfig)
-          .then((response) => {
-            console.log(response)
-            this.$store.state.nickname = response.data.nickname
-            console.log(this.$store.state.nickname);
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-    },
     async getList() { // 목록
+      this.$store.state.name = this.name;
       await this.$axios.get(`/api/post?name=${this.name}`, this.axiosConfig)
         .then((response) => {
           this.postList = response.data.postList;
