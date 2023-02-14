@@ -57,24 +57,10 @@ export default createStore({
         state.isNavFixed = false;
       }
     },
-    updateName(state, payload) {
-      console.log(state);
-      console.log(payload);
-      // state.name = payload;
-      // window.localStorage.setItem("name", payload)
-    },
     login: function (state, payload = {}) {
       state.token.accessToken = payload.accessToken
       state.isAuthenticated = true
       jwt.saveToken(payload.accessToken)
-    },
-    user: function(state, payload = {}) {
-      state.user.user = payload.user;
-      user.saveUser(JSON.stringify(payload.user));
-      if (payload.user.roleType == 'ROLE_STAR') {
-        state.name = payload.user.nickname;
-        user.saveName(payload.user.nickname)
-      }
     },
     logout: function (state = {}) {
       state.token.accessToken = ""
@@ -126,7 +112,10 @@ export default createStore({
         .then(response => {
           if (response.data == '') {
             this.$store.dispatch("logout", {})
-            .then(() => this.$router.push("/start"))
+            .then(() => {
+              this.$store.state.name = null;
+              this.$router.push("/start")
+            })
             .catch(({ message }) => alert(message))
           }
             const { data } = response
