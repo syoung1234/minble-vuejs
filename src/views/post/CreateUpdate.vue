@@ -163,7 +163,7 @@ export default {
       if (postUrl == "create") {
         await this.$axios.post("/api/post/"+postUrl, formData, this.axiosConfig)
           .then(() => {
-            this.$router.push("/post");
+            this.$router.push("/post?name="+this.$store.state.name);
             
           })
           .catch((error) => {
@@ -172,7 +172,7 @@ export default {
       } else {
         await this.$axios.put("/api/post/"+this.num+"/update", formData, this.axiosConfig)
           .then(() => {
-            this.$router.push("/post");
+            this.$router.push("/post?name="+this.$store.state.name);
             
           })
           .catch((error) => {

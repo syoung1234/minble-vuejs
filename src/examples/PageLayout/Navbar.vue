@@ -8,7 +8,7 @@
       <router-link
         class="navbar-brand font-weight-bolder ms-lg-0 ms-3"
         :class="darkMode ? 'text-black' : 'text-white'"
-        to="/"
+        :to="roleType == 'ROLE_STAR' ? `/post?name=${this.$store.state.name}` : '/'"
         >Minble</router-link
       >
       <button
@@ -177,6 +177,9 @@ export default {
         this.roleType = response.data.roleType;
         this.$store.state.nickname = response.data.nickname;
         this.$store.state.profilePath = response.data.profilePath;
+        if (this.roleType == "ROLE_STAR") {
+          this.$store.state.name = response.data.nickname;
+        }
       })
       .catch((error) => {
         alert("다시 시도해주세요"+ error)

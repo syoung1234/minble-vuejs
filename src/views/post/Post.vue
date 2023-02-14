@@ -34,7 +34,7 @@
           <div class="card z-index-0">
             <div class="card-body">
               <div class="float-left"><h5>게시글</h5></div>
-              <div class="text-right"><a href="javascript:" class="small" @click="deleteFollow">팔로잉 취소</a></div>
+              <div class="text-right"><a href="javascript:" class="small" v-if="this.$store.state.name != this.$store.state.nickname" @click="deleteFollow">팔로잉 취소</a></div>
               
               <form role="form">
                   <table border="1" bordercolor="gray" width ="100%" height="auto" align = "center" class="card card-body mb-4" v-for="(post,index) in postList" :key="index">
