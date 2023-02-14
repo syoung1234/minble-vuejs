@@ -1,6 +1,5 @@
 import { createStore } from "vuex";
 import jwt from "../common/jwt";
-import user from "../common/user";
 import axios from "axios"
 
 export default createStore({
@@ -25,9 +24,6 @@ export default createStore({
       accessToken: jwt.getToken(),
     },
     isAuthenticated: !!jwt.getToken(),
-    user: {
-      user: user.getUser(),
-    },
     name: null,
   },
   mutations: {
@@ -65,6 +61,7 @@ export default createStore({
     logout: function (state = {}) {
       state.token.accessToken = ""
       state.isAuthenticated = false
+      state.name = null
       jwt.destroyToken()
     },
   },
@@ -111,17 +108,12 @@ export default createStore({
         axios.get("/api/mypage", axiosConfig)
         .then(response => {
           if (response.data == '') {
-            this.$store.dispatch("logout", {})
+            this.dispatch("logout", {})
             .then(() => {
-              this.$store.state.name = null;
               this.$router.push("/start")
             })
             .catch(({ message }) => alert(message))
           }
-            const { data } = response
-            context.commit("user", {
-                user: data
-            })
             resolve(response)
         })
         .catch(error => {

@@ -135,8 +135,6 @@ export default {
             "X-AUTH-TOKEN": this.$store.state.token.accessToken
         }
       },
-      // userData: JSON.parse(this.$store.state.user.user),
-      userData: this.$store.state.user.user,
       accessToken: this.$store.state.token.accessToken,
       roleType: null,
     };
