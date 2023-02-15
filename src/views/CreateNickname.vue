@@ -56,17 +56,18 @@ export default {
   name: "login",
   data() {
         return {
-            nickname: null,
+            nickname: this.$route.query.nickname,
             nicknameNullCheckFlag: true,
             nicknameDuplicateFlag: '',
             email: this.$route.query.email,
             social: this.$route.query.social,
+            defaultNickname: this.$route.query.nickname,
         }
     },
   methods: {
     // 닉네임 null 체크
     nicknameNullCheck() {
-        if (this.nickname == null) {
+        if (this.nickname == null || this.nickname == "") {
             this.nicknameNullCheckFlag = false;
         } else {
             this.nicknameNullCheckFlag =true
@@ -77,36 +78,63 @@ export default {
         data.nickname = this.nickname;
         let result = null;
 
-        this.$axios.post("/api/duplicate/nickname", data)
-        .then((res) => {
-            if (res.data == "exist") {
-                result = false;
-            } else {
-                result = true;
-            }
-            this.nicknameDuplicateFlag = result;
-        })
-        .catch((error) => {
-          console.log(error);
-        })
+        if (this.defaultNickname == this.nickname) {
+          this.nicknameDuplicateFlag = true;
+        } else {
+          this.$axios.post("/api/duplicate/nickname", data)
+          .then((res) => {
+              if (res.data == "exist") {
+                  result = false;
+              } else {
+                  result = true;
+              }
+              this.nicknameDuplicateFlag = result;
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+        }
+        
     },
-    postData() {
-        if (this.nicknameNullCheckFlag == null || this.nicknameNullCheckFlag == false || this.nicknameDuplicateFlag == false) {
+    async postData() {
+        if (this.nickname == this.defaultNickname) {
+          //
+        } else if (this.nicknameNullCheckFlag == null || this.nicknameNullCheckFlag == false || this.nicknameDuplicateFlag == false) {
             return;
         }
         let saveData = {};
         saveData.email = this.email;
         saveData.nickname = this.nickname;
         saveData.social = this. social;
-        console.log(saveData)
-        this.$axios.post("/api/register/social", saveData)
+
+        let socialNickname;
+        let roleType;
+        let accessToken;
+        
+        await this.$axios.post("/api/register/social", saveData)
         .then((response) => {
-            console.log(response)
-        })
+            accessToken = response.data.accessToken;
+            socialNickname = response.data.nickname;
+            roleType = response.data.roleType;
+          })
         .catch((error) => {
             console.log(error)
         })
-        
+
+        this.$store
+          .dispatch("socialLogin", {
+            accessToken: accessToken
+          })
+          .then(() => {
+            if (roleType == "ROLE_STAR") {
+              this.$router.push("/post?name="+socialNickname);
+            } else {
+              this.$router.push("/home");
+            }
+          })
+          .catch(() => {
+            alert("이메일 또는 비밀번호를 맞지 않습니다.")
+          })
     }
   },
   components: {
