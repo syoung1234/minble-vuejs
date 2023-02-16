@@ -43,7 +43,7 @@
                       <i class="fa fa-ellipsis-v text-xs" @click="postModal(post?.id)"></i>
                     </a>
                   </div>
-                      <tr>
+                      <tr class="pointer" @click="pushPost(post?.id)">
                           <td width="20%" v-if="post?.profilePath != null">
                           <img :src="post?.profilePath" class="rounded-circle img-size border border-2 border-white">
                           </td>
@@ -55,13 +55,11 @@
                               <span class="small">{{ post?.createdAt }}</span>
                           </td>
                       </tr>
-                      <tr class="mt-2 mb-2">
-                        <router-link :to="`/post/detail?num=${post.id}`">
-                          <td><div class="text-ellipsis"><span>{{ post?.content }}</span>
+                      <tr class="pt-2 pb-2 pointer" @click="pushPost(post?.id)">
+                          <td><div class="text-ellipsis"><p class="content-preline mb-0">{{ post?.content }}</p>
                           <img v-if="post?.postFileList[0]" class="img-size me-1 mb-0" :src="post?.postFileList[0].filePath"/>
                           </div>
                           </td>
-                        </router-link>
                       </tr>
                       <tr>
                         <td>
@@ -69,7 +67,7 @@
                             <img v-show="post?.favorite == false" class="w-8 me-1 mb-0" src="/icon/hearts--v1.png">
                             <img v-show="post?.favorite == true" class="w-8 me-1 mb-0" src="/icon/full-heart-icon.png">{{ post?.favoriteCount }}
                           </a>
-                          <a href="javascript:" class="me-2">
+                          <a href="javascript:" class="me-2" @click="pushPost(post?.id)">
                           <img class="w-7 me-1 mb-0" src="/icon/speech-bubble--v2.png">{{ post?.commentCount }}
                           </a>
                         </td>
@@ -203,6 +201,9 @@ export default {
       this.showModal = true;
       this.num = num;
     },
+    pushPost(postId) {
+      this.$router.push("/post/detail?num="+postId);
+    }
   },
 
   
