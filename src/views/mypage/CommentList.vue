@@ -22,12 +22,12 @@
                     <button type="button" class="my-auto btn btn-link btn-icon-only btn-rounded btn-sm text-dark" @click="this.$router.go(-1);"><i class="ni ni-bold-left"></i></button>
                     작성한 댓글
                 </h5>
-                <table>
-                    <th class="me-2 pe-5">작성일</th>
+                <table class="text-ellipsis">
+                    <th class="me-3 pe-5 float-left">작성일</th>
                     <th>내용</th>
                     <tr class="align-top" style="cursor: pointer;" v-for="(comment, index) in commentList" :key="index">
-                        <td width="35%" class="text-xs me-2 mb-2 pt-2" @click="getPost(comment?.postId)">{{ comment?.createdAt }}</td>
-                        <td @click="getPost(comment?.postId)">{{ comment?.content }}</td>
+                        <td width="100px" class="text-xs me-2 mb-2 pt-2 word-break" @click="getPost(comment?.postId)">{{ comment?.createdAt }}</td>
+                        <td class="word-break" @click="getPost(comment?.postId)">{{ comment?.content }}</td>
                     </tr>
                 </table>
                 <div class="text-center" v-if="pageList.nextPage < pageList.totalPages">
