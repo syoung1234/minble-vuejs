@@ -65,7 +65,7 @@
                       <tr class="mt-2">
                           <td>
                             <div class="">
-                              <span>{{ postDetail?.content }}</span>
+                              <p class="content-preline">{{ postDetail?.content }}</p>
                             </div>
                             <div v-for="(file, i) in postDetail?.postFileList" :key="i">
                             <button type="button" class="btn btn-link" @click="showImage(file.filePath, file.filename)">
@@ -103,8 +103,7 @@
                         </td>
                         <td class="word-break">
                           <span class="text-bold me-1 small">{{ comment?.nickname }}</span> 
-                          <span class="small">{{ comment?.content }}</span>
-                          <br>
+                          <p class="small content-preline mb-0">{{ comment?.content }}</p>
                           <span class="text-xs">{{ comment?.createdAt }}</span> &nbsp;
                           <a href="javascript:"><span class="text-xs" @click="displayReply(comment?.id)">답글 달기</span></a> &nbsp;
                           <a href="javascript:" @click="deleteComment(comment?.id)" v-if="myNickname == comment.nickname">
@@ -126,8 +125,7 @@
                               </td>
                               <td>
                               <span class="text-bold me-1 small">{{ reply?.nickname }}</span> 
-                              <span class="small">{{ reply?.content }}</span>
-                              <br>
+                              <p class="small content-preline mb-0">{{ reply?.content }}</p>
                               <span class="text-xs">{{ reply?.createdAt }}</span> &nbsp;
                               <a href="javascript:" @click="deleteReply(reply?.id)" v-if="myNickname == reply.nickname">
                                 <span class="text-xs">삭제</span>
