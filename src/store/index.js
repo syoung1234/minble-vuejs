@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import jwt from "../common/jwt";
-import axios from "axios"
+// import axios from "axios"
+import http from "../http";
 
 export default createStore({
   state: {
@@ -56,13 +57,13 @@ export default createStore({
     login: function (state, payload = {}) {
       state.token.accessToken = payload.accessToken
       state.isAuthenticated = true
-      jwt.saveToken(payload.accessToken)
+      // jwt.saveToken(payload.accessToken)
     },
     logout: function (state = {}) {
       state.token.accessToken = ""
       state.isAuthenticated = false
       state.name = null
-      jwt.destroyToken()
+      // jwt.destroyToken()
     },
   },
   actions: {
@@ -70,18 +71,13 @@ export default createStore({
       commit("sidebarType", payload);
     },
     login: function (context, payload) {
-      const axiosConfig = {
-        headers:{
-            "Content-Type": "application/json"
-        }
-      }
       let params = {
           email: payload.email,
           password: payload.password
       }
       return new Promise((resolve, reject) => {
-          axios
-              .post("/api/login", JSON.stringify(params), axiosConfig)
+          http
+              .post("/api/login", JSON.stringify(params))
               .then(response => {
                   const { data } = response
                   context.commit("login", {
@@ -97,15 +93,9 @@ export default createStore({
     socialLogin: function(context, payload) {
       context.commit("login", {accessToken: payload.accessToken});
     },
-    user: function(context, payload) {
-      const axiosConfig = {
-        headers:{
-            "Content-Type": "application/json",
-            "X-AUTH-TOKEN": payload.accessToken,
-        }
-      }
+    user: function() {
       return new Promise((resolve, reject) => {
-        axios.get("/api/mypage", axiosConfig)
+        http.get("/api/mypage")
         .then(response => {
           if (response.data == '') {
             this.dispatch("logout", {})

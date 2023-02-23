@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import http from './http';
 import store from "./store";
 import router from "./router";
 import "./assets/css/nucleo-icons.css";
@@ -11,6 +12,7 @@ import VueCookie from "vue-cookies";
 
 const appInstance = createApp(App);
 appInstance.config.globalProperties.$axios = axios; 
+appInstance.config.globalProperties.$http = http;
 appInstance.use(store);
 appInstance.use(router);
 appInstance.use(ArgonDashboard);
