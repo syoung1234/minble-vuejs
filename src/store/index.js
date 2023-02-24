@@ -57,13 +57,13 @@ export default createStore({
     login: function (state, payload = {}) {
       state.token.accessToken = payload.accessToken
       state.isAuthenticated = true
-      // jwt.saveToken(payload.accessToken)
+      jwt.saveToken(payload.accessToken)
     },
     logout: function (state = {}) {
       state.token.accessToken = ""
       state.isAuthenticated = false
       state.name = null
-      // jwt.destroyToken()
+      jwt.destroyToken()
     },
   },
   actions: {
