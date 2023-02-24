@@ -97,6 +97,7 @@ export default createStore({
       return new Promise((resolve, reject) => {
         http.get("/api/mypage")
         .then(response => {
+          console.log(response);
           if (response.data == '') {
             this.dispatch("logout", {})
             .then(() => {

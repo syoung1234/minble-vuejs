@@ -53,11 +53,6 @@ export default {
     return {
       followingList: [],
       num: null,
-      axiosConfig: {
-        headers:{
-            "X-AUTH-TOKEN": this.$store.state.token.accessToken
-        }
-      },
       accessToken: this.$route.query.accessToken,
     }
   },
@@ -97,9 +92,8 @@ export default {
       }
     },
     async getList() { // 목록
-      await this.$axios.get("/api/follow/list", this.axiosConfig)
+      await this.$http.get("/api/follow/list")
         .then((response) => {
-          console.log(response)
           this.followingList = response.data
         })
         .catch((error)=> {
@@ -112,8 +106,7 @@ export default {
         if (result == false) return;
         let saveData = {}
         saveData.nickname = nickname
-        console.log(nickname)
-        await this.$axios.post("/api/follow/create", saveData, this.axiosConfig)
+        await this.$http.post("/api/follow/create", saveData)
           .then(() => {
             this.$router.go()
           })

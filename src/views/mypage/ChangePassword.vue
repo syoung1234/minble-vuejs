@@ -65,11 +65,6 @@ export default {
     return {
       showModal: false,
       name: this.$route.query.name,
-      axiosConfig: {
-        headers:{
-            "X-AUTH-TOKEN": this.$store.state.token.accessToken
-        }
-      },
       profilePath: null,
       password: null,
       newPassword: null,
@@ -101,9 +96,8 @@ export default {
   methods: {
     async getNickname() {
         this.$store.state.name = this.name;
-        await this.$axios.get("/api/mypage", this.axiosConfig)
+        await this.$http.get("/api/mypage")
           .then((response) => {
-            console.log(response)
             if (response.data == '') {
               this.$store.dispatch("logout", {})
               .then(() => this.$router.push("/start"))
@@ -126,9 +120,8 @@ export default {
         saveData.password = this.password;
         saveData.newPassword = this.newPassword;
         saveData.newPasswordConfirmation = this.newPasswordConfirmation;
-        await this.$axios.post("/api/mypage/password", saveData, this.axiosConfig)
+        await this.$http.post("/api/mypage/password", saveData)
         .then((response) => {
-            console.log(response)
             if (response.data != "success") {
                 alert("잘못된 비밀번호입니다.")
             } else {

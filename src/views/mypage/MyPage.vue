@@ -46,13 +46,13 @@
                     </a>
                 </div>
                 <div class="mb-3">
-                    <a href="/my/change/password"><span class="text-bold text-lg">비밀번호 변경</span></a>
+                    <router-link to="/my/change/password"><span class="text-bold text-lg">비밀번호 변경</span></router-link>
                 </div>
                 <div class="mb-3">
-                    <a href="/my/payment/history"><span class="text-bold text-lg">결제내역</span></a>
+                    <router-link to="/my/payment/history"><span class="text-bold text-lg">결제내역</span></router-link>
                 </div>
                 <div class="mb-6">
-                    <a href="/my/comment"><span class="text-bold text-lg">작성한 댓글</span></a>
+                    <router-link to="/my/comment"><span class="text-bold text-lg">작성한 댓글</span></router-link>
                 </div>
 
             </div>
@@ -77,11 +77,6 @@ export default {
     return {
       showModal: false,
       name: this.$route.query.name,
-      axiosConfig: {
-        headers:{
-            "X-AUTH-TOKEN": this.$store.state.token.accessToken
-        }
-      },
       profilePath: null,
       nickname: null,
       nicknameDuplicateFlag: null,
@@ -111,9 +106,8 @@ export default {
   methods: {
     async getNickname() {
         // this.$store.state.name = this.name;
-        await this.$axios.get("/api/mypage", this.axiosConfig)
+        await this.$http.get("/api/mypage")
           .then((response) => {
-            console.log(response)
             if (response.data == '') {
               this.$store.dispatch("logout", {})
               .then(() => this.$router.push("/start"))
@@ -141,7 +135,7 @@ export default {
         let data = {};
         data.nickname = this.updateNickname;
         let result = null;
-        await this.$axios.post("/api/duplicate/nickname", data, this.axiosConfig)
+        await this.$http.post("/api/duplicate/nickname", data)
         .then((res) => {
             if (res.data == "exist") {
                 result = false;
@@ -162,7 +156,7 @@ export default {
         }
         const postData = {};
         postData.nickname = this.updateNickname
-        await this.$axios.post("/api/mypage/nickname", postData, this.axiosConfig)
+        await this.$http.post("/api/mypage/nickname", postData)
         .then((response) => {
             console.log(response)
         })
@@ -172,10 +166,8 @@ export default {
     },
     async postProfile() {
       const formData = new FormData();
-      console.log(event.target.files);
-      console.log(event.target.files[0]);
       formData.append("profile", event.target.files[0]);
-      await this.$axios.post("/api/mypage/profile", formData, this.axiosConfig)
+      await this.$http.post("/api/mypage/profile", formData)
       .then(() => {
         this.$router.go()
       })

@@ -51,11 +51,6 @@ export default {
     return {
       showModal: false,
       name: this.$route.query.name,
-      axiosConfig: {
-        headers:{
-            "X-AUTH-TOKEN": this.$store.state.token.accessToken
-        }
-      },
       profilePath: null,
       nickname: null,
       paymentList: [],
@@ -84,7 +79,7 @@ export default {
   methods: {
     async getNickname() {
         this.$store.state.name = this.name;
-        await this.$axios.get("/api/mypage", this.axiosConfig)
+        await this.$http.get("/api/mypage")
           .then((response) => {
             if (response.data == '') {
               this.$store.dispatch("logout", {})
@@ -100,9 +95,8 @@ export default {
           })
     },
     async getPayment() {
-      await this.$axios.get("/api/mypage/payment", this.axiosConfig)
+      await this.$http.get("/api/mypage/payment")
       .then((response) => {
-        console.log(response)
         this.paymentList = response.data.paymentList;
         this.pageList = response.data.pageList;
       })

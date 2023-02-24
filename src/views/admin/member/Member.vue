@@ -78,9 +78,6 @@ export default {
     return {
       showModal: false,
       axiosConfig: {
-        headers:{
-            "X-AUTH-TOKEN": this.$store.state.token.accessToken
-        },
         params: {},
       },
       nickname: null,
@@ -117,7 +114,7 @@ export default {
   methods: {
     async getNickname() {
         this.$store.state.name = this.name;
-        await this.$axios.get("/api/mypage", this.axiosConfig)
+        await this.$http.get("/api/mypage")
           .then((response) => {
             if (response.data == '') {
               this.$store.dispatch("logout", {})
@@ -133,7 +130,7 @@ export default {
           })
     },
     async getMember() {
-      await this.$axios.get("/api/admin/member", this.axiosConfig)
+      await this.$http.get("/api/admin/member", this.axiosConfig)
       .then((response) => {
         this.memberList = response.data.content;
         this.currentPage = response.data.pageable.pageNumber;

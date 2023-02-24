@@ -49,11 +49,6 @@ export default {
       pageList: null,
       showModal: false,
       name: this.$route.query.name,
-      axiosConfig: {
-        headers:{
-            "X-AUTH-TOKEN": this.$store.state.token.accessToken
-        }
-      },
       nickname: null,
       email: null,
       status: null,
@@ -82,9 +77,8 @@ export default {
     async getShop() {
         this.$store.state.name = this.name;
         console.log(this.name)
-        await this.$axios.get("/api/subscriber?name="+this.name, this.axiosConfig)
+        await this.$http.get("/api/subscriber?name="+this.name)
           .then((response) => {
-            console.log(response)
             if (response.data == '') {
               this.$store.dispatch("logout", {})
               .then(() => this.$router.push("/start"))
@@ -102,7 +96,7 @@ export default {
     async postSubscriber() {
         const saveData = {};
         saveData.nickname = this.name;
-        await this.$axios.post("/api/subscriber", saveData, this.axiosConfig)
+        await this.$http.post("/api/subscriber", saveData)
             .then((response) => {
                 if (response.data.includes("already")) {
                     alert("이미 구독 서비스 중입니다.")
@@ -137,7 +131,7 @@ export default {
               let saveData = {};
               saveData = rsp;
               saveData.nickname = this.name;
-              this.$axios.post("/api/subscriber", rsp, this.axiosConfig)
+              this.$http.post("/api/subscriber", rsp)
                 .then((response) => {
                     if (response.data.includes("already")) {
                         alert("이미 구독 서비스 중입니다.")

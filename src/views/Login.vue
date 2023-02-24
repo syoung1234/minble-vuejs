@@ -84,6 +84,11 @@ export default {
             email: null,
             password: null,
             apiUrl: process.env.VUE_APP_API_URL,
+            axiosConfig: {
+              headers:{
+                "Content-Type": "application/json"
+              }
+            },
         }
     },
   methods: {
@@ -96,6 +101,14 @@ export default {
           alert("이메일 또는 비밀번호를 입력해주세요.")
           return
       }
+
+      // this.$http.post("/api/login", JSON.stringify(saveData))
+      //   .then((response) => {
+      //     console.log(response)
+      //   })
+      //   .catch((error) => {
+      //     console.log(error)
+      //   })
 
       this.$store
         .dispatch("login", {
@@ -117,7 +130,8 @@ export default {
           }
 
         })
-        .catch(() => {
+        .catch((error) => {
+          console.log(error);
           alert("이메일 또는 비밀번호를 맞지 않습니다.")
         })
 

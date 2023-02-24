@@ -105,11 +105,6 @@ export default {
       pageList: null,
       showModal: false,
       num: null,
-      axiosConfig: {
-        headers:{
-            "X-AUTH-TOKEN": this.$store.state.token.accessToken
-        }
-      },
       name: this.$route.query.name,
     }
   },
@@ -136,7 +131,7 @@ export default {
   methods: {
     async getList() { // 목록
       this.$store.state.name = this.name;
-      await this.$axios.get(`/api/post?name=${this.name}`, this.axiosConfig)
+      await this.$http.get(`/api/post?name=${this.name}`)
         .then((response) => {
           this.postList = response.data.postList;
           this.followingList = response.data.following;
@@ -148,7 +143,7 @@ export default {
         })
     },
     async nextPage() { // 더보기
-      await this.$axios.get(`/api/post?name=${this.name}&page=${this.pageList.page+1}`, this.axiosConfig)
+      await this.$http.get(`/api/post?name=${this.name}&page=${this.pageList.page+1}`)
         .then((response) => {
           for (let i = 0; i < response.data.postList.length; i++) {
             this.postList.push(response.data.postList[i])
@@ -162,7 +157,7 @@ export default {
     async getFavorite(postId, index) {
       let saveData = {};
       saveData.postId = postId;
-      await this.$axios.post("/api/favorite", saveData, this.axiosConfig)
+      await this.$http.post("/api/favorite", saveData)
       .then((response) => {
         if (response.data.message == "delete") {
           this.postList[index].favorite = false
@@ -179,7 +174,7 @@ export default {
     async deletePost() {
       const result = confirm("삭제 하시겠습니까?")
       if (result == false) return;
-      await this.$axios.delete("/api/post/"+this.num+"/delete", this.axiosConfig)
+      await this.$http.delete("/api/post/"+this.num+"/delete")
       .then(() => {
         this.$router.go()
       }).catch((error) => {
@@ -189,7 +184,7 @@ export default {
     async deleteFollow() {
       const result = confirm("팔로잉 취소하시겠습니까?")
       if (result == false) return;
-      await this.$axios.delete(`/api/follow/${this.name}/delete`, this.axiosConfig)
+      await this.$http.delete(`/api/follow/${this.name}/delete`)
         .then(() => {
           this.$router.push("/home")
         })

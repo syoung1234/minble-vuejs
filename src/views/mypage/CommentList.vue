@@ -52,11 +52,6 @@ export default {
     return {
       showModal: false,
       name: this.$route.query.name,
-      axiosConfig: {
-        headers:{
-            "X-AUTH-TOKEN": this.$store.state.token.accessToken
-        }
-      },
       profilePath: null,
       nickname: null,
       commentList: [],
@@ -86,7 +81,7 @@ export default {
   methods: {
     async getNickname() {
         this.$store.state.name = this.name;
-        await this.$axios.get("/api/mypage", this.axiosConfig)
+        await this.$http.get("/api/mypage")
           .then((response) => {
             if (response.data == '') {
               this.$store.dispatch("logout", {})
@@ -102,7 +97,7 @@ export default {
           })
     },
     async getComment() {
-      await this.$axios.get("/api/mypage/comment?page="+this.page, this.axiosConfig)
+      await this.$http.get("/api/mypage/comment?page="+this.page)
       .then((response) => {
         console.log(response)
         if (this.page > 0) {

@@ -60,11 +60,6 @@ export default {
   data() {
     return {
       name: this.$route.query.name,
-      axiosConfig: {
-        headers:{
-            "X-AUTH-TOKEN": this.$store.state.token.accessToken
-        }
-      },
       data: null,
       roleType: null,
     }
@@ -89,7 +84,7 @@ export default {
   },
   methods: {
     async getMember() {
-      await this.$axios.get(`/api/admin/member/${this.name}`, this.axiosConfig)
+      await this.$http.get(`/api/admin/member/${this.name}`)
       .then((response) => {
         this.data = response.data;
         this.roleType = response.data.role;
@@ -103,7 +98,7 @@ export default {
       saveData.nickname = this.data.nickname;
       saveData.role = this.roleType;
       console.log(this.roleType)
-      await this.$axios.post("/api/admin/member", saveData, this.axiosConfig)
+      await this.$http.post("/api/admin/member", saveData)
       .then((response) => {
         if(response.data == 'success') {
           alert("변경이 완료되었습니다.")

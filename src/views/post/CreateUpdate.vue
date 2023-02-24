@@ -91,7 +91,6 @@ export default {
       fileDeleteList: [],
       axiosConfig: {
         headers:{
-            "X-AUTH-TOKEN": this.$store.state.token.accessToken,
             "Content-Type": "multipart/form-data",
         }
       },
@@ -119,11 +118,7 @@ export default {
   methods: {
     async getPost() { // page: update 
       if (this.num != null) {
-        await await this.$axios.get("/api/post/"+this.num, {
-        headers:{
-            "X-AUTH-TOKEN": this.$store.state.token.accessToken
-        }
-      })
+        await this.$http.get("/api/post/"+this.num)
         .then((response) => {
           this.content = response.data.content;
           this.fileList = response.data.postFileList;
@@ -161,7 +156,7 @@ export default {
         postUrl = "update"
       }
       if (postUrl == "create") {
-        await this.$axios.post("/api/post/"+postUrl, formData, this.axiosConfig)
+        await this.$http.post("/api/post/"+postUrl, formData, this.axiosConfig)
           .then(() => {
             this.$router.push("/post?name="+this.$store.state.name);
             
@@ -170,7 +165,7 @@ export default {
             console.log(error)
           })
       } else {
-        await this.$axios.put("/api/post/"+this.num+"/update", formData, this.axiosConfig)
+        await this.$http.put("/api/post/"+this.num+"/update", formData, this.axiosConfig)
           .then(() => {
             this.$router.push("/post?name="+this.$store.state.name);
             

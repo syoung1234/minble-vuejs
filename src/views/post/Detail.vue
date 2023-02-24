@@ -187,11 +187,6 @@ export default {
           modalFileName: null,
           commentList: [],
           pageList: [],
-          axiosConfig: {
-            headers:{
-                "X-AUTH-TOKEN": this.$store.state.token.accessToken
-            }
-          },
           myNickname: null,
           replyList: [],
           replyPageList: [],
@@ -215,7 +210,7 @@ export default {
   },
   methods: {
     async getNickname() {
-        await this.$axios.get("/api/mypage", this.axiosConfig)
+        await this.$http.get("/api/mypage")
           .then((response) => {
             console.log(response)
             this.myNickname = response.data.nickname
@@ -225,7 +220,7 @@ export default {
           })
     },
     async getPost() {
-      await this.$axios.get("/api/post/"+this.id, this.axiosConfig)
+      await this.$http.get("/api/post/"+this.id)
         .then((response) => {
           console.log(response)
           this.postDetail = response.data;
@@ -252,7 +247,7 @@ export default {
       saveData.parentId = commentId
       saveData.depth = depth
 
-      await this.$axios.post("/api/comment", saveData, this.axiosConfig)
+      await this.$http.post("/api/comment", saveData)
         .then(() => {
           this.$router.go()
         })
@@ -263,7 +258,7 @@ export default {
     async deleteComment(commentId) {
       const result = confirm("삭제 하시겠습니까?")
       if (result == false) return;
-      await this.$axios.delete(`/api/comment/${commentId}/delete`, this.axiosConfig)
+      await this.$http.delete(`/api/comment/${commentId}/delete`)
       .then(() => {
         this.$router.go()
       })
@@ -274,7 +269,7 @@ export default {
     async getFavorite(postId) {
       let saveData = {};
       saveData.postId = postId;
-      await this.$axios.post("/api/favorite", saveData, this.axiosConfig)
+      await this.$http.post("/api/favorite", saveData)
       .then((response) => {
         if (response.data.message == "delete") {
           this.postDetail.favorite = false
@@ -289,7 +284,7 @@ export default {
       })
     },
     async nextPage() {
-      await this.$axios.get(`/api/post/${this.id}?page=${this.pageList.page+1}`, this.axiosConfig)
+      await this.$http.get(`/api/post/${this.id}?page=${this.pageList.page+1}`)
         .then((response) => {
           for (let i = 0; i < response.data.commentList.length; i++) {
             this.commentList.push(response.data.commentList[i])
@@ -303,7 +298,7 @@ export default {
     async deletePost() {
       const result = confirm("삭제 하시겠습니까?")
       if (result == false) return;
-      await this.$axios.delete("/api/post/"+this.id+"/delete", this.axiosConfig)
+      await this.$http.delete("/api/post/"+this.id+"/delete")
       .then(() => {
         this.$router.push("/post")
       }).catch((error) => {
@@ -341,10 +336,8 @@ export default {
       if (this.replyPageList[commentId]) {
         replyPage = this.replyPageList[commentId].page+1
       }
-      console.log(commentId);
-      this.$axios.get(`/api/comment/${commentId}/children?page=${replyPage}`, this.axiosConfig)
+      this.$http.get(`/api/comment/${commentId}/children?page=${replyPage}`)
       .then((response) => {
-        console.log(response)
         if (this.replyList[commentId]) {
           for (let i = 0; i < response.data.replyList.length; i++) {
             this.replyList[commentId].push(response.data.replyList[i])
@@ -366,7 +359,7 @@ export default {
     async deleteReply(replyId) {
       const result = confirm("삭제 하시겠습니까?")
       if (result == false) return;
-      this.$axios.delete(`/api/reply/${replyId}`, this.axiosConfig)
+      this.$http.delete(`/api/reply/${replyId}`)
       .then(() => {
         this.$router.go();
       })

@@ -86,11 +86,6 @@ export default {
             nickname: "",
             message: "",
             messageList: [],
-            axiosConfig: {
-            headers:{
-                  "X-AUTH-TOKEN": this.$store.state.token.accessToken
-              }
-            },
             channel: null,
             profilePath: null,
             name: this.$route.query.name,
@@ -120,7 +115,7 @@ export default {
     },
     methods: {
         async getMessage() {
-            await this.$axios.get(`/api/message/${this.name}`, this.axiosConfig)
+            await this.$http.get(`/api/message/${this.name}`)
             .then((response) => {
                 console.log(response)
                 if (response.data == '') {
