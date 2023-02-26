@@ -93,25 +93,6 @@ export default createStore({
     socialLogin: function(context, payload) {
       context.commit("login", {accessToken: payload.accessToken});
     },
-    user: function() {
-      return new Promise((resolve, reject) => {
-        http.get("/api/mypage")
-        .then(response => {
-          console.log(response);
-          if (response.data == '') {
-            this.dispatch("logout", {})
-            .then(() => {
-              this.$router.push("/start")
-            })
-            .catch(({ message }) => alert(message))
-          }
-            resolve(response)
-        })
-        .catch(error => {
-            reject(error)
-        })
-      })
-    },
     logout: function (context, payload) {
       return new Promise(resolve => {
         setTimeout(function() {
