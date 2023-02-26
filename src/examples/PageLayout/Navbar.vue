@@ -169,11 +169,32 @@ export default {
       if (this.$store.state.token.accessToken == null || this.$store.state.token.accessToken == '') {
         return;
       }
-      this.$store
-      .dispatch("user", {
-        accessToken: this.$store.state.token.accessToken,
-      })
+      this.$http.get("/api/mypage")
       .then((response) => {
+        if (response.data.message == "token") {
+          // 재발급 필요
+          this.$http.post("/api/refresh-token")
+            .then((response) => {
+              if (response.data == null || response.data == "") {
+                alert("로그인이 필요합니다.")
+                this.dispatch("logout", {})
+                .then(() => {
+                  this.$router.push("/login")
+                })
+                .catch(() => {
+                  alert("다시 시도해주세요.");
+                  this.$router.push("/login")
+                })
+              } else {
+                this.$store.commit("login", {accessToken: response.data});
+                this.$router.go();
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            })
+        } 
+        
         this.roleType = response.data.roleType;
         this.$store.state.nickname = response.data.nickname;
         this.$store.state.profilePath = response.data.profilePath;
