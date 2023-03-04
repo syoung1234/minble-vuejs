@@ -13,7 +13,7 @@
   <LoadingSpinner v-if="isLoading"></LoadingSpinner>
   <main class="main-content mt-8" v-else>
     <section>
-      <div class="page-header min-vh-100">
+      <div class="page-header min-vh-80">
     <div class="container">
       <div class="row">
             <div class="mx-auto col-xl-4 col-lg-5 col-md-7 d-flex flex-column">
@@ -85,14 +85,10 @@
     </div>
     </section>
   </main>
-  <div v-if="isLoading == false">
-  <app-footer />
-  </div>
 </template>
 
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
-import AppFooter from "@/examples/PageLayout/Footer.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue"
 const body = document.getElementsByTagName("body")[0];
 const axiosConfig = {
@@ -220,7 +216,6 @@ export default {
   },
   components: {
     Navbar,
-    AppFooter,
     LoadingSpinner,
   },
   created() {

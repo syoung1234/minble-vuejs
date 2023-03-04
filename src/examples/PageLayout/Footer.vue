@@ -1,7 +1,7 @@
 <template>
     <!-- -------- START FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
-  <footer class="py-5 footer">
-    <div class="container">
+  <footer class="py-0 footer">
+    <!-- <div class="container">
       <div class="row">
         <div class="mx-auto mb-4 text-center col-lg-8">
           <a
@@ -92,7 +92,7 @@
           </p>
         </div>
       </div>
-    </div>
+    </div> -->
   </footer>
 </template>
 
