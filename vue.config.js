@@ -13,5 +13,5 @@ module.exports = {
     },
 
     // outputDir: path.resolve(__dirname,  "./dist"),
-    outputDir: path.resolve(__dirname, '../resources/static/dist')
+    outputDir: path.resolve(__dirname, '../src/main/resources/static/dist')
 }
