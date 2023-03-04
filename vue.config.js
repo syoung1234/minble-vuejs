@@ -6,11 +6,12 @@ module.exports = {
       port: 3000,
       proxy: {
         '/api': { 
-          target: 'http://127.0.0.1:8080',
+          target: process.env.VUE_APP_API_URL,
           changeOrigin: true,
         }, 
       },
     },
 
-    outputDir: path.resolve(__dirname, "./dist"),
+    // outputDir: path.resolve(__dirname,  "./dist"),
+    outputDir: path.resolve(__dirname, '../resources/static/dist')
 }
