@@ -159,7 +159,7 @@ export default {
             this.filePath = null;
         },
         connect() {
-            const serverURL = process.env.VUE_APP_API_URL,
+            const serverURL = process.env.VUE_APP_API_URL;
             let socket = new SockJS(serverURL);
             this.stompClient = Stomp.over(socket);
             console.log(`소켓 연결 시도: ${serverURL}`)
