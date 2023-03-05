@@ -1,6 +1,6 @@
 <template>
     <!-- -------- START FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
-  <footer class="py-0 footer">
+  <footer class="py-4 footer">
     <!-- <div class="container">
       <div class="row">
         <div class="mx-auto mb-4 text-center col-lg-8">
