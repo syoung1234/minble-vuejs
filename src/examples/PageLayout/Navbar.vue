@@ -34,7 +34,7 @@
               aria-current="page"
             >
               <i
-                class="fa fa-chart-pie opacity-6 me-1"
+                class="fa fa-home opacity-6 me-1"
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
@@ -45,7 +45,7 @@
               aria-current="page"
             >
               <i
-                class="fa fa-chart-pie opacity-6 me-1"
+                class="fa fa-home opacity-6 me-1"
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
@@ -55,7 +55,7 @@
           <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name">
             <router-link class="nav-link me-2" :to="`/post?name=${this.$store.state.name}`">
               <i
-                class="fas fa-key opacity-6 me-1"
+                class="fas fa-file opacity-6 me-2"
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
@@ -66,7 +66,7 @@
           <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name">
             <router-link class="nav-link me-2" :to="`/message?name=${this.$store.state.name}`">
               <i
-                class="fas fa-key opacity-6 me-1"
+                class="fas fa-heart opacity-6 me-1"
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
@@ -76,7 +76,7 @@
           <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name && roleType != 'ROLE_STAR'">
             <router-link class="nav-link me-2" :to="`/shop?name=${this.$store.state.name}`">
               <i
-                class="fas fa-key opacity-6 me-1"
+                class="fas fa-store opacity-6 me-1"
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
@@ -96,7 +96,7 @@
           <li class="nav-item" v-if="!this.$store.state.token.accessToken">
             <router-link class="nav-link me-2" to="/login">
               <i
-                class="fas fa-key opacity-6 me-1"
+                class="fas fa-user opacity-6 me-1"
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
