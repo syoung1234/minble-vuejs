@@ -160,7 +160,7 @@ export default {
         },
         connect() {
             const serverURL = process.env.VUE_APP_API_URL;
-            let socket = new SockJS(serverURL);
+            let socket = new SockJS(serverURL + "/echo");
             this.stompClient = Stomp.over(socket);
             console.log(`소켓 연결 시도: ${serverURL}`)
             this.stompClient.connect(
@@ -212,7 +212,7 @@ export default {
         downloadFile() {
             try {
                 let element = document.createElement('a');
-                    element.setAttribute('href', `/api/messagefile/download/${this.modalFileName}` );
+                    element.setAttribute('href', `${this.modalFilePath}` );
                     element.click();
             } catch (error) {
                 console.log(error);
