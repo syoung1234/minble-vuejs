@@ -124,6 +124,8 @@ export default {
           } else {
             if (response.data.roleType == "ROLE_STAR") {
               this.$router.push("/post?name="+response.data.nickname);
+            } else if (response.data.roleType == "ROLE_ADMIN") {
+              this.$router.push("/admin/member");
             } else {
               this.$router.push("/home");
             }
