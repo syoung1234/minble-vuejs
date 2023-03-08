@@ -308,7 +308,7 @@ export default {
     downloadFile() {
       try {
       let element = document.createElement('a');
-               element.setAttribute('href', `/api/file/post/download/${this.modalFileName}` );
+               element.setAttribute('href', `${this.modalFilePath}` );
                element.click();
       } catch(error) {
         console.log(error)
