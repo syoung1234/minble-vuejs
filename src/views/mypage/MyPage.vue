@@ -81,6 +81,11 @@ export default {
       nickname: null,
       nicknameDuplicateFlag: null,
       profile: null,
+      axiosConfig: {
+        headers:{
+            "Content-Type": "multipart/form-data",
+        }
+      },
     }
   },
   components: {
@@ -167,7 +172,7 @@ export default {
     async postProfile() {
       const formData = new FormData();
       formData.append("profile", event.target.files[0]);
-      await this.$http.post("/api/mypage/profile", formData)
+      await this.$http.post("/api/mypage/profile", formData, this.axiosConfig)
       .then(() => {
         this.$router.go()
       })
