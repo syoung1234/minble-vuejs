@@ -97,7 +97,6 @@ export default {
       let saveData = {};
       saveData.nickname = this.data.nickname;
       saveData.role = this.roleType;
-      console.log(this.roleType)
       await this.$http.post("/api/admin/member", saveData)
       .then((response) => {
         if(response.data == 'success') {

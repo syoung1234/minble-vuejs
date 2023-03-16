@@ -199,7 +199,6 @@ export default {
                 this.$axios
                 .post("/api/register", JSON.stringify(saveData), axiosConfig)
                 .then((res) => {
-                  console.log(res)
                   if (res.data == "success") {
                     this.$router.push("/complete/register");
                   }

@@ -76,7 +76,6 @@ export default {
   methods: {
     async getShop() {
         this.$store.state.name = this.name;
-        console.log(this.name)
         await this.$http.get("/api/subscriber?name="+this.name)
           .then((response) => {
             if (response.data == '') {
@@ -101,7 +100,6 @@ export default {
                 if (response.data.includes("already")) {
                     alert("이미 구독 서비스 중입니다.")
                 }
-                console.log(response)
             })
             .catch((error) => {
                 console.log(error)
@@ -125,8 +123,8 @@ export default {
 	          buyer_name : this.nickname,
           }, rsp => { // callback
             if (rsp.success) {
-              console.log(rsp.success)
-              console.log(rsp)
+              // console.log(rsp.success)
+              // console.log(rsp)
               // 결제 성공 시 로직,
               let saveData = {};
               saveData = rsp;

@@ -120,7 +120,7 @@ export default {
                 console.log(response)
                 if (response.data == '') {
                     alert("구독 서비스가 필요합니다.")
-                    this.$router.go(-1);
+                    this.$router.push("/store?name="+this.name)
                     return;
                 }
                 this.channel = response.data.channel;
@@ -172,9 +172,9 @@ export default {
                     console.log(this.$refs.contentWidth1)
                     // 서버의 메시지 전송 endpoit를 구독 (pub/sub)
                     this.stompClient.subscribe(`/send/${this.channel}`, res => {
-                        console.log("구독으로 받은 메시지 입니다.", res.body);
+                        // console.log("구독으로 받은 메시지 입니다.", res.body);
                         this.messageList.push(JSON.parse(res.body))
-                        console.log("messageList:" + this.messageList)
+                        // console.log("messageList:" + this.messageList)
                     });
                 },
                 error => {

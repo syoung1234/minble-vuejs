@@ -106,7 +106,6 @@ export default {
             this.$store.state.nickname = response.data.nickname
             this.profilePath = response.data.profilePath
             this.nickname = response.data.nickname
-            console.log(this.$store.state.nickname);
           })
           .catch((error) => {
             console.log(error)
