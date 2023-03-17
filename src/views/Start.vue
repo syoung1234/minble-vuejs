@@ -108,7 +108,8 @@ export default {
         saveData.nickname = nickname
         await this.$http.post("/api/follow/create", saveData)
           .then(() => {
-            this.$router.go()
+            // this.$router.go()
+            this.$router.push("/home")
           })
           .catch((error) => {
             console.log(error)

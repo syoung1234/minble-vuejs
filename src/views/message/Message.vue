@@ -120,7 +120,7 @@ export default {
                 console.log(response)
                 if (response.data == '') {
                     alert("구독 서비스가 필요합니다.")
-                    this.$router.push("/store?name="+this.name)
+                    this.$router.push("/shop?name="+this.name)
                     return;
                 }
                 this.channel = response.data.channel;

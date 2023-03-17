@@ -162,9 +162,12 @@ export default {
         await this.$http.post("/api/mypage/nickname", postData)
         .then((response) => {
             console.log(response)
+            this.showModal = false;
+            this.$router.go()
         })
         .catch((error) => {
-            console.log(error)
+          this.$router.go()
+          console.log(error)
         })
     },
     async postProfile() {
