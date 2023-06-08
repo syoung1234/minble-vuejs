@@ -11,8 +11,8 @@ import Post from "../views/post/Post.vue";
 import PostCreateUpdate from "../views/post/CreateUpdate.vue";
 import PostDetail from "../views/post/Detail.vue";
 import Message from "../views/message/Message.vue";
-import Start from "../views/Start.vue";
-import Home from "../views/Home.vue";
+import Start from "../views/home/Start.vue";
+import Home from "../views/home/Home.vue";
 import Shop from "../views/shop/Shop.vue";
 import MyPage from "../views/mypage/MyPage.vue";
 import ChangePassword from "../views/mypage/ChangePassword.vue";
@@ -26,6 +26,8 @@ import CompleteRegister from "../views/CompleteRegister.vue";
 import ConfirmEmail from "../views/ConfirmEmail.vue";
 import ResetPassword from "../views/ResetPassword.vue";
 import FindPassword from "../views/FindPassword.vue";
+import Choose from "../views/home/Choose.vue";
+import ChooseTester from "../views/home/ChooseTester.vue";
 
 const beforeAuth = isAuth => (from, to , next) => {
   const isAuthenticated = store.getters["isAuthenticated"]
@@ -50,7 +52,7 @@ const routes = [
   {
     path: "/",
     name: "/",
-    redirect: "/start",
+    redirect: "/choose",
   },
   {
     path: "/dashboard-default",
@@ -172,6 +174,16 @@ const routes = [
     path: "/create/nickname",
     name: "createNikcname",
     component: CreateNickname,
+  },
+  {
+    path: "/choose",
+    name: "choose",
+    component: Choose,
+  },
+  {
+    path: "/choose/tester",
+    name: "chooseTeseter",
+    component: ChooseTester,
   },
   
 ];
