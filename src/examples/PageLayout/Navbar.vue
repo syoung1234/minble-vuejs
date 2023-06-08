@@ -5,10 +5,16 @@
     :class="isBlur ? isBlur : 'shadow-none my-2 navbar-transparent w-100'"
   >
     <div class="container ps-2 pe-0">
-      <router-link
+      <router-link v-if="this.$store.state.token.accessToken"
         class="navbar-brand font-weight-bolder ms-lg-0 ms-3"
         :class="darkMode ? 'text-black' : 'text-white'"
-        :to="roleType == 'ROLE_STAR' ? `/post?name=${this.$store.state.name}` : '/'"
+        :to="roleType == 'ROLE_STAR' || roleType == 'ROLE_STAR_TEST' ? `/post?name=${this.$store.state.name}` : '/home'"
+        >Minble</router-link
+      >
+      <router-link v-else
+        class="navbar-brand font-weight-bolder ms-lg-0 ms-3"
+        :class="darkMode ? 'text-black' : 'text-white'"
+        to='/'
         >Minble</router-link
       >
       <button
@@ -29,7 +35,7 @@
       <div class="collapse navbar-collapse" id="navigation">
         <ul class="navbar-nav mx-auto">
           <li class="nav-item">
-            <router-link to="/home" v-if="this.$store.state.token.accessToken && roleType != 'ROLE_STAR'"
+            <router-link to="/home" v-if="this.$store.state.token.accessToken && roleType != 'ROLE_STAR' && roleType != 'ROLE_STAR_TEST'"
               class="nav-link d-flex align-items-center me-2 active"
               aria-current="page"
             >
@@ -40,7 +46,7 @@
               ></i>
               Home
             </router-link>
-            <router-link to="/start" v-else-if="!this.$store.state.token.accessToken && roleType != 'ROLE_STAR'"
+            <router-link to="/" v-else-if="!this.$store.state.token.accessToken && roleType != 'ROLE_STAR' && roleType != 'ROLE_STAR_TEST'"
               class="nav-link d-flex align-items-center me-2 active"
               aria-current="page"
             >
@@ -59,7 +65,7 @@
                 aria-hidden="true"
                 :class="isBlur ? 'text-dark' : 'text-white'"
               ></i>
-              <span v-if="roleType == 'ROLE_STAR'">Home</span>
+              <span v-if="roleType == 'ROLE_STAR' || roleType == 'ROLE_STAR_TEST'">Home</span>
               <span v-else>Post</span>
             </router-link>
           </li>
@@ -73,7 +79,7 @@
               Message
             </router-link>
           </li>
-          <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name && roleType != 'ROLE_STAR'">
+          <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name && roleType != 'ROLE_STAR' && roleType != 'ROLE_STAR_TEST'">
             <router-link class="nav-link me-2" :to="`/shop?name=${this.$store.state.name}`">
               <i
                 class="fas fa-store opacity-6 me-1"
@@ -161,7 +167,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch("logout", {})
-      .then(() => this.$router.push("/start"))
+      .then(() => this.$router.push("/"))
       .catch(({ message }) => alert(message))
     },
     getNickname() {
@@ -198,7 +204,7 @@ export default {
         this.roleType = response.data.roleType;
         this.$store.state.nickname = response.data.nickname;
         this.$store.state.profilePath = response.data.profilePath;
-        if (this.roleType == "ROLE_STAR") {
+        if (this.roleType == "ROLE_STAR" || this.roleType == "ROLE_STAR_TEST") {
           this.$store.state.name = response.data.nickname;
         }
       })
