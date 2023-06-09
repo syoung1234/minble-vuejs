@@ -28,6 +28,62 @@ minble backend github: https://github.com/syoung1234/minble
 
 
 <br><br>
+
+# 실시간 채팅 기능
+## [Message](src/views/message/Message.vue)
+### webstomp-client
+### sockjs-client
+
+``` js
+import Stomp from "webstomp-client"
+import SockJS from "sockjs-client"
+
+send() {
+    if (this.message == "") {
+        return;
+    }
+    console.log("Send message:" + this.message);
+    if (this.stompClient && this.stompClient.connected) {
+        const msg = {
+            nickname: this.nickname,
+            content: this.message,
+            channel: this.channel,
+            profilePath: this.profilePath,
+            filePath: this.filePath,
+        };
+        this.stompClient.send("/receive", JSON.stringify(msg), {});
+    }
+    // 초기화
+    this.message = "";
+    this.filePath = null;
+},
+
+connect() {
+    const serverURL = process.env.VUE_APP_API_URL;
+    let socket = new SockJS(serverURL + "/echo");
+    this.stompClient = Stomp.over(socket);
+    console.log(`소켓 연결 시도: ${serverURL}`)
+    this.stompClient.connect(
+        {},
+        frame => {
+            // 소켓 연결 성공
+            this.connected = true;
+            console.log("소켓 연결 성공", frame)
+            // 서버의 메시지 전송 endpoit를 구독 (pub/sub)
+            this.stompClient.subscribe(`/send/${this.channel}`, res => {
+                this.messageList.push(JSON.parse(res.body))
+            });
+        },
+        error => {
+            // 소켓 연결 실패
+            console.log("소켓 연결 실패", error);
+            this.connected = false;
+        }
+    )
+},
+```
+<br><br>
+
 # Setting
 yarn install <br>
 yarn build <br>
