@@ -71,59 +71,7 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
-    getSocial() {
-      if (this.accessToken) {
-        this.$store
-        .dispatch("socialLogin", {
-          accessToken: this.accessToken
-        })
-        .then(() => {
-          this.$router.push("/home");
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-      }
-    },
-    async getList() { // 목록
-      await this.$http.get("/api/follow/list")
-        .then((response) => {
-          this.followingList = response.data
-        })
-        .catch((error)=> {
-          console.log(error)
-        })
-    },
-    async postFollow(nickname) { // 팔로우 하기 
-      if (this.$store.state.token.accessToken) {
-        if (nickname == "MJ") {
-          alert("TESTER를 이용해주세요.");
-          return;
-        }
-        const result = confirm("팔로우 하시겠습니까?")
-        if (result == false) return;
-        let saveData = {}
-        saveData.nickname = nickname
-        await this.$http.post("/api/follow/create", saveData)
-          .then(() => {
-            // this.$router.go()
-            this.$router.push("/home")
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      } else {
-        alert("로그인이 필요한 서비스입니다.");
-        this.$router.push("/login")
-      }
-    },
   },
-
-  getTestUser() {
-    const result = confirm("테스트 계정으로 체험하시겠습니까?")
-    if (result == false) return;
-    
-  }
 }
 
 </script>

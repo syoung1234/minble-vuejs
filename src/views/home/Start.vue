@@ -102,18 +102,20 @@ export default {
     },
     async postFollow(nickname) { // 팔로우 하기 
       if (this.$store.state.token.accessToken) {
-        if (nickname == "MJ") {
-          alert("TESTER를 이용해주세요.");
-          return;
-        }
+        
         const result = confirm("팔로우 하시겠습니까?")
         if (result == false) return;
         let saveData = {}
         saveData.nickname = nickname
         await this.$http.post("/api/follow/create", saveData)
-          .then(() => {
+          .then((response) => {
             // this.$router.go()
-            this.$router.push("/home")
+            if (response.data == "success") {
+              this.$router.push("/home")
+            } else {
+              alert("TESTER를 이용해주세요");
+            }
+            
           })
           .catch((error) => {
             console.log(error)
