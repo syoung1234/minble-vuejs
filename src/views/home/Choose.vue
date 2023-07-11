@@ -47,9 +47,6 @@ export default {
   name: "choose",
   data() {
     return {
-      followingList: [],
-      num: null,
-      accessToken: this.$route.query.accessToken,
     }
   },
   components: {
@@ -57,6 +54,7 @@ export default {
     AppFooter,
   },
   created() {
+    this.getLoading();
     this.$store.state.hideConfigButton = true;
     this.$store.state.showNavbar = false;
     this.$store.state.showSidenav = false;
@@ -71,6 +69,11 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
+    getLoading() {
+      if (this.$store.state.token.accessToken != null) {
+        this.$router.push("/home");
+      }
+    }
   },
 }
 
