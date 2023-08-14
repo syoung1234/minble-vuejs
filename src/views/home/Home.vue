@@ -61,7 +61,7 @@
                   </div>
                       <tr>
                           <td width="20%" v-if="post?.profilePath != null">
-                          <img :src="post?.profilePath" class="rounded-circle img-size border border-2 border-white">
+                          <img :src="post?.profilePath" class="rounded-circle img-size border border-2 border-white" alt="">
                           </td>
                           <td width="20%" v-else>
                           <img src="/img/team-4.53033970.jpg" class="rounded-circle img-size border border-2 border-white">
@@ -74,7 +74,7 @@
                       <tr class="mt-2 mb-2">
                         <a :href="`/post/detail?num=${post.id}`">
                           <td><div class="text-ellipsis"><span>{{ post?.content }}</span>
-                          <img v-if="post?.postFileList[0]" class="img-size me-1 mb-0" :src="post?.postFileList[0].filePath"/>
+                          <img v-if="post?.postFileList[0]" class="img-size me-1 mb-0" :src="post?.postFileList[0]"/>
                           </div>
                           </td>
                         </a>
@@ -92,7 +92,7 @@
                       </tr>
                   </table>
               </form>
-              <div class="text-center mb-2" v-if="pageList?.page < pageList?.totalPages-1">
+              <div class="text-center mb-2" v-if="!lastPage">
                 <a href="javascript:" @click="nextPage()">
                   <img class="w-10 mb-0 mt-3" src="/icon/plus_icon.png" alt="logo">
                 </a>
@@ -123,6 +123,7 @@ export default {
       pageList: null,
       showModal: false,
       num: null,
+      lastPage: false,
     }
   },
   components: {
@@ -150,10 +151,7 @@ export default {
       this.$store.state.name = null
       await this.$http.get("/api/post")
         .then((response) => {
-          this.postList = response.data.postList;
-          this.followingList = response.data.following;
-          this.role = response.data.role;
-          this.pageList = response.data.pageList;
+          this.fetchPostData(response);
         })
         .catch((error)=> {
           console.log(error)
@@ -162,8 +160,8 @@ export default {
     async nextPage() { // 더보기
       await this.$http.get(`/api/post?page=${this.pageList.page+1}`)
         .then((response) => {
-          for (let i = 0; i < response.data.postList.length; i++) {
-            this.postList.push(response.data.postList[i])
+          for (let i = 0; i < response.data.content.length; i++) {
+            this.postList.push(response.data.content[i])
           }
           this.pageList = response.data.pageList;
         })
@@ -171,6 +169,16 @@ export default {
           console.log(error)
         })
     },
+
+    fetchPostData(response) {
+      console.log(response);
+      this.postList = response.data.content;
+      //this.followingList = response.data.;
+      this.role = response.data.role;
+      this.pageList = response.data.pageList;
+      this.lastPage = response.data.last;
+    },
+
     async getFavorite(postId, index) {
       let saveData = {};
       saveData.postId = postId;
