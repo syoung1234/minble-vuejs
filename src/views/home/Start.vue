@@ -92,7 +92,7 @@ export default {
       }
     },
     async getList() { // 목록
-      await this.$http.get("/api/follow/list")
+      await this.$http.get("/api/member/star")
         .then((response) => {
           this.followingList = response.data
         })
@@ -112,13 +112,15 @@ export default {
             // this.$router.go()
             if (response.data == "success") {
               this.$router.push("/home")
-            } else {
-              alert("TESTER를 이용해주세요");
             }
             
           })
           .catch((error) => {
-            console.log(error)
+            if (error.response.data.message === "Duplicated Following") {
+              alert("이미 팔로잉한 스타입니다.")
+            } else {
+              alert("TESTER를 이용해주세요");
+            }
           })
       } else {
         alert("로그인이 필요한 서비스입니다.");
