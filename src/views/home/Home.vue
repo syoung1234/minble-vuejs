@@ -96,6 +96,8 @@ export default {
     this.$store.state.showSidenav = false;
     this.$store.state.showFooter = false;
     body.classList.remove("bg-gray-100");
+    this.$store.state.name = "";
+    this.$route.query.name = "";
   },
   beforeUnmount() {
     this.$store.state.hideConfigButton = false;

@@ -54,15 +54,18 @@ export default {
       postList: [],
       pageList: null,
       lastPage: true,
+      name: this.$route.query.name,
     }
   },
   created() {
     this.getList();
+    this.name = this.$route.query.name;
   },
   methods: {
     async getList() { // 목록
-      this.$store.state.name = null
-      await this.$http.get("/api/post")
+      let param = "?name=" + this.$route.query.name;
+      console.log(param);
+      await this.$http.get("/api/post" + param)
           .then((response) => {
             console.log(response);
             this.fetchPostData(response);
