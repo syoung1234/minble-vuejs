@@ -20,16 +20,16 @@
         </td>
       </tr>
       <tr class="mt-2 mb-2">
-        <a :href="`/post/detail?num=${post.id}`">
+        <a :href="`/post/detail?num=${post.postId}`">
           <td><div class="text-ellipsis"><span>{{ post?.content }}</span>
-            <img v-if="post?.postFileList[0]" class="img-size me-1 mb-0" :src="post?.postFileList[0]"/>
+            <img v-if="post?.postFileList[0]" class="img-size me-1 mb-0" :src="post?.postFileList[0].filePath"/>
           </div>
           </td>
         </a>
       </tr>
       <tr>
         <td>
-          <a href="javascript:" class="me-2" @click="getFavorite(`${post?.id}`, index)">
+          <a href="javascript:" class="me-2" @click="getFavorite(`${post?.postId}`, index)">
             <img v-show="post?.favorite == false" class="w-8 me-1 mb-0" src="/icon/hearts--v1.png">
             <img v-show="post?.favorite == true" class="w-8 me-1 mb-0" src="/icon/full-heart-icon.png">{{ post?.favoriteCount }}
           </a>
@@ -45,6 +45,10 @@
       <img class="w-10 mb-0 mt-3" src="/icon/plus_icon.png" alt="logo">
     </a>
   </div>
+
+  <div v-if="error === true">
+    <span>작성된 게시글이 없습니다.</span>
+  </div>
 </template>
 <script>
 export default {
@@ -55,6 +59,7 @@ export default {
       pageList: null,
       lastPage: true,
       name: this.$route.query.name,
+      error: false,
     }
   },
   created() {
@@ -70,8 +75,8 @@ export default {
             console.log(response);
             this.fetchPostData(response);
           })
-          .catch((error)=> {
-            console.log(error)
+          .catch(()=> {
+            this.error = true;
           })
     },
     async nextPage() { // 더보기
@@ -97,13 +102,10 @@ export default {
     async getFavorite(postId, index) {
       let saveData = {};
       saveData.postId = postId;
+      console.log(postId);
       await this.$http.post("/api/favorite", saveData)
           .then((response) => {
-            if (response.data.message == "delete") {
-              this.postList[index].favorite = false
-            } else {
-              this.postList[index].favorite = true
-            }
+            this.postList[index].favorite = response.data.like
             this.postList[index].favoriteCount = response.data.favoriteCount
 
           })

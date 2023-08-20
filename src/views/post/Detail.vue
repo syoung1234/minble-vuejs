@@ -68,7 +68,7 @@
                               <p class="content-preline">{{ postDetail?.content }}</p>
                             </div>
                             <div v-for="(file, i) in postDetail?.postFileList" :key="i">
-                            <button type="button" class="btn btn-link" @click="showImage(file.filePath, file.filename)">
+                            <button type="button" class="btn btn-link" @click="showImage(file.filePath, file.fileName)">
                               <img class="img-size" :src="file.filePath">
                             </button>
                             </div>
@@ -76,7 +76,7 @@
                       </tr>
                       <tr>
                         <td>
-                          <a href="javascript:" class="me-2" @click="getFavorite(`${postDetail?.id}`)">
+                          <a href="javascript:" class="me-2" @click="getFavorite(`${postDetail?.postId}`)">
                             <img v-show="postDetail?.favorite == false" class="w-8 me-1 mb-0" src="/icon/hearts--v1.png">
                             <img v-show="postDetail?.favorite == true" class="w-8 me-1 mb-0" src="/icon/full-heart-icon.png">{{ postDetail?.favoriteCount }}
                           </a>
@@ -102,7 +102,7 @@
                           <img :src="comment?.profilePath" class="rounded-circle img-size border border-2 border-white">
                         </td>
                         <td class="word-break">
-                          <span class="text-bold me-1 small">{{ comment?.nickname }}</span> 
+                          <span class="text-bold me-1 small">{{ comment?.nickname }}</span>
                           <p class="small content-preline mb-0">{{ comment?.content }}</p>
                           <span class="text-xs">{{ comment?.createdAt }}</span> &nbsp;
                           <a href="javascript:"><span class="text-xs" @click="displayReply(comment?.id)">답글 달기</span></a> &nbsp;
@@ -110,7 +110,7 @@
                             <span class="text-xs">삭제</span>
                           </a>
                           <br>
-                          
+
                           <div :ref="`replyDisplay${comment?.id}`" style="display: none;">
                           <textarea class="textarea-comment-h w-80" :ref="`reply${comment?.id}`" placeholder="답글 쓰기" @keydown="resize" @keyup="resize"></textarea> &nbsp;
                             <a href="javascript:" @click="postComment(comment?.id)">
@@ -124,7 +124,7 @@
                                 <img :src="reply?.profilePath" class="rounded-circle img-size border border-2 border-white">
                               </td>
                               <td>
-                              <span class="text-bold me-1 small">{{ reply?.nickname }}</span> 
+                              <span class="text-bold me-1 small">{{ reply?.nickname }}</span>
                               <p class="small content-preline mb-0">{{ reply?.content }}</p>
                               <span class="text-xs">{{ reply?.createdAt }}</span> &nbsp;
                               <a href="javascript:" @click="deleteReply(reply?.id)" v-if="myNickname == reply.nickname">
@@ -219,14 +219,12 @@ export default {
             console.log(error)
           })
     },
+    // post 랑 comment 따로 요청하기
     async getPost() {
       await this.$http.get("/api/post/"+this.id)
         .then((response) => {
           console.log(response)
           this.postDetail = response.data;
-          this.commentList = response.data.commentList;
-          this.pageList = response.data.pageList;
-          // this.$store.state.name = response.data.nickname;
         })
         .catch((error)=> {
           console.log(error)
@@ -271,13 +269,9 @@ export default {
       saveData.postId = postId;
       await this.$http.post("/api/favorite", saveData)
       .then((response) => {
-        if (response.data.message == "delete") {
-          this.postDetail.favorite = false
-        } else {
-          this.postDetail.favorite = true
-        }
+        this.postDetail.favorite = response.data.like
         this.postDetail.favoriteCount = response.data.favoriteCount
-        
+
       })
       .catch((error) => {
         console.log(error)
