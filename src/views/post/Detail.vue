@@ -135,8 +135,8 @@
                             </table>
                           </div>
                           <a href="javascript:" v-if="comment?.replyCount > 0">
-                          <span class="text-xs" @click="displayReplyList(comment?.id)" v-if="replyPageList.length > 0 && comment.replyCount - replyPageList[comment.id]?.size * replyPageList[comment.id]?.nextPage > 0">⎯ 답글 {{ comment.replyCount - replyPageList[comment.id]?.size }}개 보기</span>
-                          <span class="text-xs" @click="displayReplyList(comment?.id)" v-else-if="replyPageList.length > 0 && comment.replyCount - replyPageList[comment.id]?.size * replyPageList[comment.id]?.nextPage <= 0"></span>
+                          <span class="text-xs" @click="displayReplyList(comment?.id)" v-if="replyList[comment.id] && comment.replyCount - replyList[comment.id].replyCount > 0">⎯ 답글 {{ comment.replyCount - replyList[comment.id].replyCount }}개 보기</span>
+                          <span class="text-xs" @click="displayReplyList(comment?.id)" v-else-if="replyList[comment.id] && comment.replyCount - replyList[comment.id].replyCount < 0"></span>
                           <span class="text-xs" @click="displayReplyList(comment?.id)" v-else>⎯ 답글 {{ comment.replyCount }}개 보기</span>
                           </a>
                         </td>
@@ -189,7 +189,6 @@ export default {
           pageList: [],
           myNickname: null,
           replyList: [],
-          replyPageList: [],
       }
   },
   created() {
@@ -200,6 +199,7 @@ export default {
     body.classList.remove("bg-gray-100");
     this.getPost();
     this.getNickname();
+    this.getComment();
   },
   beforeUnmount() {
     this.$store.state.hideConfigButton = false;
@@ -229,6 +229,16 @@ export default {
         .catch((error)=> {
           console.log(error)
         })
+    },
+    async getComment() {
+      await this.$http.get("/api/comment?postId="+this.id)
+          .then((response) => {
+            console.log(response);
+            this.commentList = response.data.content
+          })
+          .catch((error) => {
+            console.log(error)
+          })
     },
     async postComment(commentId) {
       let depth = 0;
@@ -277,18 +287,6 @@ export default {
         console.log(error)
       })
     },
-    async nextPage() {
-      await this.$http.get(`/api/post/${this.id}?page=${this.pageList.page+1}`)
-        .then((response) => {
-          for (let i = 0; i < response.data.commentList.length; i++) {
-            this.commentList.push(response.data.commentList[i])
-          }
-          this.pageList = response.data.pageList;
-        })
-        .catch((error)=> {
-          console.log(error)
-        })
-    },
     async deletePost() {
       const result = confirm("삭제 하시겠습니까?")
       if (result == false) return;
@@ -326,22 +324,26 @@ export default {
       }
     },
     displayReplyList(commentId) {
-      let replyPage = 0;
-      if (this.replyPageList[commentId]) {
-        replyPage = this.replyPageList[commentId].page+1
+      let replyPage;
+      if (this.replyList[commentId]) {
+        replyPage = this.replyList[commentId].page+1;
+      } else {
+        replyPage = 0;
       }
       this.$http.get(`/api/comment/${commentId}/children?page=${replyPage}`)
       .then((response) => {
+        console.log(response)
         if (this.replyList[commentId]) {
-          for (let i = 0; i < response.data.replyList.length; i++) {
-            this.replyList[commentId].push(response.data.replyList[i])
+          for (let i = 0; i < response.data.content.length; i++) {
+            this.replyList[commentId].push(response.data.content[i])
           }
         } else {
-          this.replyList[commentId] = response.data.replyList;
+          this.replyList[commentId] = response.data.content;
         }
-        
-        this.replyPageList[commentId] = response.data.pageList;
-        
+
+        this.replyList[commentId].replyCount = (response.data.number+1) * response.data.size;
+        this.replyList[commentId].page = response.data.number;
+
       })
       .catch((error) => {
         console.log(error)
