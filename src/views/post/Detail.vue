@@ -143,8 +143,8 @@
                       </tr>
                       <tr>
                       </tr>
-                      <div class="text-center mb-2" v-if="pageList.nextPage < pageList.totalPages">
-                        <a href="javascript:" @click="nextPage()">
+                      <div class="text-center mb-2" v-if="!pageLast">
+                        <a href="javascript:" @click="getComment()">
                           <img class="w-10 mb-0 mt-3" src="/icon/plus_icon.png" alt="logo">
                         </a>
                       </div>
@@ -189,6 +189,8 @@ export default {
           pageList: [],
           myNickname: null,
           replyList: [],
+          pageLast: true,
+          page: 0,
       }
   },
   created() {
@@ -219,11 +221,9 @@ export default {
             console.log(error)
           })
     },
-    // post 랑 comment 따로 요청하기
     async getPost() {
       await this.$http.get("/api/post/"+this.id)
         .then((response) => {
-          console.log(response)
           this.postDetail = response.data;
         })
         .catch((error)=> {
@@ -231,14 +231,25 @@ export default {
         })
     },
     async getComment() {
-      await this.$http.get("/api/comment?postId="+this.id)
-          .then((response) => {
-            console.log(response);
-            this.commentList = response.data.content
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+      try {
+        const params = {
+          postId: this.id,
+          page: this.page
+        };
+        const response = await this.$http.get("/api/comment", { params });
+        if (this.page == 0) {
+          this.commentList = response.data.content;
+        } else {
+          for (let i = 0; i < response.data.content.length; i++) {
+            this.commentList.push(response.data.content[i])
+          }
+        }
+
+        this.page = response.data.number+1;
+        this.pageLast = response.data.last;
+      } catch (error) {
+        console.log(error);
+      }
     },
     async postComment(commentId) {
       let depth = 0;
@@ -355,7 +366,7 @@ export default {
     async deleteReply(replyId) {
       const result = confirm("삭제 하시겠습니까?")
       if (result == false) return;
-      this.$http.delete(`/api/reply/${replyId}`)
+      this.$http.delete(`/api/comment/${replyId}/delete`)
       .then(() => {
         this.$router.go();
       })
