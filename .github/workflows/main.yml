@@ -36,6 +36,7 @@ jobs:
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --delete
+          s3_prefix: dist/
         env:
           AWS_S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
