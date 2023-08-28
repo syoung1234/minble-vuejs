@@ -7,6 +7,9 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  AWS_REGION: ap-northeast-2
+
 
 jobs:
   build:
@@ -16,6 +19,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+      - run: echo "${{ secrets.ENV }}" > .env
       - run: yarn install
       - run: yarn build
 
@@ -25,18 +29,18 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+          aws-region: ${{ env.AWS_REGION }}
           
           
-      - name: Deploy to S3
+      - name: Upload to S3
         uses: jakejarvis/s3-sync-action@master
         with:
           args: --delete
         env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_PRODUCTION_BUCKET_NAME }}
+          AWS_S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: "build"
+          AWS_REGION: ${{ env.AWS_REGION }}
+          SOURCE_DIR: "dist"
 
   
