@@ -59,7 +59,7 @@
             </router-link>
           </li>
           <li class="nav-item" v-if="this.$store.state.token.accessToken">
-            <router-link class="nav-link me-2" :to="`/post?name=${this.$store.state.name}`">
+            <router-link class="nav-link me-2" :to="this.$store.state.name ? `/post?name=${this.$store.state.name}` : '/post/choose'">
               <i
                 class="fas fa-file opacity-6 me-2"
                 aria-hidden="true"
@@ -70,7 +70,7 @@
             </router-link>
           </li>
           <li class="nav-item" v-if="this.$store.state.token.accessToken">
-            <router-link class="nav-link me-2" :to="this.$store.state.name ? `/message?name=${this.$store.state.name}` : '/message/select'">
+            <router-link class="nav-link me-2" :to="this.$store.state.name ? `/message?name=${this.$store.state.name}` : '/message/choose'">
               <i
                 class="fas fa-heart opacity-6 me-1"
                 aria-hidden="true"
