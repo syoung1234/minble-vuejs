@@ -58,7 +58,7 @@
               Home
             </router-link>
           </li>
-          <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name">
+          <li class="nav-item" v-if="this.$store.state.token.accessToken">
             <router-link class="nav-link me-2" :to="`/post?name=${this.$store.state.name}`">
               <i
                 class="fas fa-file opacity-6 me-2"
@@ -69,8 +69,8 @@
               <span v-else>Post</span>
             </router-link>
           </li>
-          <li class="nav-item" v-if="this.$store.state.token.accessToken && this.$store.state.name">
-            <router-link class="nav-link me-2" :to="`/message?name=${this.$store.state.name}`">
+          <li class="nav-item" v-if="this.$store.state.token.accessToken">
+            <router-link class="nav-link me-2" :to="this.$store.state.name ? `/message?name=${this.$store.state.name}` : '/message/select'">
               <i
                 class="fas fa-heart opacity-6 me-1"
                 aria-hidden="true"
