@@ -28,6 +28,8 @@ import ResetPassword from "../views/ResetPassword.vue";
 import FindPassword from "../views/FindPassword.vue";
 import Choose from "../views/home/Choose.vue";
 import ChooseTester from "../views/home/ChooseTester.vue";
+import MessageChoose from "../views/message/Choose.vue";
+import PostChoose from "../views/post/Choose.vue";
 
 const beforeAuth = isAuth => (from, to , next) => {
   const isAuthenticated = store.getters["isAuthenticated"]
@@ -184,6 +186,16 @@ const routes = [
     path: "/choose/tester",
     name: "chooseTeseter",
     component: ChooseTester,
+  },
+  {
+    path: "/message/choose",
+    name: "messageChoose",
+    component: MessageChoose,
+  },
+  {
+    path: "/post/choose",
+    name: "postChoose",
+    component: PostChoose,
   },
   
 ];
