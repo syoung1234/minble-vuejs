@@ -87,8 +87,8 @@ export default {
             console.log(response);
             this.followingList= response.data;
           })
-          .catch((error) => {
-            console.log(error);
+          .catch(() => {
+            // console.log(error);
           })
     },
     navigateTo(nickname) {
