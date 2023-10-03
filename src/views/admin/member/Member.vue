@@ -116,11 +116,6 @@ export default {
         this.$store.state.name = this.name;
         await this.$http.get("/api/mypage")
           .then((response) => {
-            if (response.data == '') {
-              this.$store.dispatch("logout", {})
-              .then(() => this.$router.push("/start"))
-              .catch(({ message }) => alert(message))
-            }
             this.$store.state.nickname = response.data.nickname
             this.profilePath = response.data.profilePath
             this.nickname = response.data.nickname

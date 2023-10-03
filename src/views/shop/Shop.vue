@@ -78,11 +78,6 @@ export default {
         this.$store.state.name = this.name;
         await this.$http.get("/api/subscriber?name="+this.name)
           .then((response) => {
-            if (response.data == '') {
-              this.$store.dispatch("logout", {})
-              .then(() => this.$router.push("/start"))
-              .catch(({ message }) => alert(message))
-            }
             this.$store.state.nickname = response.data.nickname
             this.nickname = response.data.nickname
             this.email = response.data.email
