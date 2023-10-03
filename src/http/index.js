@@ -35,8 +35,9 @@ http.interceptors.response.use(
   error => {
     // 원래의 요청 설정 저장
     const originalRequest = error.config;
+    console.log(originalRequest);
 
-    if (error.response && error.response.data.message == "Unauthorized Member" && !originalRequest._retry) {
+    if (error.response && error.response.data.message == "Unauthorized Member" && !originalRequest._retry && this.$store.state.isAuthenticated == true) {
       // `originalRequest._retry`는 이 요청이 이미 재시도 된 것인지 확인하기 위한 플래그입니다.
       originalRequest._retry = true;
 
@@ -53,7 +54,7 @@ http.interceptors.response.use(
             return http(originalRequest);
           })
           .catch(() => {
-            router.push("/login");
+            router.go(0);
           })
           .finally(() => {
             isRefreshing = false;
