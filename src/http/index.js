@@ -20,7 +20,6 @@ http.interceptors.request.use(
   },
   error => {
     const originalRequest = error.config;
-    console.log(originalRequest);
     return Promise.reject(error);
   }
 )

@@ -96,7 +96,7 @@ export default createStore({
     logout: function (context, payload) {
       return new Promise(resolve => {
         http.post("/api/refresh-token/logout")
-          .then(response => {
+          .then(() => {
             setTimeout(function() {
               context.commit("logout", payload)
               resolve({})
