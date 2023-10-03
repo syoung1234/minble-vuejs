@@ -14,7 +14,7 @@
       <router-link v-else
         class="navbar-brand font-weight-bolder ms-lg-0 ms-3"
         :class="darkMode ? 'text-black' : 'text-white'"
-        to='/choose'
+        to='/choose/tester'
         >Minble</router-link
       >
       <button
@@ -167,7 +167,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch("logout", {})
-      .then(() => this.$router.push("/choose"))
+      .then(() => this.$router.push("/choose/tester"))
       .catch(({ message }) => alert(message))
     },
     getNickname() {
