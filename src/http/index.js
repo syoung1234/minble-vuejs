@@ -19,7 +19,6 @@ http.interceptors.request.use(
     return config
   },
   error => {
-    const originalRequest = error.config;
     return Promise.reject(error);
   }
 )
