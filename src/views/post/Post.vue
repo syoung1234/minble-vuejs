@@ -34,7 +34,7 @@
           <div class="card z-index-0">
             <div class="card-body">
               <div class="float-left"></div>
-              <div class="text-right"><a href="javascript:" class="small" v-if="this.$store.state.name != this.$store.state.nickname" @click="deleteFollow">팔로잉 취소</a></div>
+              <div class="text-right"><a href="javascript:" class="small" @click="deleteFollow">팔로잉 취소</a></div>
 
               <PostList :followingList="followingList" />
 
@@ -90,7 +90,7 @@ export default {
     async deleteFollow() {
       const result = confirm("팔로잉 취소하시겠습니까?")
       if (result == false) return;
-      await this.$http.delete(`/api/follow/${this.name}/delete`)
+      await this.$http.delete(`/api/follow/${this.$route.query.name}/delete`)
         .then(() => {
           this.$router.push("/home")
         })
