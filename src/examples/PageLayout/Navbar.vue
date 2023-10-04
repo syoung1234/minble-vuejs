@@ -59,7 +59,7 @@
             </router-link>
           </li>
           <li class="nav-item" v-if="this.$store.state.token.accessToken">
-            <router-link class="nav-link me-2" :to="this.$store.state.name ? `/post?name=${this.$store.state.name}` : '/post/choose'">
+            <router-link class="nav-link me-2" :to="roleType == 'ROLE_STAR' || roleType == 'ROLE_STAR_TEST' ? `/post?name=${this.$store.state.nickname}` : '/post/choose'">
               <i
                 class="fas fa-file opacity-6 me-2"
                 aria-hidden="true"
@@ -70,7 +70,7 @@
             </router-link>
           </li>
           <li class="nav-item" v-if="this.$store.state.token.accessToken">
-            <router-link class="nav-link me-2" :to="this.$store.state.name ? `/message?name=${this.$store.state.name}` : '/message/choose'">
+            <router-link class="nav-link me-2" :to="roleType == 'ROLE_STAR' || roleType == 'ROLE_STAR_TEST' ? `/message?name=${this.$store.state.nickname}` : '/message/choose'">
               <i
                 class="fas fa-heart opacity-6 me-1"
                 aria-hidden="true"
@@ -162,7 +162,7 @@ export default {
     }
   },
   created() {
-    //this.getNickname();
+    this.getNickname();
   },
   methods: {
     logout() {
